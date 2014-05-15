@@ -58,6 +58,7 @@ create table tag (
 );
 alter table tag auto_increment = 500;
 
+/* Integrated tables */
 select 'Create table called problema_doc_final' as 'Action';
 create table problema_doc_final (
 	id_problema integer not null references problema(id_problema)							
