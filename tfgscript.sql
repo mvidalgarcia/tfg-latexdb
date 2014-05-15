@@ -1,14 +1,14 @@
 select 'Go to DB test' as 'Action';
 use test;
 
-select 'Drop DB tfg if exists' as 'Action';
-drop database if exists tfg;
+select 'Drop DB tfgdb if exists' as 'Action';
+drop database if exists tfgdb;
 
-select 'Create DB tfg' as 'Action';
-create database tfg;
+select 'Create DB tfgdb' as 'Action';
+create database tfgdb;
 
-select 'Go to DB tfg' as 'Action';
-use tfg;
+select 'Go to DB tfgdb' as 'Action';
+use tfgdb;
 
 select 'Create table called problema' as 'Action';
 create table problema (
