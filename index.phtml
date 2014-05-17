@@ -12,6 +12,12 @@
         <li> Enunciado general: {{prob.enunciado_general}} Resumen: {{prob.resumen}} 
         </li>
             {% endfor %}
+		
+		{% for preg in pregunta %}
+        <li> Enunciado: {{preg.enunciado}} Solución: {{preg.solucion}} Explicación: {{preg.explicacion}} Puntuación: {{preg.puntuacion}}
+			 Posición: {{preg.posicion}} id_problema:{{preg.id_problema}}
+        </li>
+            {% endfor %}
         </ul>
     </body>
 </html>

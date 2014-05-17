@@ -1,19 +1,21 @@
 <?php
 
-require("./model/problema.php");
-require("./app.php");
+require_once("./model/problema.php");
+require_once("./singleton_db.php");
 
 class ProblemaMapper
 {
     protected static $dbh;
         
-    function __construct() 
+	function __construct() 
     {  
-        if ( !isset(self::$dbh) ) 
-            self::$dbh = App::ConnectDB();
+//        if ( !isset(self::$dbh) ) 
+//            self::$dbh = App::ConnectDB();
+		self::$dbh = Database::getConnection();
 		
     }
 
+	
 	public function Insert($Problema)
     {
         $STH = self::$dbh->prepare(

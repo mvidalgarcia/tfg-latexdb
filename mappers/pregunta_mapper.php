@@ -1,16 +1,18 @@
 <?php
 
-require("./model/pregunta.php");
-require("./app.php");
+require_once("./model/pregunta.php");
+require_once("./singleton_db.php");
 
 class PreguntaMapper
 {
-    protected static $dbh;
+     protected static $dbh;
         
-    function __construct() 
+	function __construct() 
     {  
-        if ( !isset(self::$dbh) ) 
-            self::$dbh = App::ConnectDB();
+//        if ( !isset(self::$dbh) ) 
+//            self::$dbh = App::ConnectDB();
+		self::$dbh = Database::getConnection();
+		
     }
 
 	public function Insert($Pregunta)
@@ -66,6 +68,14 @@ class PreguntaMapper
         $STH->execute(); 
         return $STH->fetch();
     }
+	
+	public function FindAll()
+    {
+        $STH = self::$dbh->prepare('SELECT * FROM pregunta');
+        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
+        $STH->execute();
+        return $STH->fetchAll();
+    } 
 
 }
 
