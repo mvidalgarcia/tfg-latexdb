@@ -1,23 +1,39 @@
+<!-- 
+******************************************************************
+Asignatura: Trabajo Fin de Grado
+Titulación: GIITI
+Autor     : Marco Vidal García
+Universidad de Oviedo
+******************************************************************
+-->
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
         <meta charset="utf-8"/>
-        <title>Prueba TFG</title>
-        <link rel="stylesheet" href="style.css">
+        <title>Crear ejercicio</title>
+        <link rel="stylesheet" href="css/style.css">
+		<!--  Enlazado de la biblioteca JQuery -->
+    	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<!-- Enlazado a mi fichero Javascript/JQuery -->
+		<script type="text/javascript" src="javascript/functions_index.js" charset="utf-8"></script>
     </head>
     <body>
-        <h1>Lista de problemas</h1></br>
-    <ul>
-        {% for prob in problema %}
-        <li> Enunciado general: {{prob.enunciado_general}} Resumen: {{prob.resumen}} 
-        </li>
-            {% endfor %}
+		<header><h2>tfgwebapp.</h2></header>
 		
-		{% for preg in pregunta %}
-        <li> Enunciado: {{preg.enunciado}} Solución: {{preg.solucion}} Explicación: {{preg.explicacion}} Puntuación: {{preg.puntuacion}}
-			 Posición: {{preg.posicion}} id_problema:{{preg.id_problema}}
-        </li>
-            {% endfor %}
-        </ul>
+		<!-- ****** Menú dinámico ****** -->
+		<nav>
+			<ul>
+				<li><a href="crear-problema.phtml" target="formulario">Crear ejercicio</a></li>
+				<li><a href="listar-problemas.phtml" target="formulario">Listar ejercicios</a></li>
+				<li><a href="crear-doc.phtml" target="formulario">Crear documento final</a></li>
+				<li><a href="listar-docs.phtml" target="formulario">Listar documentos finales</a></li>
+			</ul>
+		</nav>
+
+		<!-- ****** Formularios externos ****** -->
+		<iframe seamless id="idIframe" onload="iframeLoaded()" name="formulario" src="crear-problema.phtml" 
+		scrolling="no" width=1000px> </iframe>
+	
     </body>
 </html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Prueba TFG</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>Lista de problemas</h1></br>
+    <ul>
+        {% for prob in problema %}
+        <li> Enunciado general: {{prob.enunciado_general}} Resumen: {{prob.resumen}} 
+        </li>
+            {% endfor %}
+		
+		{% for preg in pregunta %}
+        <li> Enunciado: {{preg.enunciado}} Solución: {{preg.solucion}} Explicación: {{preg.explicacion}} Puntuación: {{preg.puntuacion}}
+			 Posición: {{preg.posicion}} id_problema:{{preg.id_problema}}
+        </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
