@@ -25,7 +25,7 @@ alter table problema auto_increment = 100;
 
 select 'Create table called "pregunta"' as 'Action';
 create table pregunta (
-	id_pregunta integer auto_increment not null primary key,
+	id_pregunta integer not null auto_increment primary key,
 	enunciado text not null,
 	solucion text,
 	explicacion text,
@@ -125,3 +125,8 @@ insert into pregunta (enunciado, solucion, explicacion, posicion, id_problema) v
 ('Esto es el enunciado de la pregunta 3','Esto es la solución de la pregunta 3', 'Esto es la explicación de la pregunta 3', 3, 100),
 ('Esto es el enunciado de la pregunta 4','Esto es la solución de la pregunta 4', 'Esto es la explicación de la pregunta 4', 1, 101);
 
+select 'Inserting values in "tag" table' as 'Action';
+insert into tag (nombre) values ('tagA'),('tagB'),('tagC'),('tagD'),('tagE'),('tagF');
+
+select 'Inserting values in "problema_tag" table' as 'Action';
+insert into problema_tag (id_problema, id_tag) values (100, 500), (100, 501), (101, 502), (101, 503), (102, 504), (102, 505);
