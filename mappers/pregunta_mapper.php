@@ -64,15 +64,25 @@ class PreguntaMapper
     {
         $STH = self::$dbh->prepare('SELECT * FROM pregunta WHERE id_pregunta = :id');
         $STH->bindParam(':id', $id);
-        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
+        //$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
         $STH->execute(); 
         return $STH->fetch();
     }
+
+	public function FindByIdProblema($id)
+    {
+        $STH = self::$dbh->prepare('SELECT * FROM pregunta WHERE id_problema = :id');
+        $STH->bindParam(':id', $id);
+        //$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
+        $STH->execute(); 
+        return $STH->fetchAll();
+    }
+
 	
 	public function FindAll()
     {
         $STH = self::$dbh->prepare('SELECT * FROM pregunta');
-        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
+        //$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
         $STH->execute();
         return $STH->fetchAll();
     } 

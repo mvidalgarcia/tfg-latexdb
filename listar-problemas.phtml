@@ -21,14 +21,15 @@ Universidad de Oviedo
     <body>
 		<h4>Listado de ejercicios</h4></br>
 		<ul>
-        	{% for item_sol in array_probs_tags %}
-        		<li> Resumen: {{item_sol.resumen}} </li>
+        	{% for item_array in array_probs_tags %}
+        		<li> Resumen: {{item_array.resumen}} </li>
 				<li> Tags: 
-					{% for item_tag in item_sol.tags %}
+					{% for item_tag in item_array.tags %}
 						{{ item_tag.nombre }},
 					{% endfor %}
  				</li>
-				<button id='editar'>Ver/Editar</button>	<button id='eliminar'>Eliminar</button>
+				<a href="edit.php?id={{item_array.id_problema}}">Ver/Editar</a>
+				<a href="delete.php?id={{item_array.id_problema}}">Eliminar</a>
 				<hr>
             {% endfor %}
         </ul>
