@@ -9,10 +9,7 @@ class ProblemaMapper
         
 	function __construct() 
     {  
-//        if ( !isset(self::$dbh) ) 
-//            self::$dbh = App::ConnectDB();
 		self::$dbh = Database::getConnection();
-		
     }
 
 	
@@ -23,7 +20,7 @@ class ProblemaMapper
         $STH->bindParam(':enunciado_general', $Problema->enunciado_general);
         $STH->bindParam(':resumen', $Problema->resumen);
         $STH->execute(); 
-        $Pregunta->id_problema = self::$dbh->lastInsertId();
+        $Problema->id_problema = self::$dbh->lastInsertId();
     }
 
 	public function Update($Problema)
@@ -54,7 +51,7 @@ class ProblemaMapper
     {
         $STH = self::$dbh->prepare('SELECT * FROM problema WHERE id_problema = :id');
         $STH->bindParam(':id', $id);
-        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');  
+        //$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');  
         $STH->execute(); 
         return $STH->fetch();
     }
@@ -62,7 +59,7 @@ class ProblemaMapper
     public function FindAll()
     {
         $STH = self::$dbh->prepare('SELECT * FROM problema');
-        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');  
+        //$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');  
         $STH->execute();
         return $STH->fetchAll();
     } 

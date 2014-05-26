@@ -1,0 +1,37 @@
+<!-- 
+******************************************************************
+Fichero:    listar-problemas.phtml
+Asignatura: Trabajo Fin de Grado
+Titulación: GIITI
+Autor     : Marco Vidal García
+Universidad de Oviedo
+******************************************************************
+-->
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Listar de ejercicios</title>
+        <link rel="stylesheet" href="">
+		<!-- Enlazado de la biblioteca JQuery -->
+    	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<!-- Enlazado a mi fichero Javascript/JQuery -->
+		<script type="text/javascript" src="javascript/functions_problemas.js" charset="utf-8"></script>
+    </head>
+    <body>
+		<h4>Listado de ejercicios</h4></br>
+		<ul>
+        	{% for item_array in array_probs_tags %}
+        		<li> Resumen: {{item_array.resumen}} </li>
+				<li> Tags: 
+					{% for item_tag in item_array.tags %}
+						{{ item_tag.nombre }},
+					{% endfor %}
+ 				</li>
+				<a href="edit.php?id={{item_array.id_problema}}">Ver/Editar</a>
+				<a href="delete.php?id={{item_array.id_problema}}">Eliminar</a>
+				<hr>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
