@@ -8,9 +8,9 @@ Se ha empleado un entorno Linux (Ubuntu Server) para el desarrollo de esta aplic
 `mysql> grant all privileges on tfgdb.* to tfguser@localhost;`
 3. Ejecutar el script `tfgscript.sql`. Una forma de hacerlo es, estando dentro de la línea de comandos de mysql, ejecutar el comando:  
 `mysql> source /ruta/al/archivo/tfgscript.sql;`
-4. Instalar Twig en tu carpeta de trabajo donde están todos los ficheros. Para ello hay dos opciones:
- 1.  Primera opción: Situándose en la carpeta de trabajo ejecutar el comando `git clone git://github.com/fabpot/Twig.git`. Para ello es necesario tener instalado git en tu máquina.
- 2.  Segunda opción:  
+4. Instalar Twig en tu carpeta de trabajo donde están todos los ficheros. Para ello hay dos opciones:  
+  - Primera opción: Situándose en la carpeta de trabajo ejecutar el comando `git clone git://github.com/fabpot/Twig.git`. Para ello es necesario tener instalado git en tu máquina.  
+  - Segunda opción:  
 a. Instalar composer:  
 	```
 	curl -s http://getcomposer.org/installer | php
@@ -26,4 +26,3 @@ b. Crear un archivo llamado `composer.json` que contenga:
 	```  
 c. Ejecutar el comando `php composer.phar install`  
 d. Mover el contenido de la carpeta `vendor/twig/twig` a `Twig`
-
