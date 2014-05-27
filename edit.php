@@ -38,7 +38,9 @@ try
 
 	//DEBUG
 	var_dump(count($Preguntas));
-	var_dump($Preguntas);  //    NO SOY CAPAZ DE LEERLO DESDE JAVASCRIPT PARA RELLENAR EL FORMULARIO DE PREGUNTAS PARA RELLENAR EL FORMULARIO DE PREGUNTAS  
+    echo "<pre>";
+        var_dump($Preguntas);  //    NO SOY CAPAZ DE LEERLO DESDE JAVASCRIPT PARA RELLENAR EL FORMULARIO DE PREGUNTAS PARA RELLENAR EL FORMULARIO DE PREGUNTAS  
+    echo "</pre>";
 	var_dump($Preguntas[0]['id_pregunta']);
 		
 
