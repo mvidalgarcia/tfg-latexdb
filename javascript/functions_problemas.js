@@ -47,7 +47,7 @@ $(function() {
 	   	else
 		{
 			idForm.innerHTML += "<label for='enunciado"+i+"'>Enunciado: </label><br/>";
-			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+ twig_preguntas[i].enunciado +"</textarea><br/>";
+			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+ twig_preguntas[i-1].enunciado +"</textarea><br/>";
 			idForm.innerHTML += "<label for='solucion"+i+"'>Solución: </label><br/>";
 			idForm.innerHTML += "<textarea id='solucion"+i+"' name='solucion"+i+"' rows='3' cols='80'> "+
         	"Introduce aquí la solución de la pregunta...</textarea><br/>";
