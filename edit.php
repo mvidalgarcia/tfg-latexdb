@@ -37,11 +37,11 @@ try
 	}
 
 	//DEBUG
-	var_dump(count($Preguntas));
-    echo "<pre>";
-        var_dump($Preguntas);  //    NO SOY CAPAZ DE LEERLO DESDE JAVASCRIPT PARA RELLENAR EL FORMULARIO DE PREGUNTAS PARA RELLENAR EL FORMULARIO DE PREGUNTAS  
-    echo "</pre>";
-	var_dump($Preguntas[0]['id_pregunta']);
+	// var_dump(count($Preguntas));
+    // echo "<pre>";
+    //    var_dump($Preguntas);  //    NO SOY CAPAZ DE LEERLO DESDE JAVASCRIPT PARA RELLENAR EL FORMULARIO DE PREGUNTAS PARA RELLENAR EL FORMULARIO DE PREGUNTAS  
+    // echo "</pre>";
+	// var_dump($Preguntas[0]['id_pregunta']);
 		
 
     $template->display(array("problema" => $Problema, "tags" => $Tags, "preguntas" => utf8ize($Preguntas), "npreguntas" => count($Preguntas)));
