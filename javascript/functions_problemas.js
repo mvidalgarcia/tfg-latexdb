@@ -30,10 +30,10 @@ $(function() {
 			idForm.innerHTML += "<h4>Pregunta "+i+"<button id='decrementarPreguntas'>Eliminar pregunta</button></br>";
 		else	
 			idForm.innerHTML += "<h4>Pregunta "+i+"</h4>";
-		// Caso de "Crear ejercicio"
+		// Caso de "Crear ejercicio".
 		if (typeof twig_npreguntas === 'undefined')
 		{
-			idForm.innerHTML += "<label for='enunciado"+i+"'>Enunciado: </label><br/>";
+			idForm.innerHTML += "<label for='enunciado"+i+"'>Enunciado: </label><span class='error'>* <?php echo $enunciadoErr;?></span><br/>";
 			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+
 			"Introduce aquí el enunciado de la pregunta...</textarea><br/>";
 			idForm.innerHTML += "<label for='solucion"+i+"'>Solución: </label><br/>";
@@ -42,11 +42,14 @@ $(function() {
 			idForm.innerHTML += "<label for='explicacion"+i+"'>Explicación: </label><br/>";
 			idForm.innerHTML += "<textarea id='explicacion"+i+"' name='explicacion"+i+"' rows='3' cols='80'> "+
         	"Introduce aquí la explicación de la pregunta...</textarea><br/>";
+			idForm.innerHTML += "<label for='puntuacion"+i+"'>Puntuación: </label><span class='error'>* <?php echo $puntuacionErr;?></span><br/>";
+			idForm.innerHTML += "<input type='number' id='puntuacion"+i+"' name='puntuacion"+i+"' value='1'><br/>";
+
 		}
-		// Caso de "Ver/Editar"
+		// Caso de "Ver/Editar".
 	   	else
 		{
-			idForm.innerHTML += "<label for='enunciado"+i+"'>Enunciado: </label><br/>";
+			idForm.innerHTML += "<label for='enunciado"+i+"'>Enunciado: </label><span class='error'>* <?php echo $enunciadoErr;?></span><br/>";
 			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+ twig_preguntas[i].enunciado +"</textarea><br/>";
 			idForm.innerHTML += "<label for='solucion"+i+"'>Solución: </label><br/>";
 			idForm.innerHTML += "<textarea id='solucion"+i+"' name='solucion"+i+"' rows='3' cols='80'> "+
@@ -54,15 +57,21 @@ $(function() {
 			idForm.innerHTML += "<label for='explicacion"+i+"'>Explicación: </label><br/>";
 			idForm.innerHTML += "<textarea id='explicacion"+i+"' name='explicacion"+i+"' rows='3' cols='80'> "+
         	"Introduce aquí la explicación de la pregunta...</textarea><br/>";
+			idForm.innerHTML += "<label for='puntuacion"+i+"'>Puntuación: </label><span class='error'>* <?php echo $puntuacionErr;?></span><br/>";
+			idForm.innerHTML += "<input type='number' id='puntuacion"+i+"' name='puntuacion"+i+"' value='1'><br/>";
 		}
 		// Si es la última pregunta que se imprime se añade un enlace para poder añadir una nueva pregunta.
 		if (i == numPreguntas)
 			idForm.innerHTML += "<button id='incrementarPreguntas'>Añadir pregunta</button>";
+
 	}
+	// Elemento input HTML oculto donde se indica el número de preguntas actual. 
+	// Sirve para saber el número de preguntas al enviar el formulario al script PHP.
+	idForm.innerHTML += "<input type='hidden' name='npreg' value='"+numPreguntas+"'>"; 
 
 	/****** Manejadores de eventos ******/
 	
-	// Evento que al pulsar el botón de la IU "Añadir pregunta", añade un nuevo formulario para una pregunta más
+	// Evento que al pulsar el botón de la IU "Añadir pregunta", añade un nuevo formulario para una pregunta más.
 	$("#incrementarPreguntas").click(function() 
 	{
 		//Incrementar numPreguntas
@@ -70,7 +79,7 @@ $(function() {
 		location.reload();
 	});
 	
-	// Evento que al pulsar el botón de la IU "Eliminar pregunta", elimina el formulario de la última pregunta
+	// Evento que al pulsar el botón de la IU "Eliminar pregunta", elimina el formulario de la última pregunta.
 	$("#decrementarPreguntas").click(function()
 	{
 		//Decrementar numPreguntas

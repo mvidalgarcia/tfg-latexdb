@@ -16,7 +16,7 @@ Universidad de Oviedo
 		<script type="text/javascript">
     		//Variables escapadas para poder utilizarlas en Javascript
 			var twig_npreguntas = "{{ npreguntas|escape('js') }}";
-			var twig_preguntas = "{{ preguntas|json_encode() }}";
+			var twig_preguntas = "{{ preguntas|json_encode()|escape('js') }}";
 		</script>
 		<!--  Enlazado de la biblioteca JQuery -->
     	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
