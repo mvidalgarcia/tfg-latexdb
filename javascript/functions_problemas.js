@@ -1,20 +1,20 @@
 $(function() {
 	if (!(typeof twig_preguntas === 'undefined'))
-		alert (twig_preguntas);
+		console.log (twig_preguntas);
 	if (!(typeof twig_npreguntas === 'undefined'))
-		alert (twig_npreguntas);
+		console.log (twig_npreguntas);
 	/****** Inicializaciones ******/
 	var numPreguntas;
 	// Si la variable está definida es que provengo del boton Ver/Editar.
 	// Cargar el número de preguntas que deben aparecer en la interfaz
 	if (!(typeof twig_npreguntas === 'undefined'))
 	{
-		alert ("twig_npreguntas NO es NULL!");
+		console.log ("twig_npreguntas NO es NULL!");
 		numPreguntas = twig_npreguntas;
 	}
 	else
 	{
-		alert ("twig_npreguntas es NULL!");
+		console.log ("twig_npreguntas es NULL!");
 		var numPreguntas = localStorage.getItem("numPreguntas");
 		if (numPreguntas == null)
 			localStorage.setItem("numPreguntas", 1);	
@@ -47,7 +47,7 @@ $(function() {
 	   	else
 		{
 			idForm.innerHTML += "<label for='enunciado"+i+"'>Enunciado: </label><br/>";
-			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+ twig_preguntas[i].enunciado +"</textarea><br/>";
+			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+ twig_preguntas[i-1].enunciado +"</textarea><br/>";
 			idForm.innerHTML += "<label for='solucion"+i+"'>Solución: </label><br/>";
 			idForm.innerHTML += "<textarea id='solucion"+i+"' name='solucion"+i+"' rows='3' cols='80'> "+
         	"Introduce aquí la solución de la pregunta...</textarea><br/>";
