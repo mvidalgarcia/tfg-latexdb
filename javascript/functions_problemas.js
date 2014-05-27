@@ -4,13 +4,16 @@ $(function() {
 			idForm.innerHTML += "<h4>Pregunta "+i+"</h4>";
             if (last) idForm.innerHTML += " <button id='decrementarPreguntas'>Eliminar pregunta</button><br/>";
 			idForm.innerHTML += "<label for='enunciado"+i+"'>Enunciado: </label><br/>";
-			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+
+			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'" + 
+                                " placeholder='Introduce aquí el enunciado de la pregunta...'>"+
 			                     enunciado + "</textarea><br/>";
 			idForm.innerHTML += "<label for='solucion"+i+"'>Solución: </label><br/>";
-			idForm.innerHTML += "<textarea id='solucion"+i+"' name='solucion"+i+"' rows='3' cols='80'>"+
+			idForm.innerHTML += "<textarea id='solucion"+i+"' name='solucion"+i+"' rows='3' cols='80'"+
+                                " placeholder='Introduce aquí la solución de la pregunta...'>"+
         	                     solucion + "</textarea><br/>";
 			idForm.innerHTML += "<label for='explicacion"+i+"'>Explicación: </label><br/>";
-			idForm.innerHTML += "<textarea id='explicacion"+i+"' name='explicacion"+i+"' rows='3' cols='80'>"+
+			idForm.innerHTML += "<textarea id='explicacion"+i+"' name='explicacion"+i+"' rows='3' cols='80'"+
+                                " placeholder='Introduce aquí la explicación de la pregunta...'>"+
         	                    explicacion + "</textarea><br/>";
     }
 
@@ -56,10 +59,7 @@ $(function() {
 	$("#incrementarPreguntas").click(function() 
 	{
         $("#incrementarPreguntas").remove();
-        add_pregunta(i, true, "Introduce aquí el enunciado...", 
-                        "Introduce aquí la solución...",
-                        "Introduce aquí la explicación..."
-                    );
+        add_pregunta(i, true, "", "", ""); 
         idForm.innerHTML += "<button id='incrementarPreguntas'>Añadir pregunta</button>";
 	}
 	);
