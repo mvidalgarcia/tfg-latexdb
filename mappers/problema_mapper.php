@@ -51,7 +51,7 @@ class ProblemaMapper
     {
         $STH = self::$dbh->prepare('SELECT * FROM problema WHERE id_problema = :id');
         $STH->bindParam(':id', $id);
-        //$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');  
+        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');  
         $STH->execute(); 
         return $STH->fetch();
     }
