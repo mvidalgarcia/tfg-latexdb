@@ -28,6 +28,7 @@ try
 		$arrayProblemasTags[$i]['tags'] = $arrayTags;
     }
 	//RETURN
+    header('Content-type: application/json');
     echo(json_encode($arrayProblemasTags)); 
 }
 catch(PDOException $e)
