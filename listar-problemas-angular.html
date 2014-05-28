@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" ng-app="problemsCollection">
+<head>
+  <meta charset="utf-8">
+  <title>Listado de problemas</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script src="javascript/angular.js"></script>
+  <script src="javascript/controllers.js"></script>
+</head>
+<body ng-controller="ProblemListCtrl">
+
+Listado de ejercicios ({{problemas.length}} en total):
+
+<div class="container-fluid">
+      <div class="row">
+            <div class="col-md-2">
+            <!--Sidebar content-->
+
+            Search: <input ng-model="query">
+     </div>
+    <div class="col-md-10">      
+        <div class="listado-problemas">
+          <ul>
+            <li ng-repeat="problema in problemas | filter:query">
+              Resumen: {{problema.resumen}}
+              <div class="tags"><ul class="list-inline"><li ng-repeat="tag in problema.tags">{{tag}}</li></ul></div>
+              <div class="actions"><a class="btn" href="#/edit/{{problema.id_problema}}">Ver/Editar</a><a class="btn" href="#/delete/{{problema.id_problema}}">Borrar</a></div>
+            </li>
+          </ul>
+      </div>
+  </div>
+</body>
+</html>

@@ -10,7 +10,8 @@ class Database {
 
     private function __construct() {
         $this->connection = new PDO(self::$dsn, self::$username, self::$password);
-		$this->connection->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION ); 
+        $this->connection->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+        $this->connection->exec("set names utf8");
    }
 
     function __destruct() {
