@@ -5,20 +5,30 @@ require_once("./mappers/pregunta_mapper.php");
 
 try 
 {
-	if (isset($_GET["id_problema"])) 
-    {
-        $id = $_GET["id_problema"];
-    	
-		// Guardar las preguntas asociadas al problema.
-		$MapperPregunta =  new PreguntaMapper; 
-		$Preguntas = $MapperPregunta->FindByIdProblema($id);
-
-    }
+    // Obtener de BD todos los 'problemas'
+    $Mapper = new ProblemaMapper;
+    $problemas = $Mapper->FindAll();
 	
+	// Obtener de BD relaciones de problemas-tags
+	$MapperProblemaTag = new Problema_TagMapper;
+	
+	// Crear una estructura de datos (array multidimensional) que contenga 
+	// los resúmenes de cada problema y sus tags correspondientes.
+	for ($i = 0; $i < count($problemas); $i++)
+	{
+		// Extraer el id del problema
+		$id_problema = $problemas[$i]['id_problema'];
+		// Guardar todos los tags asociados al id del problema
+        $tags_problema = $MapperProblemaTag->FindNameTagsByIdProblema($id_problema);
+        for ($j =0; $j < count($tags_problema); $j++)
+            $arrayTags[$j] = $tags_problema[$j]['nombre'];
+		// Introducir en un array multidimensional el id_problema, resumen y los tags asociandolos por el índice 'i'
+		$arrayProblemasTags[$i]['id_problema'] = $id_problema;
+		$arrayProblemasTags[$i]['resumen'] = $problemas[$i]['resumen'];
+		$arrayProblemasTags[$i]['tags'] = $arrayTags;
+    }
 	//RETURN
-    echo "<pre>";
-        var_dump(json_encode(utf8ize($Preguntas))); 
-    echo "</pre>";
+    echo(json_encode($arrayProblemasTags)); 
 }
 catch(PDOException $e)
 {

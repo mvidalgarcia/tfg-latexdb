@@ -19,13 +19,8 @@ try
     }
 	
 	//RETURN
-    echo "<pre>";
-        var_dump(json_encode(utf8ize($Problema))); 
-    echo "</pre>";
-	
-	echo "<pre>";
-        var_dump(json_encode(utf8ize($Tags))); 
-    echo "</pre>";
+        echo(json_encode($Problema)); 
+        echo(json_encode($Tags)); 
 	
 }
 catch(PDOException $e)
@@ -33,15 +28,4 @@ catch(PDOException $e)
     echo $e->getMessage();
 }
 
-// Función para pasar a UTF-8 todos los caracteres de un array.
-function utf8ize($d) {
-    if (is_array($d)) {
-        foreach ($d as $k => $v) {
-            $d[$k] = utf8ize($v);
-        }
-    } else {
-        return utf8_encode($d);
-    }
-    return $d;
-}
 ?>
