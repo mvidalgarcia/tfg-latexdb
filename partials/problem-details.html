@@ -1,3 +1,25 @@
-<pre>
-  Por hacer: Detalles del problema {{id_problema}}
-</pre>
+<h1>Problema {{id_problema}}</h1>
+
+<form>
+<div class="jumbotron">
+    <h2>Enunciado general</h2>
+    <textarea>{{problema.datos.enunciado_general}}</textarea>
+    <div class="tags">
+        <ul class="list-inline">
+            <li ng-repeat="tag in problema.tags">{{tag.nombre}}</li>
+        </ul>
+    </div>
+</div>
+<div class="preguntas">
+    <ul>
+        <li ng-repeat="pregunta in problema.preguntas">
+        <h3>Pregunta {{pregunta.posicion}} [{{pregunta.puntuacion}} punto{{pregunta.puntuacion>1?"s":""}}]</h3>
+        <textarea class="enunciado">{{pregunta.enunciado}}</textarea>
+        <textarea class="solucion">{{pregunta.solucion}}</textarea>
+        <textarea class="explicacion">{{pregunta.explicacion}}</textarea>
+        </li>
+    </ul>
+</div>
+<button class="btn">Guardar</button>
+<span class="btn"><a href="#/list">Cancelar</a></span>
+</form>
