@@ -3,8 +3,8 @@
 var problemsCollection = angular.module("problemsCollection", []);
 
 problemsCollection.controller('ProblemListCtrl', function($scope, $http) {
-    $http.get("preguntas-ejemplo.json").success(function(data){
-        console.log(data);
+    $http.get("get_problems_list.php").success(function(data){
+        $scope.problemas = data;
     });
   });
 

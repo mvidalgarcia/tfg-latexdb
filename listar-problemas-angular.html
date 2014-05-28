@@ -25,7 +25,7 @@ Listado de ejercicios ({{problemas.length}} en total):
             <li ng-repeat="problema in problemas | filter:query">
               Resumen: {{problema.resumen}}
               <div class="tags"><ul class="list-inline"><li ng-repeat="tag in problema.tags">{{tag}}</li></ul></div>
-              <div class="actions"><a class="btn" href="#/edit/{{problema.id}}">Ver/Editar</a><a class="btn" href="#/delete/{{problema.id}}">Borrar</a></div>
+              <div class="actions"><a class="btn" href="#/edit/{{problema.id_problema}}">Ver/Editar</a><a class="btn" href="#/delete/{{problema.id_problema}}">Borrar</a></div>
             </li>
           </ul>
       </div>
