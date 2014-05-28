@@ -8,6 +8,18 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http) {
     });
   });
 
-problemsControllers.controller('ProblemDetailsCtrl', function($scope, $routeParams) {
+problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams) {
     $scope.id_problema = $routeParams.id_problema;
+    $http.get("get_problem.php?id_problema=" + $scope.id_problema).success(function(data){
+        $scope.problema = data;
+        console.log(data);
+    });
+});
+
+problemsControllers.controller('ProblemDeleteCtrl', function($scope, $http, $routeParams) {
+    $scope.id_problema = $routeParams.id_problema;
+    $http.post("delete_problem.php", {"id_problema": $scope.id_problema} ).success(function(data){
+        console.log("Exito");
+        console.log(data);
+    });
 });
