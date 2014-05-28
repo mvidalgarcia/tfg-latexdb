@@ -20,6 +20,7 @@ try
 		$id_problema = $problemas[$i]['id_problema'];
 		// Guardar todos los tags asociados al id del problema
         $tags_problema = $MapperProblemaTag->FindNameTagsByIdProblema($id_problema);
+        $arrayTags = array();
         for ($j =0; $j < count($tags_problema); $j++)
             $arrayTags[$j] = $tags_problema[$j]['nombre'];
 		// Introducir en un array multidimensional el id_problema, resumen y los tags asociandolos por el índice 'i'
