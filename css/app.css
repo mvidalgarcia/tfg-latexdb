@@ -1,0 +1,25 @@
+.tags {
+  color: #aaa;
+  margin-left: 1em;
+}
+
+.listado-problemas {
+    margin: 2em;
+}
+
+.listado-problemas >ul > li {
+    border: 1pt solid #ccc;
+    padding: 2ex 2ex 1ex 2ex;
+    list-style: none;
+    margin-left: 1pt;
+    background-color: #fff;
+}
+
+.actions {
+    margin-top: 10px;
+}
+
+.btn {
+    background-color: #ddd;
+    margin: 5px;
+}
