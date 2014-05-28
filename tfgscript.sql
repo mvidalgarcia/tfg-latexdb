@@ -6,8 +6,8 @@ use test;
 select 'Drop DB "tfgdb" if exists' as 'Action';
 drop database if exists tfgdb;
 
-select 'Create DB "tfgdb"' as 'Action';
-create database tfgdb;
+select 'Create DB "tfgdb" CHARACTER SET utf8 COLLATE utf8_general_ci' as 'Action';
+create database tfgdb CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 select 'Go to DB "tfgdb"' as 'Action';
 use tfgdb;
