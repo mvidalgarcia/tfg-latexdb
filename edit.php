@@ -1,5 +1,5 @@
 <?php
-require_once ("./Twig/lib/Twig/Autoloader.php");
+require_once("./Twig/lib/Twig/Autoloader.php");
 require_once("./mappers/problema_mapper.php");
 require_once("./mappers/problema_tag_mapper.php");
 require_once("./mappers/pregunta_mapper.php");
@@ -45,10 +45,10 @@ try
 		
 
     $template->display(array("problema" => $Problema, "tags" => $Tags, "preguntas" => $Preguntas, "npreguntas" => count($Preguntas)));
+
 }
 catch(PDOException $e)
 {
     echo $e->getMessage();
 }
-
 ?>

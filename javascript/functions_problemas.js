@@ -55,7 +55,7 @@ $(function() {
 
 	/****** Manejadores de eventos ******/
 	
-	// Evento que al pulsar el botón de la IU "Añadir pregunta", añade un nuevo formulario para una pregunta más
+	// Evento que al pulsar el botón de la IU "Añadir pregunta", añade un nuevo formulario para una pregunta más.
 	$("#incrementarPreguntas").click(function() 
 	{
         $("#incrementarPreguntas").remove();
@@ -64,7 +64,7 @@ $(function() {
 	}
 	);
 	
-	// Evento que al pulsar el botón de la IU "Eliminar pregunta", elimina el formulario de la última pregunta
+	// Evento que al pulsar el botón de la IU "Eliminar pregunta", elimina el formulario de la última pregunta.
 	$("#decrementarPreguntas").click(function()
 	{
 		//Decrementar numPreguntas
