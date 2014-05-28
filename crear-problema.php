@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		if (empty($_POST["enunciado$i"]))
 			$enunciadoErr = "Es obligatorio introducir el enunciado de la pregunta.";
 		else
-			$enunciado[$i] = test_input($_POST["enunciado$i"]);
+			$enunciado[$i] = test_input($_POST["enunciado$i"]); // Ojo con quitar caracteres especiales, puede estropear código LaTeX!!!!
 
 		$solucion[$i] = test_input($_POST["solucion$i"]);
 		$explicacion[$i] = test_input($_POST["explicacion$i"]);
@@ -108,11 +108,14 @@ function tags_treatment($data) {
 		<h4>Datos comunes del ejercicio</h4></br>
 		<form method="post" id="formProblemas" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
 			<label for="enunciadogeneral">Enunciado general: </label><br/>
-			<textarea id="enunciadogeneral" name="enunciadogeneral" rows="3" cols="80">Introduce aquí el enunciado general del ejercicio...</textarea><br/>
+			<textarea id="enunciadogeneral" name="enunciadogeneral" placeholder="Introduce aquí el enunciado general del ejercicio."
+			 rows="3" cols="80"></textarea><br/>
+			
 			<label for="resumen">Resumen del ejercicio: </label><span class="error">* <?php echo $resumenErr;?></span><br/>
-			<textarea id="resumen" name="resumen" rows="3" cols="80">Introduce aquí el resumen del ejercicio...</textarea><br/>
+			<textarea id="resumen" name="resumen" placeholder="Introduce aquí el resumen del ejercicio." rows="3" cols="80"></textarea><br/>
+			
 			<label for="tags">Tags: </label><span class="error">* <?php echo $tagsErr;?></span><br/>
-			<input type="text" id="tags" name="tags"/><br/>
+			<input type="text" id="tags" name="tags" placeholder="tag1, tag2, tag3"/><br/>
 			</br>
 		</form>
 <br/><br/>

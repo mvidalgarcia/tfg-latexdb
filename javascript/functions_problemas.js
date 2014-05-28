@@ -34,23 +34,26 @@ $(function() {
 		if (typeof twig_npreguntas === 'undefined')
 		{
 			idForm.innerHTML += "<label for='enunciado"+i+"'>Enunciado: </label><span class='error'>* <?php echo $enunciadoErr;?></span><br/>";
-			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+
-			"Introduce aquí el enunciado de la pregunta...</textarea><br/>";
+			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"'"+ 
+			"placeholder='Introduce aquí el enunciado de la pregunta.' rows='3' cols='80'></textarea><br/>";
+			
 			idForm.innerHTML += "<label for='solucion"+i+"'>Solución: </label><br/>";
-			idForm.innerHTML += "<textarea id='solucion"+i+"' name='solucion"+i+"' rows='3' cols='80'> "+
-        	"Introduce aquí la solución de la pregunta...</textarea><br/>";
+			idForm.innerHTML += "<textarea id='solucion"+i+"' name='solucion"+i+"'"+ 
+			"placeholder='Introduce aquí la solución de la pregunta.' rows='3' cols='80'></textarea><br/>";
+			
 			idForm.innerHTML += "<label for='explicacion"+i+"'>Explicación: </label><br/>";
-			idForm.innerHTML += "<textarea id='explicacion"+i+"' name='explicacion"+i+"' rows='3' cols='80'> "+
-        	"Introduce aquí la explicación de la pregunta...</textarea><br/>";
+			idForm.innerHTML += "<textarea id='explicacion"+i+"' name='explicacion"+i+"' "+
+			"placeholder='Introduce aquí la explicación de la pregunta.' rows='3' cols='80'></textarea><br/>";
+			
 			idForm.innerHTML += "<label for='puntuacion"+i+"'>Puntuación: </label><span class='error'>* <?php echo $puntuacionErr;?></span><br/>";
-			idForm.innerHTML += "<input type='number' id='puntuacion"+i+"' name='puntuacion"+i+"' value='1'><br/>";
+			idForm.innerHTML += "<input type='number' id='puntuacion"+i+"' name='puntuacion"+i+"' placeholder='Por defecto 1'><br/>";
 
 		}
 		// Caso de "Ver/Editar".
 	   	else
 		{
 			idForm.innerHTML += "<label for='enunciado"+i+"'>Enunciado: </label><span class='error'>* <?php echo $enunciadoErr;?></span><br/>";
-			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+ twig_preguntas[i-1].enunciado +"</textarea><br/>";
+			idForm.innerHTML += "<textarea id='enunciado"+i+"' name='enunciado"+i+"' rows='3' cols='80'>"+ twig_preguntas[i-1]["enunciado"] +"</textarea><br/>";
 			idForm.innerHTML += "<label for='solucion"+i+"'>Solución: </label><br/>";
 			idForm.innerHTML += "<textarea id='solucion"+i+"' name='solucion"+i+"' rows='3' cols='80'> "+
         	"Introduce aquí la solución de la pregunta...</textarea><br/>";

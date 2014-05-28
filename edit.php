@@ -44,7 +44,7 @@ try
 	var_dump($Preguntas[0]['id_pregunta']);
 		
 
-    $template->display(array("problema" => $Problema, "tags" => $Tags, "preguntas" => $Preguntas, "npreguntas" => count($Preguntas)));
+    $template->display(array("problema" => $Problema, "tags" => $Tags, "preguntas" => utf8ize($Preguntas), "npreguntas" => count($Preguntas)));
 
 }
 catch(PDOException $e)
@@ -52,4 +52,15 @@ catch(PDOException $e)
     echo $e->getMessage();
 }
 
+// Función para pasar a UTF-8 todos los caracteres de un array.
+function utf8ize($d) {
+    if (is_array($d)) {
+        foreach ($d as $k => $v) {
+            $d[$k] = utf8ize($v);
+        }
+    } else {
+        return utf8_encode($d);
+    }
+    return $d;
+}
 ?>
