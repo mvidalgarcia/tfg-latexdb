@@ -1,5 +1,10 @@
 <?php
-  $post_data = file_get_contents("php://input");
-  $id = json_decode($post_data, true);
-  echo($id["id_problema"]);
+  $method = $_SERVER['REQUEST_METHOD'];
+  if ($method!="DELETE") {
+      header('HTTP/1.1 405 Method Not Allowed');
+      echo("Only DELETE method allowed");
+      return;
+  }
+  $id = $_GET["id_problema"];
+  echo ("OK. Se supone que he borrado el problema $id");
 ?>
