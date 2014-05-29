@@ -5,12 +5,24 @@
   <title>Listado de problemas</title>
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css">
+  <!-- jQueryUI implementa muchos "gadgets" para diseñar UIs -->
+  <script src="javascript/jquery-1.10.2.js"></script>
+  <script src="javascript/jquery-ui-1.10.4.custom.min.js"></script>
+  <!-- AngularJS -->
   <script src="javascript/angular.js"></script>
   <script src="javascript/angular-route.js"></script>
+  <!-- sortable.js es de AngularJS-UI que mezcla funcionalidad de jQueryUI
+       con el modelo de datos de Angular. Es el que permite reordenar
+       listas por drag&drop y que eso se refleje en el modelo
+  -->
+  <script src="javascript/sortable.js"></script>
+
+  <!-- Finalmente nuestro código propio -->
   <script src="javascript/app.js"></script>
   <script src="javascript/controllers.js"></script>
 </head>
 <body>
-  <div ng-view></div>   
+  <div class="container" ng-view></div>   
 </body>
 </html>

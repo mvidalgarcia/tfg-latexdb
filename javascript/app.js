@@ -2,7 +2,8 @@
 
 var problemsCollection = angular.module('problemsCollection', [
         'ngRoute', 
-        'problemsControllers'
+        'problemsControllers',
+        'ui.sortable'
         ]);
 
 problemsCollection.config(['$routeProvider',
@@ -12,7 +13,15 @@ problemsCollection.config(['$routeProvider',
              templateUrl: 'partials/problem-list.html',
              controller:  'ProblemListCtrl'
            }).
+           when('/view/:id_problema', {
+             templateUrl: 'partials/problem-view.html',
+             controller:  'ProblemDetailsCtrl'
+           }).
            when('/edit/:id_problema', {
+             templateUrl: 'partials/problem-details.html',
+             controller:  'ProblemDetailsCtrl'
+           }).
+           when('/new', {
              templateUrl: 'partials/problem-details.html',
              controller:  'ProblemDetailsCtrl'
            }).

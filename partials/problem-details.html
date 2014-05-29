@@ -1,25 +1,84 @@
 <h1>Problema {{id_problema}}</h1>
+<!-- 
+  Formulario, realmente no se maneja como tal (no tiene botón "submit" ni acción asociada),
+  sino que cada entrada del mismo (textarea, input, button o lo que sea), lleva una directiva
+  de AngularJS gracias a la cual ocurre todo "semi-automáticamente". Estas directivas son:
 
-<form>
+    ng-model: declara una variable del $scope. El formulario se rellena automáticamente con el
+              valor de esa variable, y si el usuario cambia algo del formulario, automáticamente
+              esa variable cambia también.
+    ng-click: declara una función a invocar cuando el usuario hace click en el elemento.
+              Estas funciones se implementan en controller.js y se les puede pasar como
+              parámetro cualquier variable del $scope. En concreto, el botón "Guardar"
+              llama a la función sendProblema() pasándole como parámetro la variable problema, 
+              la cual ya ha sido automáticamente actualizada con lo que el usuario 
+              haya estado poniendo en el formulario, gracias a ng-model
+
+  Los botones "Guardar" y "Cancelar" los repito al final de la página, para comodidad del usuario
+
+  Además he introducido algunas clases específicas de jQueryUI que implementan funcionalidades
+  muy interesantes, como la capacidad de reordenar listas por drag&drop. El usuario puede pulsar
+  en cualquier parte de la pregunta (aunque he puesto un icono en su esquina superior izquierda
+  para que quede más claro), y moverla a otra posición. jQuery automáticamente actualiza el
+  array de preguntas (y Angular actualiza el display porque han cambiado los datos del modelo).
+  Ya que el título de cada pregunta es "Pregunta {{$index}}" siendo $index una variable de Angular
+  que representa el índice del bucle, el resultado es que cuando una pregunta se mueve por arrastrar
+  y soltar a primera posición, pasa a llamarse "Pregunta 1" y todas las demás se renumeran convenientemente. 
+  Por tanto no estoy usando para nada pregunta.posicion. El controlador sendProblem() que recibe el problema
+  con su lista de preguntas, debería actualizar el campo posicion de cada pregunta según su lugar
+  que ocupe en el array de preguntas (el cual recibe ya en el orden que el usuario haya elegido)
+
+  También de jQueryUI son las clases ui-icon, y similares que sirven para mostrar pequeños iconos como
+  el de la papelera para borrar, o el de las flechas para mover (hay más, la lista completa en 
+  http://api.jqueryui.com/theming/icons/)
+
+ -->
+<form> 
 <div class="jumbotron">
-    <h2>Enunciado general</h2>
-    <textarea>{{problema.datos.enunciado_general}}</textarea>
-    <div class="tags">
-        <ul class="list-inline">
-            <li ng-repeat="tag in problema.tags">{{tag.nombre}}</li>
-        </ul>
+    <input size="99" placeholder="Resumen de una línea..." ng-model="problema.datos.resumen"/>
+    <div class="botonera">
+        <button class="btn" ng-click="sendProblem(problema)">Guardar</button>
+        <span class="btn"><a href="#/list">Cancelar</a></span>
     </div>
+    <h2>Enunciado general</h2>
+    <div>
+        <textarea cols="100" rows="4" 
+            placeholder="Introduzca el enunciado que va antes de las preguntas..."
+            ng-model="problema.datos.enunciado_general">
+        </textarea>
+    </div> 
+    <span class="tag">TAGS</span>: <input size="80" 
+        placeholder="Introduzca lista de tags separados por comas..."
+        ng-model="problema.tags"/>
 </div>
 <div class="preguntas">
-    <ul>
-        <li ng-repeat="pregunta in problema.preguntas">
-        <h3>Pregunta {{pregunta.posicion}} [{{pregunta.puntuacion}} punto{{pregunta.puntuacion>1?"s":""}}]</h3>
-        <textarea class="enunciado">{{pregunta.enunciado}}</textarea>
-        <textarea class="solucion">{{pregunta.solucion}}</textarea>
-        <textarea class="explicacion">{{pregunta.explicacion}}</textarea>
+    <ul ui-sortable ng-model="problema.preguntas">
+        <li class="pregunta" ng-repeat="pregunta in problema.preguntas">
+            <div class="mover"><span class="ui-icon ui-icon-arrow-4"></span></div>
+            <div class="botonera">
+                <span class="btn btn-danger" ng-click="deleteQuestion($index)">
+                    <span class="ui-icon ui-icon-trash"></span>
+                </span>
+            </div>
+            <div class="datos-pregunta">
+                <h3>Pregunta {{$index+1}}</h3>
+                <div>
+                    Puntuación: <input size="2" ng-model="pregunta.puntuacion"/>
+                </div>
+                <div>
+                    <textarea cols="40" class="enunciado" ng-model="pregunta.enunciado"></textarea>
+                    <textarea cols="40" class="solucion" ng-model="pregunta.solucion"></textarea>
+                    <textarea cols="40" class="explicacion" ng-model="pregunta.explicacion"></textarea>
+                </div>
+            </div>
+        </li>
+        <li class="pregunta"> <!-- Una ultima "pseudo" pregunta para meter botones al final -->
+            <button class="btn btn-success" ng-click="addQuestion()">Añadir pregunta</button>
+            <div class="botonera">
+                <button class="btn" ng-click="sendProblem(problema)">Guardar</button>
+                <span class="btn"><a href="#/list">Cancelar</a></span>
+            </div>
         </li>
     </ul>
 </div>
-<button class="btn">Guardar</button>
-<span class="btn"><a href="#/list">Cancelar</a></span>
 </form>

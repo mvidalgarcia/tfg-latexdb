@@ -1,20 +1,30 @@
-<p>Listado de ejercicios ({{problemas.length}} en total):</p>
-
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-2">
-        <!--Sidebar content-->
-        Search: <input ng-model="query">
+    <h1>Listado de problemas</h1>
+    <div class="col-md-9">      
+        <table class="table table-stripped table-condensed">
+            <thead>
+                <tr>
+                    <th style="min-width:120px">Resumen</th>
+                    <th style="min-width:70px">Tags</th>
+                    <th style="width:20px"></th>
+                    <th style="width:20px"></th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="problema in problemas | filter:query">
+                  <td><a ng-click="viewProblem(problema.id_problema)">{{problema.resumen}}</a></td>
+                  <td><ul class="list-inline"><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag)">{{tag}}</li></ul></td>
+                  <td><a ng-click="editProblem(problema.id_problema)" class="btn btn-small btn-primary">Editar</a></td>
+                  <td><a ng-click="deleteProblem(problema.id_problema)" class="btn btn-small btn-danger">Borrar</a></td>
+              </tr>
+          </tbody>
+      </table>
     </div>
-    <div class="col-md-10">      
-      <div class="listado-problemas">
-        <ul>
-          <li ng-repeat="problema in problemas | filter:query">
-              Resumen: {{problema.resumen}}
-              <div class="tags"><ul class="list-inline"><li ng-repeat="tag in problema.tags">{{tag}}</li></ul></div>
-              <div class="actions"><a class="btn" href="#/edit/{{problema.id_problema}}">Ver/Editar</a><a class="btn" href="#/delete/{{problema.id_problema}}">Borrar</a></div>
-         </li>
-        </ul>
-      </div>
+    <div class="row">
+        <div class="col-md-3">
+        <!--Sidebar content-->
+        Filtro: <input size="10" ng-model="query"><span class="btn tag" ng-click="clearQuery()">x</span>
     </div>
 </div>
+<a ng-click="createNewProblem()" class="btn btn-success">Problema Nuevo</a>
+
