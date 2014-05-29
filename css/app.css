@@ -1,7 +1,3 @@
-.tags {
-  color: #aaa;
-  margin-left: 1em;
-}
 
 .listado-problemas {
     margin: 2em;
@@ -19,7 +15,44 @@
     margin-top: 10px;
 }
 
-.btn {
-    background-color: #ddd;
-    margin: 5px;
+.tag {
+    background-color: #bbb;
+    color: #fff;
+    margin-left: 2px;
+    border-radius: 4px; 
+    padding: 2px;
+}
+
+.pregunta {
+    margin-top: 2ex;
+    padding: 2ex;
+    background-color: #eee;
+    list-style: none;
+    margin-left: -1em;
+}
+
+.pregunta h3 {
+    display: inline;
+}
+
+.solucion {
+    background-color: #aaa;
+}
+
+.datos-pregunta {
+    margin: 0em 1em 0em 2em;
+}
+
+.datos-pregunta > div {
+    margin: 1em 0ex 0ex 0ex;
+}
+
+.botonera {
+    position:relative;
+    float:right;
+}
+
+.mover {
+    position:relative;
+    float: left;
 }
