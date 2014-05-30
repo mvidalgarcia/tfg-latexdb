@@ -1,0 +1,24 @@
+<h1>Problema {{id_problema}}</h1>
+
+<form>
+<div class="jumbotron">
+    <h2>Enunciado general</h2>
+    <p>{{problema.datos.enunciado_general}}</p>
+    <div class="tags">
+        <ul class="list-inline">
+            <li class="tag" ng-repeat="tag in problema.tags">{{tag.nombre}}</li>
+        </ul>
+    </div>
+</div>
+<div class="preguntas">
+    <ul>
+        <li ng-repeat="pregunta in problema.preguntas">
+        <h3>Pregunta {{pregunta.posicion}} [{{pregunta.puntuacion}} punto{{pregunta.puntuacion>1?"s":""}}]</h3>
+        <p class="enunciado">{{pregunta.enunciado}}</p>
+        <p class="solucion">{{pregunta.solucion}}</p>
+        <p class="explicacion">{{pregunta.explicacion}}</p>
+        </li>
+    </ul>
+</div>
+<span class="btn"><a href="#/list">Volver</a></span>
+</form>

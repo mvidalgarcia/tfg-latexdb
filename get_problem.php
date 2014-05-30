@@ -1,6 +1,7 @@
 <?php
 require_once("./mappers/problema_mapper.php");
 require_once("./mappers/problema_tag_mapper.php");
+require_once("./mappers/pregunta_mapper.php");
 
 try 
 {
@@ -16,11 +17,16 @@ try
 		$MapperProblemaTag = new Problema_TagMapper;
 		$Tags = $MapperProblemaTag->FindNameTagsByIdProblema($id);
 
+		$MapperPregunta =  new PreguntaMapper; 
+		$Preguntas = $MapperPregunta->FindByIdProblema($id);
     }
-	
+    
+    $respuesta["datos"] = $Problema;
+    $respuesta["tags"]  = $Tags;
+    $respuesta["preguntas"]  = $Preguntas;    
+    //
 	//RETURN
-        echo(json_encode($Problema)); 
-        echo(json_encode($Tags)); 
+        echo(json_encode($respuesta));
 	
 }
 catch(PDOException $e)

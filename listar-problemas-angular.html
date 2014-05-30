@@ -5,30 +5,24 @@
   <title>Listado de problemas</title>
   <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css">
+  <!-- jQueryUI implementa muchos "gadgets" para diseñar UIs -->
+  <script src="javascript/jquery-1.10.2.js"></script>
+  <script src="javascript/jquery-ui-1.10.4.custom.min.js"></script>
+  <!-- AngularJS -->
   <script src="javascript/angular.js"></script>
+  <script src="javascript/angular-route.js"></script>
+  <!-- sortable.js es de AngularJS-UI que mezcla funcionalidad de jQueryUI
+       con el modelo de datos de Angular. Es el que permite reordenar
+       listas por drag&drop y que eso se refleje en el modelo
+  -->
+  <script src="javascript/sortable.js"></script>
+
+  <!-- Finalmente nuestro código propio -->
+  <script src="javascript/app.js"></script>
   <script src="javascript/controllers.js"></script>
 </head>
-<body ng-controller="ProblemListCtrl">
-
-Listado de ejercicios ({{problemas.length}} en total):
-
-<div class="container-fluid">
-      <div class="row">
-            <div class="col-md-2">
-            <!--Sidebar content-->
-
-            Search: <input ng-model="query">
-     </div>
-    <div class="col-md-10">      
-        <div class="listado-problemas">
-          <ul>
-            <li ng-repeat="problema in problemas | filter:query">
-              Resumen: {{problema.resumen}}
-              <div class="tags"><ul class="list-inline"><li ng-repeat="tag in problema.tags">{{tag}}</li></ul></div>
-              <div class="actions"><a class="btn" href="#/edit/{{problema.id_problema}}">Ver/Editar</a><a class="btn" href="#/delete/{{problema.id_problema}}">Borrar</a></div>
-            </li>
-          </ul>
-      </div>
-  </div>
+<body>
+  <div class="container" ng-view></div>   
 </body>
 </html>
