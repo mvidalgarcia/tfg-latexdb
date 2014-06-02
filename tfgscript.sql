@@ -130,3 +130,9 @@ insert into tag (nombre) values ('tagA'),('tagB'),('tagC'),('tagD'),('tagE'),('t
 
 select 'Inserting values in "problema_tag" table' as 'Action';
 insert into problema_tag (id_problema, id_tag) values (100, 500), (100, 501), (101, 502), (101, 503), (102, 504), (102, 505);
+
+select 'Inserting values in "imagen" table' as 'Action';
+insert into imagen (url) values ('http://localhost/tfg/imagen1.png'),('http://localhost/tfg/imagen2.png'),('http://localhost/tfg/imagen3.png'),('http://localhost/tfg/imagen4.png'),('http://localhost/tfg/imagen5.png');
+
+select 'Inserting values in "problema_imagen" table' as 'Action';
+insert into problema_imagen (id_problema, id_imagen, nombre_amigable) values (100, 400, 'nombreamigable1'), (101, 401, 'nombreamigable2'), (101, 402, 'nombreamigable3'), (102, 403, 'nombreamigable4'), (102, 404, 'nombreamigable5');
