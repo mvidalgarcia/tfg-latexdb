@@ -30,6 +30,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
             console.log(status, data);
         }).success(function(data, status) {
             console.log(status, data);
+			$location.path("/delete/" + id);
         });
     }
     // Si se pulsa el botón Editar, se va a la vista "edit"
@@ -56,7 +57,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 // De momento esta función se limita a volcar en consola lo que recibe
 // de la vista, para depuración.
 problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams) {
-    // Si recibimos un id_problema, es la vista /edit/:id_problema
+    // Si recibimos un id_problema, es la vista /edit/:id_problema o la vista /view/:id_problema
     if ($routeParams.id_problema) {
         // Entonces usamos el id para pedir datos del problema al servidor
         $scope.id_problema = $routeParams.id_problema;
@@ -73,14 +74,15 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
             $scope.problema.tags = tags.join(", ");
         });
     } else {
-        // Si no recibimos un id_problema, es la vista /edit
+        // Si no recibimos un id_problema, es la vista /new
         // En este caso creamos un problema nuevo, con un id especial para
         // poder detectarlo más tarde cuando haya que enviarlo al servidor
         $scope.id_problema = "Nuevo";
         $scope.problema = {
-            "datos": {"enunciado_general": "", "id_problema":$scope.id_problema, "resumen":""},
+            "id_problema":$scope.id_problema, "enunciado_general": "", "resumen":"", "posicion":"",
+            "preguntas": [],
             "tags": "",
-            "preguntas": []
+			"imagenes": []
         };
     }
     // Funciones de respuesta a clicks
@@ -88,7 +90,7 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
     // Si se pulsa en "Pregunta nueva"
     $scope.addQuestion = function () {
         // Añadir al array de preguntas una más, con los campos vacíos, y la puntuación a 1 por defecto
-        $scope.problema.preguntas.push({"enunciado":"","solucion":"","explicacion":"","puntuacion":1});
+        $scope.problema.preguntas.push({"id_pregunta":"", "enunciado":"","solucion":"","explicacion":"","puntuacion":1, "posicion":""});
     };
 
     // Si se pulsa la papelera para borrar pregunta
@@ -104,7 +106,19 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
         // una posición que sea igual a su índice dentro de ese array (más uno)
         //
         // De momento me limito a volcar por consola lo que he recibido
+		for (var i = 0; i < p.preguntas.length; i++)
+			p.preguntas[i].posicion = i + 1;
+
         console.log(p);
+		
+		$http.post("save_problem.php", p).success(function(data){
+        	// Volcar a consola la respuesta del servidor
+        	console.log(data);
+    	})
+		.error(function(data){
+			console.log("Error al guardar problema.");
+		});
+
     }
 });
 

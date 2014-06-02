@@ -35,7 +35,7 @@
  -->
 <form> 
 <div class="jumbotron">
-    <input size="99" placeholder="Resumen de una línea..." ng-model="problema.datos.resumen"/>
+    <input size="99" placeholder="Resumen de una línea..." ng-model="problema.resumen"/>
     <div class="botonera">
         <button class="btn" ng-click="sendProblem(problema)">Guardar</button>
         <span class="btn"><a href="#/list">Cancelar</a></span>
@@ -44,7 +44,7 @@
     <div>
         <textarea cols="100" rows="4" 
             placeholder="Introduzca el enunciado que va antes de las preguntas..."
-            ng-model="problema.datos.enunciado_general">
+            ng-model="problema.enunciado_general">
         </textarea>
     </div> 
     <span class="tag">TAGS</span>: <input size="80" 
@@ -66,9 +66,10 @@
                     Puntuación: <input size="2" ng-model="pregunta.puntuacion"/>
                 </div>
                 <div>
-                    <textarea cols="40" class="enunciado" ng-model="pregunta.enunciado"></textarea>
-                    <textarea cols="40" class="solucion" ng-model="pregunta.solucion"></textarea>
-                    <textarea cols="40" class="explicacion" ng-model="pregunta.explicacion"></textarea>
+					<!-- TODO: Poner títulos encima de cada textarea para saber que es cuando creas un problema nuevo. No sé como hacerlo -->
+                    <textarea cols="40" rows="3" title="Enunciado" class="enunciado" ng-model="pregunta.enunciado"></textarea>
+                    <textarea cols="40" rows="3" title="Solución" class="solucion" ng-model="pregunta.solucion"></textarea>
+                    <textarea cols="40" rows="3" title="Explicación" class="explicacion" ng-model="pregunta.explicacion"></textarea>
                 </div>
             </div>
         </li>
@@ -82,3 +83,5 @@
     </ul>
 </div>
 </form>
+
+<!-- TODO: Validación de campos con AngularJS -->

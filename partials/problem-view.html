@@ -3,10 +3,14 @@
 <form>
 <div class="jumbotron">
     <h2>Enunciado general</h2>
-    <p>{{problema.datos.enunciado_general}}</p>
+    <p>{{problema.enunciado_general}}</p>
     <div class="tags">
         <ul class="list-inline">
-            <li class="tag" ng-repeat="tag in problema.tags">{{tag.nombre}}</li>
+            <li class="tag">{{problema.tags}}</li> 
+<!-- ALGO PASA QUE NO LOS IMPRIME. Problema descubierto:
+ en el vector estaban unidos por comas en una única cadena y 
+ se estaba intentando iterar sobre ellos con ng-repeat 
+ (Tal cual está ahora no queda muy bien) -->
         </ul>
     </div>
 </div>
