@@ -1,6 +1,8 @@
 <?php
 
 require_once("./model/problema.php");
+require_once("./model/pregunta.php");
+require_once("./model/tag.php");
 require_once("./singleton_db.php");
 
 class ProblemaMapper
@@ -11,6 +13,8 @@ class ProblemaMapper
     {  
 		self::$dbh = Database::getConnection();
     }
+
+/* TODO: ESTA PARTE SE ELIMINARÁ, SE USA COMO GUÍA DE ALGUNAS FUNCIONES.	
 
 	
 	public function Insert($Problema)
@@ -63,7 +67,169 @@ class ProblemaMapper
         $STH->execute();
         return $STH->fetchAll();
     } 
+*/
+
+
+	/* Función que obtiene toda la información nececesaria de un problema 
+	 * incluyendo sus preguntas y sus tags asociados */
+	public function FindProblemById($id)
+    {
+        // Obtener datos problema
+		$STH = self::$dbh->prepare('SELECT * FROM problema WHERE id_problema = :id');
+        $STH->bindParam(':id', $id);
+        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');  
+        $STH->execute(); 
+        $problema = $STH->fetch();
+		
+		// Obtener datos preguntas
+		$STH = self::$dbh->prepare('SELECT preg.id_pregunta, preg.enunciado, preg.solucion, 
+											preg.explicacion, preg.puntuacion, preg.posicion 
+											FROM pregunta as preg WHERE id_problema = :id');
+        $STH->bindParam(':id', $id);
+        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
+        $STH->execute(); 
+        $preguntas = $STH->fetchAll();
+
+		//Obtener nombres de tags
+		$STH = self::$dbh->prepare('SELECT tag.nombre 
+									FROM problema_tag as ptag 
+										JOIN tag ON ptag.id_tag = tag.id_tag 
+									WHERE id_problema = :id');
+        $STH->bindParam(':id', $id);
+        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');  
+        $STH->execute(); 
+        $tags = $STH->fetchAll();
+
+		//TODO: Seguramente haya que obtener las imágenes.
+	
+		$problema->preguntas = $preguntas;
+		$problema->tags = $tags;
+
+		return $problema;
+    }
+
+	
+	/* Función que obtiene toda la información nececesaria para listar 
+	 * todos los problemas. Incluye resúmenes de problemas y tags asociados */
+	public function FindProblemList()
+    {
+		// Obtener todos los ids de problemas y resúmenes
+        $STH = self::$dbh->prepare('SELECT id_problema, resumen FROM problema');
+		$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');       
+		$STH->execute();
+        $problemas = $STH->fetchAll();
+		
+		// Iterar sobre los ids de problema y almacenar los tags asociados a cada uno.
+		foreach($problemas as $problema){
+			$STH = self::$dbh->prepare('SELECT t.nombre FROM problema as prob 
+										JOIN problema_tag as pt ON prob.id_problema=pt.id_problema 
+										JOIN tag as t ON pt.id_tag=t.id_tag
+										WHERE pt.id_problema=:id_problema');
+        	$STH->bindParam(':id_problema', $problema->id_problema);
+			$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');       
+			$STH->execute();
+        	$tags = $STH->fetchAll();
+			$problema->tags = $tags;
+		}
+
+		return $problemas; 
+    }
+
+	/* Función que guarda un problema nuevo con sus
+	 * preguntas, tags e imágenes asociados en base de datos */
+ 	public function InsertProblema($Problema)
+    {
+        // Guardar problema
+		$STH = self::$dbh->prepare(
+         "INSERT INTO problema (enunciado_general, resumen) values (:enunciado_general, :resumen)"); 
+        $STH->bindParam(':enunciado_general', $Problema->enunciado_general);
+        $STH->bindParam(':resumen', $Problema->resumen);
+        $STH->execute(); 
+        $Problema->id_problema = self::$dbh->lastInsertId();
+
+		// Guardar preguntas
+		foreach ($Problema->preguntas as $pregunta) {
+			$this->InsertPregunta($pregunta, $Problema->id_problema);	
+		}
+
+		// Guardar tags (gestionar los que ya estén en BD). Afecta a tablas problema_tag y tag.
+		foreach ($Problema->tags as $tag) {
+			$idtag = $this->FindTagByName($tag);
+			// Si está vacío, tag nuevo.
+			if (empty($idtag) or !(isset($idtag))) {
+				$this->InsertNewTag($tag, $Problema->id_problema);	
+			}
+			// Sino, tag existente.
+			else {
+				$this->InsertExistingTag($idtag, $Problema->id_problema);
+			}
+		}	
+
+		// TODO: Guardar imágenes. Afecta a tablas problema_imagen e imagen.
+
+    }
+	
+
+	/***** Funciones auxiliares *****/
+
+	// Función que guarda una pregunta en base de datos con su id de problema asociado.
+	private function InsertPregunta($Pregunta, $IdProblema)
+    {
+        $STH = self::$dbh->prepare(
+         "INSERT INTO pregunta (enunciado, solucion, explicacion, puntuacion, posicion, id_problema) 
+						 value (:enunciado, :solucion, :explicacion, :puntuacion, :posicion, :id_problema)"); 
+        $STH->bindParam(':enunciado', $Pregunta->enunciado);
+        $STH->bindParam(':solucion', $Pregunta->solucion);
+        $STH->bindParam(':explicacion', $Pregunta->explicacion);
+        $STH->bindParam(':puntuacion', $Pregunta->puntuacion);
+        $STH->bindParam(':posicion', $Pregunta->posicion);
+        $STH->bindParam(':id_problema', $IdProblema);
+        $STH->execute(); 
+        $Pregunta->id_pregunta = self::$dbh->lastInsertId();
+    }
+	
+	// Función que busca un tag por su nombre (es posible ya que los nombres
+	// de los tags son únicos) y devuelve su id.
+	private function FindTagByName($nombre)
+    {
+        $STH = self::$dbh->prepare('SELECT id_tag FROM tag WHERE nombre = :nombre');
+        $STH->bindParam(':nombre', $nombre);
+        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');  
+        $STH->execute(); 
+        return $idtag = $STH->fetch()->id_tag;
+    }
+
+	// Función que introduce un tag nuevo y lo relaciona con un problema.
+	private function InsertNewTag($Tag, $IdProblema)
+    {
+        // Guardar tag nuevo.
+		$STH = self::$dbh->prepare(
+         "INSERT INTO tag (nombre) value (:nombre)"); 
+        $STH->bindParam(':nombre', $Tag);
+        $STH->execute(); 
+        $IdTag = self::$dbh->lastInsertId();
+
+		// Guardar relación problema <-> tag.
+		$STH = self::$dbh->prepare(
+         "INSERT INTO problema_tag (id_problema, id_tag) values (:id_problema, :id_tag)"); 
+        $STH->bindParam(':id_problema', $IdProblema);
+        $STH->bindParam(':id_tag', $IdTag);
+        $STH->execute(); 
+
+    }
+	
+	// Función que relaciona un problema con un tag existente.
+	private function InsertExistingTag($IdTag, $IdProblema)
+    {
+        $STH = self::$dbh->prepare(
+         "INSERT INTO problema_tag (id_problema, id_tag) values (:id_problema, :id_tag)"); 
+        $STH->bindParam(':id_problema', $IdProblema);
+        $STH->bindParam(':id_tag', $IdTag);
+        $STH->execute(); 
+    }
+
 
 }
+
 
 ?>
