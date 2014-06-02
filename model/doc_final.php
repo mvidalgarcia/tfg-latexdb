@@ -8,6 +8,7 @@ class DocFinal {
 	public $instrucciones;
 	public $fecha;
 	public $estado;
+	public $problemas = array();	// Composición clase Problema
 } 
 
 ?>

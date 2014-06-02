@@ -1,12 +1,12 @@
 <?php
 
 class Pregunta { 
-	public $id_pregunta; 
+	/* Atributos */
+	public $id_pregunta;
+	public $enunciado; 
 	public $solucion;
 	public $explicacion;
 	public $puntuacion;
-	public $posicion;
-	public $id_problema;
-} 
-
+	public $posicion;	// Posición de la pregunta dentro de un problema
+}
 ?>
