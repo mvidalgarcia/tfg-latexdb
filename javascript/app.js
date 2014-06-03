@@ -27,7 +27,6 @@ problemsCollection.config(['$routeProvider',
            }).
            when('/delete/:id_problema', {
                templateUrl: 'partials/problem-delete.html',
-               controller:  'ProblemDeleteCtrl'
            }).
            otherwise({
              redirectTo: '/list'

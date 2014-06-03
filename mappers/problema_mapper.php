@@ -166,8 +166,20 @@ class ProblemaMapper
 		}	
 
 		// TODO: Guardar imágenes. Afecta a tablas problema_imagen e imagen.
-
     }
+
+	/* Función que elimina un problema. Gracias a "on DELETE cascade"
+	 * se eliminan todas las relaciones asociadas con ejercicios, tags e imágenes. */
+	public function DeleteProblem($IdProblema)
+    {
+        $STH = self::$dbh->prepare('DELETE FROM problema WHERE id_problema = :id_problema');
+        $STH->bindParam(':id_problema', $IdProblema);
+        $STH->execute(); 
+		
+		// TODO: Cuando se implemente la parte de doc_final-problema hay que tener en cuenta
+		// cuando se borren problemas que pertenezcan a un doc_final
+    }
+
 	
 
 	/***** Funciones auxiliares *****/

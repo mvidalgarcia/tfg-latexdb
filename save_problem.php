@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		// Eliminar comas y espacios en blanco
 		$problema->tags = tagsTreatment($problema->tags);
-		
+		// Guardar problema en base de datos.
 		$ProblemaMapper = new ProblemaMapper;
 		$ProblemaMapper->InsertProblema($problema);
 		

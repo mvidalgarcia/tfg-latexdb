@@ -121,14 +121,3 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 
     }
 });
-
-// Controlador para la vista /delete/:id_problema
-// Debe enviar una petición http DELETE al servidor
-problemsControllers.controller('ProblemDeleteCtrl', function($scope, $http, $routeParams) {
-    $scope.id_problema = $routeParams.id_problema;
-    $http.post("delete_problem.php", {"id_problema": $scope.id_problema} ).success(function(data){
-        // Me limito a volcar a consola la respuesta del servidor
-        console.log(data);
-    });
-    // TODO: manejar una posible respuesta de error del servidor
-});
