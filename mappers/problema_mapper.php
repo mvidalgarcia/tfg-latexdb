@@ -135,11 +135,12 @@ class ProblemaMapper
 		return $problemas; 
     }
 
+
 	/* Función que guarda un problema nuevo con sus
 	 * preguntas, tags e imágenes asociados en base de datos */
- 	public function InsertProblema($Problema)
+ 	public function InsertProblem($Problema)
     {
-        // Guardar problema
+        // Guardar problema.
 		$STH = self::$dbh->prepare(
          "INSERT INTO problema (enunciado_general, resumen) values (:enunciado_general, :resumen)"); 
         $STH->bindParam(':enunciado_general', $Problema->enunciado_general);
@@ -147,26 +148,16 @@ class ProblemaMapper
         $STH->execute(); 
         $Problema->id_problema = self::$dbh->lastInsertId();
 
-		// Guardar preguntas
+		// Guardar preguntas.
 		foreach ($Problema->preguntas as $pregunta) {
 			$this->InsertPregunta($pregunta, $Problema->id_problema);	
 		}
-
-		// Guardar tags (gestionar los que ya estén en BD). Afecta a tablas problema_tag y tag.
-		foreach ($Problema->tags as $tag) {
-			$idtag = $this->FindTagByName($tag);
-			// Si está vacío, tag nuevo.
-			if (empty($idtag) or !(isset($idtag))) {
-				$this->InsertNewTag($tag, $Problema->id_problema);	
-			}
-			// Sino, tag existente.
-			else {
-				$this->InsertExistingTag($idtag, $Problema->id_problema);
-			}
-		}	
+		// Guardar tags.
+		$this->SaveTags($Problema);
 
 		// TODO: Guardar imágenes. Afecta a tablas problema_imagen e imagen.
     }
+
 
 	/* Función que elimina un problema. Gracias a "on DELETE cascade"
 	 * se eliminan todas las relaciones asociadas con ejercicios, tags e imágenes. */
@@ -180,9 +171,38 @@ class ProblemaMapper
 		// cuando se borren problemas que pertenezcan a un doc_final
     }
 
-	
 
-	/***** Funciones auxiliares *****/
+	/* Función que actualiza un problema y sus preguntas,
+	 * tags e imágenes asociados en base de datos */
+ 	public function UpdateProblem($Problema)
+    {
+		// Actualizar los datos comunes del problema.
+		$STH = self::$dbh->prepare(
+         "UPDATE problema SET enunciado_general = :enunciado_general, resumen = :resumen WHERE id_problema = :id_problema"); 
+        $STH->bindParam(':enunciado_general', $Problema->enunciado_general);
+        $STH->bindParam(':resumen', $Problema->resumen);
+        $STH->bindParam(':id_problema', $Problema->id_problema);
+		$STH->execute();
+
+		// Actualizar las preguntas del problema. Primero eliminar todas las relaciones y después insertar las preguntas.
+		$STH = self::$dbh->prepare('DELETE FROM pregunta WHERE id_problema = :id_problema');
+        $STH->bindParam(':id_problema', $Problema->id_problema);
+        $STH->execute();
+
+		foreach ($Problema->preguntas as $pregunta) {
+			$this->InsertPregunta($pregunta, $Problema->id_problema);	
+		}
+
+		// Actualizar los tags del problema.
+		$this->UpdateTags($Problema);
+
+		// TODO: Actualizar imágenes. Afecta a tablas problema_imagen e imagen.
+
+	}
+
+
+
+	/******** Funciones auxiliares ********/
 
 	// Función que guarda una pregunta en base de datos con su id de problema asociado.
 	private function InsertPregunta($Pregunta, $IdProblema)
@@ -199,6 +219,7 @@ class ProblemaMapper
         $STH->execute(); 
         $Pregunta->id_pregunta = self::$dbh->lastInsertId();
     }
+
 	
 	// Función que busca un tag por su nombre (es posible ya que los nombres
 	// de los tags son únicos) y si existe devuelve su id.
@@ -213,6 +234,7 @@ class ProblemaMapper
 			return;
 		return $tag->id_tag;
     }
+
 
 	// Función que introduce un tag nuevo y lo relaciona con un problema.
 	private function InsertNewTag($Tag, $IdProblema)
@@ -232,6 +254,7 @@ class ProblemaMapper
         $STH->execute(); 
 
     }
+
 	
 	// Función que relaciona un problema con un tag existente.
 	private function InsertExistingTag($IdTag, $IdProblema)
@@ -242,6 +265,35 @@ class ProblemaMapper
         $STH->bindParam(':id_tag', $IdTag);
         $STH->execute(); 
     }
+
+	// Función que guarda los tags de un problema nuevo (gestionar los que ya estén en BD).
+	// Afecta a tablas problema_tag y tag.
+	private function SaveTags($Problema) {
+		foreach ($Problema->tags as $tag) {
+			$idtag = $this->FindTagByName($tag);
+			// Si está vacío, tag nuevo.
+			if (empty($idtag) or !(isset($idtag))) {
+				$this->InsertNewTag($tag, $Problema->id_problema);	
+			}
+			// Sino, tag existente.
+			else {
+				$this->InsertExistingTag($idtag, $Problema->id_problema);
+			}
+		}
+	}	
+
+
+	// Función que actualiza los tags de un problema cuando se da a la opción 'Editar'. 
+	// Elimina todas las relaciones y las vuelve a insertar. Afecta a tablas problema_tag y tag.
+	private function UpdateTags($Problema)
+	{
+		// Eliminar todas las relaciones de tags del problema.
+	    $STH = self::$dbh->prepare('DELETE FROM problema_tag WHERE id_problema = :id_problema');
+        $STH->bindParam(':id_problema', $Problema->id_problema);
+        $STH->execute(); 
+		// Guardar los tags gestionando los que ya están en BD.
+		$this->SaveTags($Problema);
+	}
 
 
 }

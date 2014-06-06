@@ -35,9 +35,10 @@
  -->
 <form name="reviewForm" novalidate> 
 <div class="jumbotron">
-    <input size="99" placeholder="Resumen de una línea..." ng-model="problema.resumen" required/>
+	<label for="resumen">Resumen</label><br>
+    <input size="99" id="resumen" placeholder="Resumen de una línea..." ng-model="problema.resumen" required/>
     <div class="botonera">
-        <button class="btn" ng-click="sendProblem(problema)">Guardar</button>
+        <button class="btn" ng-click="reviewForm.$valid && sendProblem(problema)">Guardar</button>
         <span class="btn"><a href="#/list">Cancelar</a></span>
     </div>
     <h2>Enunciado general</h2>
@@ -66,10 +67,15 @@
                     Puntuación: <input type="number" min=0 size="2" ng-model="pregunta.puntuacion" required/>
                 </div>
                 <div>
-					<!-- TODO: Poner títulos encima de cada textarea para saber que es cuando creas un problema nuevo. No sé como hacerlo -->
-                    <textarea cols="40" rows="3" title="Enunciado" class="enunciado" ng-model="pregunta.enunciado" required></textarea>
-                    <textarea cols="40" rows="3" title="Solución" class="solucion" ng-model="pregunta.solucion"></textarea>
-                    <textarea cols="40" rows="3" title="Explicación" class="explicacion" ng-model="pregunta.explicacion"></textarea>
+                    <label for="enunciado">Enunciado</label><br>
+					<textarea cols="140" id="enunciado" rows="3" placeholder="Introduzca el enunciado de la pregunta {{$index+1}}..." 
+					title="Enunciado" class="enunciado" ng-model="pregunta.enunciado" required></textarea><br>
+                    <label for="solucion">Solución</label><br>
+                    <textarea cols="140" id="solucion" rows="3" placeholder="Introduzca la solución de la pregunta {{$index+1}}..." 
+					title="Solución" class="solucion" ng-model="pregunta.solucion"></textarea><br>
+					<label for="explicacion">Explicación</label><br>
+                    <textarea cols="140" id="explicacion" rows="3" placeholder="Introduzca la explicación de la pregunta {{$index+1}}..."
+					 title="Explicación" class="explicacion" ng-model="pregunta.explicacion"></textarea>
                 </div>
             </div>
         </li>
@@ -82,7 +88,4 @@
         </li>
     </ul>
 </div>
-<div> reviewForm is {{reviewForm.$valid}} </div>
 </form>
-
-<!-- TODO: Validación de campos con AngularJS -->

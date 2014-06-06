@@ -72,6 +72,10 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
                 this.push(v["nombre"]);
             }, tags);
             $scope.problema.tags = tags.join(", ");
+			
+			// Pasar las puntuaciones a integer
+			for (var i = 0; i < $scope.problema.preguntas.length; i++)
+				$scope.problema.preguntas[i].puntuacion = parseInt($scope.problema.preguntas[i].puntuacion);
         });
     } else {
         // Si no recibimos un id_problema, es la vista /new

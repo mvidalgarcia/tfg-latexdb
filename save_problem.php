@@ -5,20 +5,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$postdata = file_get_contents("php://input");
 	$problema = json_decode($postdata);
 	
+	// Eliminar comas y espacios en blanco.
+	$problema->tags = tagsTreatment($problema->tags);
+	// Crear el mapper para almacenar problemas.
+	$ProblemaMapper = new ProblemaMapper;
+
 	// Caso de problema nuevo
 	if ($problema->id_problema == "Nuevo") {
 
-		// Eliminar comas y espacios en blanco
-		$problema->tags = tagsTreatment($problema->tags);
-		// Guardar problema en base de datos.
-		$ProblemaMapper = new ProblemaMapper;
-		$ProblemaMapper->InsertProblema($problema);
+		// Guardar problema nuevo en base de datos.
+		$ProblemaMapper->InsertProblem($problema);
 		
 		echo "Problema nuevo guardado.";
 	}
 	// Caso de problema editado
 	else {
-		// TODO: Averiguar si hay alguna forma de saber cuales son los campos que se editaron.
+		// Actualizar problema en base de datos.
+		$ProblemaMapper->UpdateProblem($problema);
+
 		echo "Problema editado.";
 	}
 
