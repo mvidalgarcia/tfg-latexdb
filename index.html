@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" ng-app="problemsCollection">
+<head>
+  <meta charset="utf-8">
+  <title>Aplicación TFG</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css">
+  <!-- jQueryUI implementa muchos "gadgets" para diseñar UIs -->
+  <script src="javascript/jquery-1.10.2.js"></script>
+  <script src="javascript/jquery-ui-1.10.4.custom.min.js"></script>
+  <!-- AngularJS -->
+  <script src="javascript/angular.js"></script>
+  <script src="javascript/angular-route.js"></script>
+  <!-- sortable.js es de AngularJS-UI que mezcla funcionalidad de jQueryUI
+       con el modelo de datos de Angular. Es el que permite reordenar
+       listas por drag&drop y que eso se refleje en el modelo
+  -->
+  <script src="javascript/sortable.js"></script>
+
+  <!-- Finalmente nuestro código propio -->
+  <script src="javascript/app.js"></script>
+  <script src="javascript/controllers.js"></script>
+</head>
+<body>
+	<!-- Menú de navegación -->
+	<div class="navbar navbar-default navbar-fixed-top menu" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<div class="navbar-collapse collapse">
+   		       		<ul class="nav navbar-nav">
+						<li><a href="#/new">Nuevo problema</a></li>
+						<li><a href="#/list">Listado de problemas</a></li>
+						<li><a href="#/new-doc">Nuevo documento final</a></li>
+						<li><a href="#/list-doc">Listado de documentos finales</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container" ng-view></div>   
+</body>
+</html>
