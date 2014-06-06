@@ -33,9 +33,9 @@
   http://api.jqueryui.com/theming/icons/)
 
  -->
-<form> 
+<form name="reviewForm" novalidate> 
 <div class="jumbotron">
-    <input size="99" placeholder="Resumen de una línea..." ng-model="problema.resumen"/>
+    <input size="99" placeholder="Resumen de una línea..." ng-model="problema.resumen" required/>
     <div class="botonera">
         <button class="btn" ng-click="sendProblem(problema)">Guardar</button>
         <span class="btn"><a href="#/list">Cancelar</a></span>
@@ -49,7 +49,7 @@
     </div> 
     <span class="tag">TAGS</span>: <input size="80" 
         placeholder="Introduzca lista de tags separados por comas..."
-        ng-model="problema.tags"/>
+        ng-model="problema.tags" required/>
 </div>
 <div class="preguntas">
     <ul ui-sortable ng-model="problema.preguntas">
@@ -63,11 +63,11 @@
             <div class="datos-pregunta">
                 <h3>Pregunta {{$index+1}}</h3>
                 <div>
-                    Puntuación: <input size="2" ng-model="pregunta.puntuacion"/>
+                    Puntuación: <input type="number" min=0 size="2" ng-model="pregunta.puntuacion" required/>
                 </div>
                 <div>
 					<!-- TODO: Poner títulos encima de cada textarea para saber que es cuando creas un problema nuevo. No sé como hacerlo -->
-                    <textarea cols="40" rows="3" title="Enunciado" class="enunciado" ng-model="pregunta.enunciado"></textarea>
+                    <textarea cols="40" rows="3" title="Enunciado" class="enunciado" ng-model="pregunta.enunciado" required></textarea>
                     <textarea cols="40" rows="3" title="Solución" class="solucion" ng-model="pregunta.solucion"></textarea>
                     <textarea cols="40" rows="3" title="Explicación" class="explicacion" ng-model="pregunta.explicacion"></textarea>
                 </div>
@@ -76,12 +76,13 @@
         <li class="pregunta"> <!-- Una ultima "pseudo" pregunta para meter botones al final -->
             <button class="btn btn-success" ng-click="addQuestion()">Añadir pregunta</button>
             <div class="botonera">
-                <button class="btn" ng-click="sendProblem(problema)">Guardar</button>
+                <button class="btn" ng-click="reviewForm.$valid && sendProblem(problema)">Guardar</button>
                 <span class="btn"><a href="#/list">Cancelar</a></span>
             </div>
         </li>
     </ul>
 </div>
+<div> reviewForm is {{reviewForm.$valid}} </div>
 </form>
 
 <!-- TODO: Validación de campos con AngularJS -->

@@ -201,14 +201,17 @@ class ProblemaMapper
     }
 	
 	// Función que busca un tag por su nombre (es posible ya que los nombres
-	// de los tags son únicos) y devuelve su id.
+	// de los tags son únicos) y si existe devuelve su id.
 	private function FindTagByName($nombre)
     {
         $STH = self::$dbh->prepare('SELECT id_tag FROM tag WHERE nombre = :nombre');
         $STH->bindParam(':nombre', $nombre);
         $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');  
-        $STH->execute(); 
-        return $idtag = $STH->fetch()->id_tag;
+        $STH->execute();
+		$tag = $STH->fetch();
+        if (empty($tag->id_tag))
+			return;
+		return $tag->id_tag;
     }
 
 	// Función que introduce un tag nuevo y lo relaciona con un problema.

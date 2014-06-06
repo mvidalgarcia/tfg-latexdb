@@ -56,7 +56,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 // o por PUT si ya existía, al correspondiente servidor PHP.
 // De momento esta función se limita a volcar en consola lo que recibe
 // de la vista, para depuración.
-problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams) {
+problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams, $location) {
     // Si recibimos un id_problema, es la vista /edit/:id_problema o la vista /view/:id_problema
     if ($routeParams.id_problema) {
         // Entonces usamos el id para pedir datos del problema al servidor
@@ -114,6 +114,7 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 		$http.post("save_problem.php", p).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
+			$location = $location.path("/view/");
     	})
 		.error(function(data){
 			console.log("Error al guardar problema.");

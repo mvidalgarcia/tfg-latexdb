@@ -19,7 +19,7 @@ select 'Create table called "problema"' as 'Action';
 create table problema (
 	id_problema integer not null auto_increment primary key,
 	enunciado_general text,
-	resumen text
+	resumen text not null
 );
 alter table problema auto_increment = 100;
 
