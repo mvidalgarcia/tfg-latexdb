@@ -9,7 +9,8 @@ var problemsCollection = angular.module('problemsCollection', [
 problemsCollection.config(['$routeProvider',
     function($routeProvider) {
        $routeProvider.
-           when('/list', {
+           // Problemas
+		   when('/list', {
              templateUrl: 'partials/problem-list.html',
              controller:  'ProblemListCtrl'
            }).
@@ -28,7 +29,11 @@ problemsCollection.config(['$routeProvider',
            when('/delete/:id_problema', {
                templateUrl: 'partials/problem-delete.html',
            }).
-           otherwise({
+		  // Documentos finales
+		   when('/list-doc', {
+             templateUrl: 'partials/doc-list.html',
+             controller:  'DocListCtrl'
+           }).           otherwise({
              redirectTo: '/list'
           });
     }]);

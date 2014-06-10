@@ -2,6 +2,9 @@
 
 var problemsControllers = angular.module("problemsControllers", []);
 
+
+/***** Controladores para problemas *****/
+
 // Controlador para la vista de lista de problemas
 // Carga la lista inicial (por GET al servidor) y define funciones
 // de respuesta a los diferentes botones
@@ -126,3 +129,54 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 
     }
 });
+
+
+/***** Controladores para documentos finales *****/
+
+// Controlador para la vista de lista de documentos finales
+// Carga la lista inicial (por GET al servidor) y define funciones
+// de respuesta a los diferentes botones
+problemsControllers.controller('DocListCtrl', function($scope, $http, $location) {
+    // Rellenar la lista
+    $http.get("get_docs_list.php").success(function(data){
+        $scope.docs = data;
+    });
+
+    // Cuando el usuario pincha en un estado
+    $scope.filterState = function (state) {
+        $scope.query=state;  // Lo usamos como valor de la query
+    };
+    // En la X a la derecha del query, borramos la query
+    $scope.clearQuery = function () {$scope.query=""; };
+
+    // Al pinchar en el resumen de un doc, enviar a la vista "view-doc"
+    // donde se muestra el documento (solo para lectura)
+    $scope.viewDoc = function (id) {
+        $location = $location.path("/view-doc/" + id);
+    }
+    // Si se pulsa el botón Borrar, se manda un método DELETE
+    // al servidor PHP, el id va en la URL
+    $scope.deleteDoc = function (id) {
+		//TODO: Gestionar en que estado está el documento.
+        $http.delete("delete_doc.php?id_doc=" + id).error(function(data, status) {
+            console.log(status, data);
+        }).success(function(data, status) {
+            console.log(status, data);
+			$location.path("/delete-doc/" + id);
+        });
+    }
+    // Si se pulsa el botón Editar, se va a la vista "edit"
+    // donde se pueden cambiar los datos del documento. Su correspondiente
+    // controlador registrará acciones para cuando se dé a Guardar,
+    $scope.editDoc = function (id) {
+        $location = $location.path("/edit-doc/" + id);
+    }
+    // Si se pulsa el botón "Nuevo Documento" se va a la vista "new-doc"
+    // que en realidad carga el mismo parcial html, pero con un
+    // id_doc especial para indicar que es nuevo, y todos los
+    // datos del documento vacíos
+    $scope.createNewDoc = function () {
+        $location = $location.path("/new-doc/");
+    }
+  });
+

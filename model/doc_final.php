@@ -1,6 +1,7 @@
 <?php
 
 class DocFinal {
+	/* Atributos */
 	public $id_doc;
 	public $titulacion;
 	public $asignatura;

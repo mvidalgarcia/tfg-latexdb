@@ -70,14 +70,14 @@ alter table tag auto_increment = 500;
 
 select 'Create table called "problema_doc_final"' as 'Action';
 create table problema_doc_final (
-	id_problema integer not null,
 	id_doc integer not null,
+	id_problema integer not null,
 	posicion integer not null,
-	primary key (id_problema, id_doc),
-	foreign key (id_problema) references problema(id_problema)							
+	primary key (id_doc, id_problema),
+	foreign key (id_doc) references doc_final(id_doc)
 						on delete cascade
 						on update cascade,
-	foreign key (id_doc) references doc_final(id_doc)
+	foreign key (id_problema) references problema(id_problema)							
 						on delete cascade
 						on update cascade
 );
@@ -136,3 +136,11 @@ insert into imagen (url) values ('http://localhost/tfg/imagen1.png'),('http://lo
 
 select 'Inserting values in "problema_imagen" table' as 'Action';
 insert into problema_imagen (id_problema, id_imagen, nombre_amigable) values (100, 400, 'nombreamigable1'), (101, 401, 'nombreamigable2'), (101, 402, 'nombreamigable3'), (102, 403, 'nombreamigable4'), (102, 404, 'nombreamigable5');
+
+select 'Inserting values in "doc_final" table' as 'Action';
+insert into doc_final (titulacion, asignatura, convocatoria, instrucciones, fecha, estado) values ('Titulación A', 'Convocatoria A', 'Asignatura A', 'Instrucciones A', '2014-12-31', 'abierto'), ('Titulación B', 'Convocatoria B', 'Asignatura B', 'Instrucciones B', '2004-03-13', 'cerrado'), ('Titulación C', 'Convocatoria C', 'Asignatura C', 'Instrucciones C', '1999-01-01', 'publicado');
+
+select 'Inserting values in "problema_doc_final" table' as 'Action';
+insert into problema_doc_final (id_doc, id_problema, posicion) values (300, 100, 1), (300, 101, 2), (301, 101, 1), (302, 102, 2), (302, 100, 1);
+
+
