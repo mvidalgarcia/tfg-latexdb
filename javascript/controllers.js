@@ -51,7 +51,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
     }
   });
 
-// Este controlador maneja la vista /edit y la vista /new
+// Este controlador maneja la vista /view /edit y la vista /new
 // Proporciona un formulario para editar el problema, añadirle preguntas,
 // reordenarlas, etc.. y registra funciones para manejar eventos en los
 // botones. Una de las funciones más importantes será sendProblem() que
@@ -180,3 +180,67 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
     }
   });
 
+// Este controlador maneja la vista /view-doc, /edit-doc y la vista /new-doc
+problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeParams, $location) {
+    // Si recibimos un id_doc, es la vista /edit/:id_doc o la vista /view/:id_doc
+    if ($routeParams.id_doc) {
+        // Entonces usamos el id para pedir datos del documento al servidor
+        $scope.id_doc = $routeParams.id_doc;
+        $http.get("get_doc.php?id_doc=" + $scope.id_doc).success(function(data){
+            $scope.doc = data;
+        });
+    } else {
+        // Si no recibimos un id_doc, es la vista /new-doc
+        // En este caso creamos un documento nuevo, con un id especial para
+        // poder detectarlo más tarde cuando haya que enviarlo al servidor.
+        $scope.id_doc = "Nuevo";
+        $scope.doc = {
+            "id_doc":$scope.id_doc, "titulacion": "", "asignatura":"", "convocatoria":"", "instrucciones":"", "fecha":"", "estado":"abierto",
+            "problemas": []
+        };
+    }
+    // Funciones de respuesta a clicks
+    
+    // TODO: Si se selecciona el desplegable "Añadir problema".
+    $scope.addProblem = function (/*TODO*/) {
+        // Añadir al array de problemas uno más, con los campos vacíos.
+        $scope.doc.problemas.push();
+    };
+
+    // Si se pulsa la papelera se borra el prolema
+    $scope.deleteProblem = function (index) {
+        // Eliminar esa pregunta del array de preguntas (splice es para eso)
+        $scope.doc.problemas.splice(index, 1);
+    }
+
+    // Si se pulsa el botón "Guardar".
+    $scope.sendDoc = function (doc) {
+        // Habría que preparar una petición POST o PUT al servidor con un JSON apropiado
+        // Entre otras cosas habría que recorrer el array de problemas para asignar a cada una
+        // una posición que sea igual a su índice dentro de ese array (más uno)
+        //
+        // De momento me limito a volcar por consola lo que he recibido
+		for (var i = 0; i < doc.problemas.length; i++)
+			doc.problemas[i].posicion = i + 1;
+
+        console.log(doc);
+		
+		$http.post("save_doc.php", doc).success(function(data){
+        	// Volcar a consola la respuesta del servidor
+        	console.log(data);
+			$location = $location.path("/view-doc/");
+    	})
+		.error(function(data){
+			console.log("Error al guardar documento.");
+		});
+
+    }
+});
+
+// Función que controla qué sección del menú de navegación está activa.
+function HeaderController($scope, $location) 
+{ 
+    $scope.isActive = function (viewLocation) { 
+        return viewLocation === $location.path();
+    };
+}

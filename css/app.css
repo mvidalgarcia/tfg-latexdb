@@ -26,6 +26,25 @@ body {
     padding: 2px;
 }
 
+.estado {
+    color: #fff;
+    margin-left: 2px;
+    border-radius: 4px; 
+    padding: 2px;
+}
+
+.estado.abierto {
+    background-color: #5cb85c;
+}
+
+.estado.cerrado {
+    background-color: #d9534f;
+}
+
+.estado.publicado {
+    background-color: #222;
+}
+
 .pregunta {
     margin-top: 2ex;
     padding: 2ex;
@@ -33,6 +52,15 @@ body {
     list-style: none;
     margin-left: -1em;
 }
+
+.problema {
+    margin-top: 2ex;
+    padding: 2ex;
+    background-color: #eee;
+    list-style: none;
+    margin-left: -1em;
+}
+
 
 .pregunta h3 {
     display: inline;

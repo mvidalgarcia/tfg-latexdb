@@ -1,0 +1,46 @@
+<h1>Documento {{id_doc}}</h1>
+
+<form > 
+<div class="jumbotron">
+	<label>Titulación</label><br>
+    <input size="99" placeholder="Introduzca la titulación correspondiente al documento..." ng-model="doc.titulacion"/>
+    <div class="botonera">
+        <button class="btn" ng-click="sendDoc(doc)">Guardar</button>
+        <span class="btn"><a href="#/list-doc">Cancelar</a></span>
+    </div><br><br>
+ 	<label>Asignatura</label><br>
+    <input size="99" placeholder="Introduzca la asignatura correspondiente al documento..." ng-model="doc.asignatura"/><br><br>
+ 	<label>Convocatoria</label><br>
+    <input size="99" placeholder="Introduzca la convocatoria correspondiente al documento..." ng-model="doc.convocatoria"/><br><br>
+	<label>Fecha</label><br>
+    <input type="date" ng-model="doc.fecha"/><br><br>
+	<h4>Instrucciones</h4>
+    <textarea cols="99" rows="4" placeholder="Introduzca unas breves instrucciones previas al documento..." ng-model="doc.instrucciones"/></textarea><br><br>
+
+</div>
+   <div class="preguntas">
+    <ul ui-sortable ng-model="doc.problemas">
+        <li class="pregunta" ng-repeat="problema in doc.problemas">
+            <div class="mover"><span class="ui-icon ui-icon-arrow-4"></span></div>
+            <div class="botonera">
+                <span class="btn btn-danger" ng-click="deleteProblem($index)">
+                    <span class="ui-icon ui-icon-trash"></span>
+                </span>
+            </div>
+            <div class="datos-pregunta">
+                <h3>Problema {{$index+1}}</h3>
+                                <div>
+                    <label>Resumen</label><br>
+					<p>{{problema.resumen}}</p><br>
+            </div>
+        </li>
+        <li class="problema"> <!-- Una ultima "pseudo" pregunta para meter botones al final -->
+            <button class="btn btn-success" ng-click="addProblem()">Añadir problema</button>
+            <div class="botonera">
+                <button class="btn" ng-click="sendProblem(problema)">Guardar</button>
+                <span class="btn"><a href="#/list-doc">Cancelar</a></span>
+            </div>
+        </li>
+    </ul>
+</div>
+</form>

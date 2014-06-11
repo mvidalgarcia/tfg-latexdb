@@ -1,0 +1,24 @@
+<h1>Documento {{id_doc}}</h1>
+
+<form>
+<div class="jumbotron">
+    <h2>Información común del documento</h2>
+    <p>Titulación: {{doc.titulacion}}</p>
+	<p>Asignatura: {{doc.asignatura}}</p>
+	<p>Covocatoria: {{doc.convocatoria}}</p>
+	<p>Fecha: {{doc.fecha}}</p>
+	<p>Instrucciones: {{doc.instrucciones}}</p>
+	<ul class="list-inline">	
+		<li class="estado {{doc.estado}}">{{doc.estado}}</li>
+	</ul>
+</div>
+<div class="problemas">
+    <ul>
+        <li ng-repeat="problema in doc.problemas">
+        <h3>Problema {{problema.posicion}} </h3>
+        <p class="enunciado">{{problema.resumen}}</p>
+        </li>
+    </ul>
+</div>
+<span class="btn"><a href="#/list-doc">Volver</a></span>
+</form>

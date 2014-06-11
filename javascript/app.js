@@ -14,26 +14,41 @@ problemsCollection.config(['$routeProvider',
              templateUrl: 'partials/problem-list.html',
              controller:  'ProblemListCtrl'
            }).
-           when('/view/:id_problema', {
+       when('/view/:id_problema', {
              templateUrl: 'partials/problem-view.html',
              controller:  'ProblemDetailsCtrl'
            }).
-           when('/edit/:id_problema', {
+       when('/edit/:id_problema', {
              templateUrl: 'partials/problem-details.html',
              controller:  'ProblemDetailsCtrl'
            }).
-           when('/new', {
+       when('/new', {
              templateUrl: 'partials/problem-details.html',
              controller:  'ProblemDetailsCtrl'
            }).
-           when('/delete/:id_problema', {
+       when('/delete/:id_problema', {
                templateUrl: 'partials/problem-delete.html',
            }).
 		  // Documentos finales
-		   when('/list-doc', {
+	   when('/list-doc', {
              templateUrl: 'partials/doc-list.html',
              controller:  'DocListCtrl'
-           }).           otherwise({
+           }).
+       when('/view-doc/:id_doc', {
+             templateUrl: 'partials/doc-view.html',
+             controller:  'DocDetailsCtrl'
+           }).
+	   when('/edit-doc/:id_doc', {
+             templateUrl: 'partials/doc-details.html',
+             controller:  'DocDetailsCtrl'
+           }).
+
+	   when('/new-doc', {
+             templateUrl: 'partials/doc-details.html',
+             controller:  'DocDetailsCtrl'
+           }).
+
+       otherwise({
              redirectTo: '/list'
           });
     }]);
