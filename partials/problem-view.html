@@ -6,23 +6,20 @@
     <p>{{problema.enunciado_general}}</p>
     <div class="tags">
         <ul class="list-inline">
-            <li class="tag">{{problema.tags}}</li> 
-<!-- ALGO PASA QUE NO LOS IMPRIME. Problema descubierto:
- en el vector estaban unidos por comas en una única cadena y 
- se estaba intentando iterar sobre ellos con ng-repeat 
- (Tal cual está ahora no queda muy bien) -->
+            <li class="tag" ng-repeat="tag in problema.tags.split(',')">{{tag}}</li> 
         </ul>
     </div>
 </div>
 <div class="preguntas">
-    <ul>
-        <li ng-repeat="pregunta in problema.preguntas">
-        <h3>Pregunta {{pregunta.posicion}} [{{pregunta.puntuacion}} punto{{pregunta.puntuacion>1?"s":""}}]</h3>
-        <p class="enunciado">{{pregunta.enunciado}}</p>
-        <p class="solucion">{{pregunta.solucion}}</p>
-        <p class="explicacion">{{pregunta.explicacion}}</p>
-        </li>
-    </ul>
+        <div ng-repeat="pregunta in problema.preguntas" class="panel panel-default">
+            <div class="panel-heading">Pregunta {{pregunta.posicion}}
+                <div class="pull-right">[{{pregunta.puntuacion}} punto{{pregunta.puntuacion>1?"s":""}}]</div>
+            </div>
+        <div class="panel-body">
+            <p class="enunciado">{{pregunta.enunciado}}</p>
+            <p class="solucion">{{pregunta.solucion}}</p>
+            <p class="explicacion">{{pregunta.explicacion}}</p>
+        </div></div>
 </div>
 <span class="btn"><a href="#/list">Volver</a></span>
 </form>
