@@ -3,7 +3,8 @@
 var problemsCollection = angular.module('problemsCollection', [
         'ngRoute', 
         'problemsControllers',
-        'ui.sortable'
+        'ui.sortable',
+		'ui.bootstrap'
         ]);
 
 problemsCollection.config(['$routeProvider',
