@@ -33,10 +33,17 @@
   http://api.jqueryui.com/theming/icons/)
 
  -->
-<form name="reviewForm" novalidate> 
-<div class="jumbotron">
-	<label for="resumen">Resumen</label><br>
-    <input size="99" id="resumen" placeholder="Resumen de una línea..." ng-model="problema.resumen" required/>
+ <form name="reviewForm" novalidate>
+     <div class="jumbotron">
+         <div class="row" ng-class="{'has-error': submitted && reviewForm.resumen.$invalid}">
+             <label for="resumen" class="control-label">Resumen</label>
+             <div class="col">
+             <input size="99" id="resumen" name="resumen" placeholder="Resumen de una línea..." ng-model="problema.resumen" required/>
+             <span ng-show="reviewForm.$dirty&& reviewForm.resumen.$invalid && submitted" class="alert alert-danger">
+                 No puede estar vacío
+             </span>
+             </div>
+         </div>
     <div class="botonera">
         <button class="btn btn-default" ng-click="reviewForm.$valid && sendProblem(problema)">Guardar</button>
         <span class="btn"><a href="#/list">Cancelar</a></span>
@@ -82,7 +89,7 @@
         <li class="pregunta"> <!-- Una ultima "pseudo" pregunta para meter botones al final -->
             <button class="btn btn-success" ng-click="addQuestion()">Añadir pregunta</button>
             <div class="botonera">
-                <button class="btn btn-default" ng-click="reviewForm.$valid && sendProblem(problema)">Guardar</button>
+                <button class="btn btn-default" ng-click="(submitted=true) && reviewForm.$valid && sendProblem(problema)">Guardar</button>
                 <span class="btn"><a href="#/list">Cancelar</a></span>
             </div>
         </li>
