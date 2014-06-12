@@ -1,4 +1,6 @@
-<h1>Documento {{id_doc}}</h1>
+<h1>Documento {{id_doc}}
+	<div class="botonera" ng-include="'partials/save-cancel-doc.html'"></div>
+</h1>
 <form> 
 	<!-- Panel "acordeón colapsable" para los datos comunes del documento. Usa UI Bootstrap -->
 	<div>
@@ -49,8 +51,5 @@
   	</accordion>
 	</div>
 	<!-- Botones Cancelar, Guardar -->
-	<div class="botonera">
-		<button class="btn btn-default" ng-click="sendProblem(problema)">Guardar</button>
-		<span class="btn"><a href="#/list-doc">Cancelar</a></span>
-	</div>
+	<div class="botonera" ng-include="'partials/save-cancel-doc.html'"></div>
 </form>
