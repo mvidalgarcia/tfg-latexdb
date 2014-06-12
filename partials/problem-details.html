@@ -1,4 +1,6 @@
-<h1>Problema {{id_problema}}</h1>
+<h1>Problema {{id_problema}}
+    <div class="botonera" ng-include="'partials/save-cancel-problem.html'"></div>
+</h1>
 <!-- 
   Formulario, realmente no se maneja como tal (no tiene botón "submit" ni acción asociada),
   sino que cada entrada del mismo (textarea, input, button o lo que sea), lleva una directiva
@@ -33,59 +35,117 @@
   http://api.jqueryui.com/theming/icons/)
 
  -->
-<form name="reviewForm" novalidate> 
-<div class="jumbotron">
-	<label for="resumen">Resumen</label><br>
-    <input size="99" id="resumen" placeholder="Resumen de una línea..." ng-model="problema.resumen" required/>
-    <div class="botonera">
-        <button class="btn" ng-click="reviewForm.$valid && sendProblem(problema)">Guardar</button>
-        <span class="btn"><a href="#/list">Cancelar</a></span>
-    </div>
-    <h2>Enunciado general</h2>
-    <div>
-        <textarea cols="100" rows="4" 
-            placeholder="Introduzca el enunciado que va antes de las preguntas..."
-            ng-model="problema.enunciado_general">
-        </textarea>
-    </div> 
-    <span class="tag">TAGS</span>: <input size="80" 
-        placeholder="Introduzca lista de tags separados por comas..."
-        ng-model="problema.tags" required/>
-</div>
-<div class="preguntas">
-    <ul ui-sortable ng-model="problema.preguntas">
-        <li class="pregunta" ng-repeat="pregunta in problema.preguntas">
-            <div class="mover"><span class="ui-icon ui-icon-arrow-4"></span></div>
-            <div class="botonera">
-                <span class="btn btn-danger" ng-click="deleteQuestion($index)">
-                    <span class="ui-icon ui-icon-trash"></span>
-                </span>
-            </div>
-            <div class="datos-pregunta">
-                <h3>Pregunta {{$index+1}}</h3>
-                <div>
-                    Puntuación: <input type="number" min=0 size="2" ng-model="pregunta.puntuacion" required/>
-                </div>
-                <div>
-                    <label for="enunciado">Enunciado</label><br>
-					<textarea cols="140" id="enunciado" rows="3" placeholder="Introduzca el enunciado de la pregunta {{$index+1}}..." 
-					title="Enunciado" class="enunciado" ng-model="pregunta.enunciado" required></textarea><br>
-                    <label for="solucion">Solución</label><br>
-                    <textarea cols="140" id="solucion" rows="3" placeholder="Introduzca la solución de la pregunta {{$index+1}}..." 
-					title="Solución" class="solucion" ng-model="pregunta.solucion"></textarea><br>
-					<label for="explicacion">Explicación</label><br>
-                    <textarea cols="140" id="explicacion" rows="3" placeholder="Introduzca la explicación de la pregunta {{$index+1}}..."
-					 title="Explicación" class="explicacion" ng-model="pregunta.explicacion"></textarea>
-                </div>
-            </div>
-        </li>
-        <li class="pregunta"> <!-- Una ultima "pseudo" pregunta para meter botones al final -->
+<form name="reviewForm" class="form-horizontal" role="form" novalidate>
+     <div class="jumbotron">
+        <div class="form-group" ng-class="{'has-error': reviewForm.resumen.$dirty && reviewForm.resumen.$invalid}">
+           <label for="resumen" class="control-label col-sm-2">Resumen</label>
+           <div class="col-sm-7">
+              <input class="form-control" id="resumen" name="resumen" 
+                    placeholder="Resumen de una línea..." ng-model="problema.resumen" required/>
+           </div>
+           <div ng-show="reviewForm.resumen.$dirty&& reviewForm.resumen.$invalid" class="help-block col-sm-3">
+                 No puede estar vacío
+           </div>
+        </div>
+        <div class="form-group">
+           <label for="enunciado" class="control-label col-sm-2">Enunciado general</label>
+           <div class="col-sm-7">
+              <textarea rows="4" name="enunciado" class="form-control"
+                    placeholder="Introduzca el enunciado que va antes de las preguntas..."
+                    ng-model="problema.enunciado_general">
+                </textarea>
+           </div>
+        </div> 
+        <div class="form-group" ng-class="{'has-error': reviewForm.tags.$dirty && reviewForm.tags.$invalid}">
+           <label for="tags" class="control-label col-sm-2">Tags</label>
+           <div class="col-sm-7">
+              <input class="form-control" name="tags"
+                    placeholder="Introduzca lista de tags separados por comas..."
+                    ng-model="problema.tags" required/>
+           </div>
+           <div ng-show="reviewForm.tags.$dirty && reviewForm.tags.$error.required" class="help-block col-sm-3">
+                Debe contener al menos un tag
+           </div>
+        </div>
+     </div>
+     <div class="preguntas">
+         <div ui-sortable ng-model="problema.preguntas"> <!-- Todas las preguntas -->
+             <div class="panel panel-default" ng-repeat="pregunta in problema.preguntas"> <!-- Cada pregunta -->
+                  <div class="mover"><span class="ui-icon ui-icon-arrow-4"></span></div>
+                  <div class="botonera">
+                     <span class="btn btn-danger" ng-click="deleteQuestion($index)">
+                       <span class="ui-icon ui-icon-trash"></span>
+                     </span>
+                  </div>
+              <div class="panel-heading">Pregunta {{$index+1}}</div>
+              <div class="panel-body"> <!-- Panel-formulario para editar una pregunta -->
+                 <!-- Es necesario un ng-form que es como otro formulario interno
+                      debido a que, como esto está dentro de un bucle, sin este truco 
+                      varios elementos del formulario tendrían el mismo name y entonces
+                      no se puede hacer la validación con cosas tipo name.$valid
+                 -->
+                 <ng-form name="formPregunta" class="form-horizontal" role="form">
+                     <div class="form-group" ng-class="{'has-error': formPregunta.puntuacion.$dirty && formPregunta.puntuacion.$invalid}">
+                         <label for="puntuacion" class="col-sm-2 control-label">
+                             Puntuación
+                         </label>
+                         <div class="col-sm-2">
+                             <input class="form-control" name="puntuacion" 
+                               type="number" ng-pattern="/^[1-9]$/" min=1 max=9 size="2" ng-model="pregunta.puntuacion" required/>
+                         </div>
+                         <div ng-show="formPregunta.puntuacion.$dirty && formPregunta.puntuacion.$error.number" class="help-block col-sm-3">
+                            No sé cuándo sale este error
+                         </div>
+                         <div ng-show="formPregunta.puntuacion.$dirty && formPregunta.puntuacion.$error.required" class="help-block col-sm-3">
+                            No puede estar vacío
+                         </div>
+                         <div ng-show="formPregunta.puntuacion.$dirty && formPregunta.puntuacion.$error.pattern" class="help-block col-sm-5">
+                           Puntuación no válida (ha de ser entre 1 y 9) 
+                         </div>
+                     </div>
+                     <div class="form-group" ng-class="{'has-error': formPregunta.enunciado.$dirty && formPregunta.enunciado.$invalid}">
+                         <label for="enunciado" class="col-sm-2 control-label">
+                             Enunciado
+                         </label>
+                         <div class="col-sm-7">
+                           <textarea id="enunciado" rows="3" name="enunciado"
+                                placeholder="Introduzca el enunciado de la pregunta {{$index+1}}..." 
+                                title="Enunciado" class="enunciado form-control" ng-model="pregunta.enunciado" required>
+                            </textarea>
+                        </div>
+                        <div ng-show="formPregunta.enunciado.$dirty && formPregunta.enunciado.$error.required" class="help-block col-sm-3">
+                           El enunciado no puede estar vacío
+                       </div>
+                   </div>
+                   <div class="form-group">
+                       <label for="solucion" class="col-sm-2 control-label">
+                           Solución
+                       </label>
+                       <div class="col-sm-7">
+                            <textarea id="solucion" rows="3" name="solucion"
+                                placeholder="Introduzca la solución de la pregunta {{$index+1}}..." 
+                                title="Solución" class="form-control solucion" ng-model="pregunta.solucion">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="explicacion" class="col-sm-2 control-label">
+                            Explicación
+                        </label>
+                        <div class="col-sm-7">
+                            <textarea id="explicacion" rows="3" name="explicacion"
+                                placeholder="Introduzca la explicación de la pregunta {{$index+1}}..."
+                                title="Explicación" class="explicacion form-control" ng-model="pregunta.explicacion">
+                            </textarea>
+                        </div>
+                    </div>
+               </div>
+           </div>
+       </div>
+        <div class="pregunta"> <!-- Una ultima "pseudo" pregunta para meter botones al final -->
             <button class="btn btn-success" ng-click="addQuestion()">Añadir pregunta</button>
-            <div class="botonera">
-                <button class="btn" ng-click="reviewForm.$valid && sendProblem(problema)">Guardar</button>
-                <span class="btn"><a href="#/list">Cancelar</a></span>
-            </div>
-        </li>
-    </ul>
+            <div class="botonera" ng-include="'partials/save-cancel-problem.html'"></div>
+        </div>
+    </div>
 </div>
 </form>
