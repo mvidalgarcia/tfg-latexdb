@@ -60,11 +60,11 @@
 								<h5><strong>Todos los problemas guardados</strong></h5>
 							</div>
 							<div class="col-md-5">
-								Filtro: <input size="10" ng-model="query"><span class="btn tag" ng-click="clearQuery()">x</span> <!--TODO: No hace caso la X -->
+								Filtro: <input size="10" ng-model="vars.query"><span class="btn tag" ng-click="clearQuery()">x</span> <!--TODO: No hace caso la X -->
 							</div>
 						</div>
           				<div ui-sortable="sortableOptions" id="sourceList" ng-model="problemas_bd" ng-class="{'minimalList':sourceEmpty()}" class="connector">
-							<div class="alert alert-warning nomargin" ng-repeat="problema in problemas_bd | filter:query">{{problema.resumen}}
+							<div class="alert alert-warning nomargin" ng-repeat="problema in problemas_bd | filter:vars.query">{{problema.resumen}}
 								<ul class="list-inline"><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul>
 							</div>
 
