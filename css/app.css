@@ -103,4 +103,9 @@ border-color: #78FA89;
 
 .minimalList {
   min-height: 100px;
+  border: dashed 1pt #ccc;
+}
+.droppableList {
+  padding-bottom: 30px;
+  border-bottom: dashed 2pt #ccc;
 }
