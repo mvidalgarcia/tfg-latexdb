@@ -2,7 +2,7 @@
 
 <form>
 <div class="jumbotron">
-    <h2>Información común del documento</h2>
+    <h3><strong>Información común del documento</strong></h3>
     <p>Titulación: {{doc.titulacion}}</p>
 	<p>Asignatura: {{doc.asignatura}}</p>
 	<p>Covocatoria: {{doc.convocatoria}}</p>
@@ -13,12 +13,14 @@
 	</ul>
 </div>
 <div class="problemas">
-    <ul>
-        <li ng-repeat="problema in doc.problemas">
-        <h3>Problema {{problema.posicion}} </h3>
-        <p class="enunciado">{{problema.resumen}}</p>
-        </li>
-    </ul>
+        <div ng-repeat="problema in doc.problemas" class="panel panel-default">
+        	<div class="panel-heading">
+				<h3>Problema {{problema.posicion}} </h3>
+			</div>
+			<div class="panel-body">
+	        	<p class="enunciado">{{problema.resumen}}</p>
+			</div>
+        </div>
 </div>
 <span class="btn"><a href="#/list-doc">Volver</a></span>
 </form>
