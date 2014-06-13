@@ -95,3 +95,12 @@ border-color: #FA787E;
 .ng-valid.ng-dirty {
 border-color: #78FA89;
 }
+
+/* Lista drag & drop */
+.nomargin {
+  margin-top: 0px; margin-bottom: 0px;
+}
+
+.minimalList {
+  min-height: 100px;
+}

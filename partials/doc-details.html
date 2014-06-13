@@ -16,11 +16,7 @@
  			<!-- Contenido del panel -->
 			<div class="jumbotron">
 				<label>Titulación</label><br>
-   				<input size="99" placeholder="Introduzca la titulación correspondiente al documento..." ng-model="doc.titulacion"/>
-    			<div class="botonera">
-        			<button class="btn btn-default" ng-click="sendDoc(doc)">Guardar</button>
-        			<span class="btn"><a href="#/list-doc">Cancelar</a></span>
-    			</div><br><br>
+   				<input size="99" placeholder="Introduzca la titulación correspondiente al documento..." ng-model="doc.titulacion"/><br><br>
  				<label>Asignatura</label><br>
     			<input size="99" placeholder="Introduzca la asignatura correspondiente al documento..." ng-model="doc.asignatura"/><br><br>
  				<label>Convocatoria</label><br>
@@ -47,9 +43,34 @@
 				</h4>
         	</accordion-heading>
  			<!-- Contenido del panel -->
+			<div class="container" id="main">
+				<div class="row">
+					<div class="col-md-5">
+						<h5><strong>Problemas añadidos al documento<small>  Arrastrar aquí</small></strong></h5>
+          				<ol ui-sortable="sortableOptions" ng-model="doc.problemas" id="targetList" ng-class="{'minimalList':targetEmpty()}" class="connector">
+           					 <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas">{{problema.resumen}}</li>
+         				 </ol>
+        			</div>
+       				 <div class="col-md-5">
+						<div class="row">
+							<div class="col-md-7">
+								<h5><strong>Todos los problemas guardados</strong></h5>
+							</div>
+							<div class="col-md-5">
+								Filtro: <input size="10" ng-model="query"><span class="btn tag" ng-click="clearQuery()">x</span> <!--TODO: No hace caso la X -->
+							</div>
+						</div>
+          				<div ui-sortable="sortableOptions" id="sourceList" ng-model="problemas_bd" ng-class="{'minimalList':sourceEmpty()}" class="connector">
+							<div class="alert alert-warning nomargin" ng-repeat="problema in problemas_bd | filter:query">{{problema.resumen}}</li>
+							<!--TODO: Añadir TAGS-->
+          				</div>
+        			</div>
+				</div>
+			</div>
 		</accordion-group>
   	</accordion>
 	</div>
-	<!-- Botones Cancelar, Guardar -->
-	<div class="botonera" ng-include="'partials/save-cancel-doc.html'"></div>
 </form>
+
+<!-- Botones Cancelar, Guardar -->
+<div class="botonera" ng-include="'partials/save-cancel-doc.html'"></div>

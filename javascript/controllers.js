@@ -182,7 +182,15 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
 
 // Este controlador maneja la vista /view-doc, /edit-doc y la vista /new-doc
 problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeParams, $location) {
-    // Si recibimos un id_doc, es la vista /edit/:id_doc o la vista /view/:id_doc
+    
+	// En cualquier caso, hay que cargar los resúmenes y tags de todos los
+	// problemas almacenados en la aplicación para mostrarlos en la lista dragable.
+	// Rellenar la lista
+    $http.get("get_problems_list.php").success(function(data){
+        $scope.problemas_bd = data;
+    });
+
+	// Si recibimos un id_doc, es la vista /edit/:id_doc o la vista /view/:id_doc
     if ($routeParams.id_doc) {
         // Entonces usamos el id para pedir datos del documento al servidor
         $scope.id_doc = $routeParams.id_doc;
@@ -201,18 +209,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     }
     // Funciones de respuesta a clicks
     
-    // TODO: Si se selecciona el desplegable "Añadir problema".
-    $scope.addProblem = function (/*TODO*/) {
-        // Añadir al array de problemas uno más, con los campos vacíos.
-        $scope.doc.problemas.push();
-    };
-
-    // Si se pulsa la papelera se borra el prolema
-    $scope.deleteProblem = function (index) {
-        // Eliminar esa pregunta del array de preguntas (splice es para eso)
-        $scope.doc.problemas.splice(index, 1);
-    }
-
+    
     // Si se pulsa el botón "Guardar".
     $scope.sendDoc = function (doc) {
         // Habría que preparar una petición POST o PUT al servidor con un JSON apropiado
@@ -235,12 +232,60 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 		});
 
     }
+	
+
+	/*** Funciones para las listas de problemas dragables. ***/
+
+	// Define las listas que están conectadas entre sí, y que
+	// por tanto es posible arrastrar elementos entre ellas.
+    $scope.sortableOptions  = {
+        connectWith: '.connector'
+    }
+
+    // DEBUG, llama a una función callback cada vez que cambia el valor de "model"
+	// El valor 'true' de $watch sirve para que también se actualice
+    // en el caso de que el valor cambie, no solo la referencia.
+	// De esta forma al cambiar el orden de los problemas de un mismo panel también 
+	// se llama a la función callback.
+    $scope.$watch("problemas_bd", function(value) {
+		if (!angular.isUndefined($scope.problemas_bd))
+        console.log("Problemas_BD: " + value.map(function(e){return e.id_problema}).join(','));
+    },true);
+
+    // DEBUG, llama a una función callback cada vez que cambia el valor de "source"
+    $scope.$watch("doc.problemas", function(value) {
+		if (!angular.isUndefined($scope.doc.problemas))
+        	console.log("Doc.Problemas: " + value.map(function(e){return e.id_problema}).join(','));
+    },true);
+
+	// Al cargar la página por primera vez las variables problemas_bd/doc.problemas 
+	// aun no está cargada y se genera un error en consola. Se controla comprobando
+	// si la variable está definida.
+    $scope.sourceEmpty = function() {
+		if (angular.isUndefined($scope.problemas_bd))
+			return false;
+		else
+        	return $scope.problemas_bd.length == 0;
+    }
+
+    $scope.targetEmpty = function() {
+		if (angular.isUndefined($scope.doc.problemas))
+			return false;
+		else
+        	return $scope.doc.problemas.length == 0;
+    }
+	
+	// En la X a la derecha del query, borramos la query
+    $scope.clearQuery = function() {$scope.query=""; }; //TODO: NO ENTIENDO POR QUÉ NO FUNCIONA.
+
 });
 
-// Función que controla qué sección del menú de navegación está activa.
+
+// Función (controller) que controla qué sección del menú de navegación está activa.
 function HeaderController($scope, $location) 
 { 
     $scope.isActive = function (viewLocation) { 
         return viewLocation === $location.path();
     };
 }
+
