@@ -1,25 +1,25 @@
-<h1>Problema {{id_problema}}</h1>
+<h2>Problema: {{problema.resumen}} <!-- TODO: truncate filter -->
+    <div class="botonera">
+      <button class="btn btn-primary" ng-click="editThisProblem()">Editar</button>
+      <button class="btn btn-default" onClick="window.history.back()">Volver</button>
+    </div>
+</h2>
 
-<form>
-<div class="jumbotron">
-    <h2>Enunciado general</h2>
-    <p>{{problema.enunciado_general}}</p>
-    <div class="tags">
-        <ul class="list-inline">
-            <li class="tag" ng-repeat="tag in problema.tags.split(',')">{{tag}}</li> 
-        </ul>
+<div class="tags">
+    <ul class="list-inline">
+        <li class="tag" ng-repeat="tag in problema.tags.split(',')">{{tag}}</li> 
+    </ul>
+</div>
+<pre class="bg-info jumbotron">{{problema.enunciado_general}}</pre>
+<div class="preguntas">
+    <div ng-repeat="pregunta in problema.preguntas" class="panel panel-default">
+        <div class="panel-heading">Pregunta {{pregunta.posicion}}
+            <div class="pull-right">[{{pregunta.puntuacion}} punto{{pregunta.puntuacion>1?"s":""}}]</div>
+        </div>
+        <div class="panel-body">
+            <pre class="bg-info">{{pregunta.enunciado}}</pre>
+            <pre class="bg-danger" ng-show="pregunta.solucion">{{pregunta.solucion}}</pre>
+            <pre class="bg-warning" ng-show="pregunta.explicacion">{{pregunta.explicacion}}</pre>
+        </div>
     </div>
 </div>
-<div class="preguntas">
-        <div ng-repeat="pregunta in problema.preguntas" class="panel panel-default">
-            <div class="panel-heading">Pregunta {{pregunta.posicion}}
-                <div class="pull-right">[{{pregunta.puntuacion}} punto{{pregunta.puntuacion>1?"s":""}}]</div>
-            </div>
-        <div class="panel-body">
-            <p class="enunciado">{{pregunta.enunciado}}</p>
-            <p class="solucion">{{pregunta.solucion}}</p>
-            <p class="explicacion">{{pregunta.explicacion}}</p>
-        </div></div>
-</div>
-<span class="btn"><a href="#/list">Volver</a></span>
-</form>
