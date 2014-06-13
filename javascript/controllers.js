@@ -226,6 +226,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 
         console.log(doc);
 		
+		/*
 		$http.post("save_doc.php", doc).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
@@ -233,7 +234,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     	})
 		.error(function(data){
 			console.log("Error al guardar documento.");
-		});
+		}); */
 
     }
 	
@@ -280,7 +281,12 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     }
 	
 	// En la X a la derecha del query, borramos la query
-    $scope.clearQuery = function() {$scope.query=""; }; //TODO: NO ENTIENDO POR QUÉ NO FUNCIONA.
+    $scope.clearQuery = function() {$scope.query=""; };
+	
+	// Cuando el usuario pincha en un tag
+    $scope.filterTag = function (tag) {
+        $scope.query=tag;  // Lo usamos como valor de la query
+    };
 
 });
 

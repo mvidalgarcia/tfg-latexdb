@@ -89,6 +89,7 @@ body {
     float: left;
 }
 
+/* Validación */
 .ng-invalid.ng-dirty {
 border-color: #FA787E;
 }

@@ -48,7 +48,10 @@
 					<div class="col-md-5">
 						<h5><strong>Problemas añadidos al documento<small>  Arrastrar aquí</small></strong></h5>
           				<ol ui-sortable="sortableOptions" ng-model="doc.problemas" id="targetList" ng-class="{'minimalList':targetEmpty(), 'droppableList': !targetEmpty()}" class="connector">
-                            <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas">{{problema.resumen}}</li>
+                            <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas">{{problema.resumen}}
+								<ul class="list-inline"><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul>
+							</li>
+						
          				 </ol>
         			</div>
        				 <div class="col-md-5">
@@ -61,8 +64,10 @@
 							</div>
 						</div>
           				<div ui-sortable="sortableOptions" id="sourceList" ng-model="problemas_bd" ng-class="{'minimalList':sourceEmpty()}" class="connector">
-							<div class="alert alert-warning nomargin" ng-repeat="problema in problemas_bd | filter:query">{{problema.resumen}}</li>
-							<!--TODO: Añadir TAGS-->
+							<div class="alert alert-warning nomargin" ng-repeat="problema in problemas_bd | filter:query">{{problema.resumen}}
+								<ul class="list-inline"><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul>
+							</div>
+
           				</div>
         			</div>
 				</div>

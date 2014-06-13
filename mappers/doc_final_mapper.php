@@ -46,6 +46,33 @@ class DocFinalMapper
     }
 
 
+	/* Función que guarda un documento nuevo con sus
+	 * ids de problemas asociados en base de datos */
+ 	public function InsertDoc($Doc)
+    {
+        // Guardar documento.
+		$STH = self::$dbh->prepare(
+         "INSERT INTO doc_final (titulacion, asignatura, convocatoria, fecha, estado) 
+								 values (:titulacion, :asignatura, :convocatoria, :fecha, :estado)"); 
+        $STH->bindParam(':titulacion', $Doc->titulacion);
+        $STH->bindParam(':asignatura', $Doc->asignatura);
+        $STH->bindParam(':convocatoria', $Doc->convocatoria);
+        $STH->bindParam(':fecha', $Doc->fecha);
+        $STH->bindParam(':estado', $Doc->estado);
+        $STH->execute(); 
+        $Doc->id_doc = self::$dbh->lastInsertId();
+
+		// Guardar asociación con problemas.
+		foreach ($Doc->problemas as $problema) { //TODO: AQUI ME QUEDÉ
+			$this->InsertPregunta($pregunta, $Problema->id_problema);	
+		}
+		// Guardar tags.
+		$this->SaveTags($Problema);
+
+		// TODO: Guardar imágenes. Afecta a tablas problema_imagen e imagen.
+    }
+
+
 	/******** Funciones auxiliares ********/
 	
 	/* Función que devuelve los ids, posiciones y resúmenes de problemas asociados
