@@ -63,15 +63,20 @@ class DocFinalMapper
         $Doc->id_doc = self::$dbh->lastInsertId();
 
 		// Guardar asociación con problemas.
-		foreach ($Doc->problemas as $problema) { //TODO: AQUI ME QUEDÉ
-			$this->InsertPregunta($pregunta, $Problema->id_problema);	
+		foreach ($Doc->problemas as $problema) {
+			$this->InsertDocProb($problema, $Doc->id_doc);	
 		}
-		// Guardar tags.
-		$this->SaveTags($Problema);
-
-		// TODO: Guardar imágenes. Afecta a tablas problema_imagen e imagen.
     }
 
+	
+	/* Función que elimina un documento. Gracias a "on DELETE cascade"
+	 * se eliminan todas las relaciones asociadas con problemas. */
+	public function DeleteDoc($IdDoc)
+    {
+        $STH = self::$dbh->prepare('DELETE FROM doc_final WHERE id_doc = :id_doc');
+        $STH->bindParam(':id_doc', $IdDoc);
+        $STH->execute(); 
+    }
 
 	/******** Funciones auxiliares ********/
 	
@@ -91,5 +96,20 @@ class DocFinalMapper
 
 		return $problemas;
 	}
+
+	
+	/* Función que inserta en la base de datos la relación entre
+	 * documentos y problemas, incluída su posición. */
+	private function InsertDocProb($problema, $id_doc)
+	{
+		$STH = self::$dbh->prepare(
+         "INSERT INTO problema_doc_final (id_doc, id_problema, posicion) 
+								 values (:id_doc, :id_problema, :posicion)"); 
+        $STH->bindParam(':id_doc', $id_doc);
+        $STH->bindParam(':id_problema', $problema->id_problema);
+        $STH->bindParam(':posicion', $problema->posicion);
+		$STH->execute();
+	}
+
 }
 ?>

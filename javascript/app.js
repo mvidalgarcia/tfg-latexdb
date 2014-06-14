@@ -11,7 +11,7 @@ problemsCollection.config(['$routeProvider',
     function($routeProvider) {
        $routeProvider.
            // Problemas
-		   when('/list', {
+       when('/list', {
              templateUrl: 'partials/problem-list.html',
              controller:  'ProblemListCtrl'
            }).
@@ -43,13 +43,14 @@ problemsCollection.config(['$routeProvider',
              templateUrl: 'partials/doc-details.html',
              controller:  'DocDetailsCtrl'
            }).
-
 	   when('/new-doc', {
              templateUrl: 'partials/doc-details.html',
              controller:  'DocDetailsCtrl'
            }).
-
-       otherwise({
+       when('/delete-doc/:id_doc', {
+               templateUrl: 'partials/doc-delete.html',
+           }).
+	   otherwise({
              redirectTo: '/list'
           });
     }]);

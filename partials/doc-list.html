@@ -15,7 +15,7 @@
                   <td><a ng-click="viewDoc(doc.id_doc)">{{doc.titulacion}}. {{doc.asignatura}}. {{doc.convocatoria}}. {{doc.fecha}}</a></td>
                   <td><ul class="list-inline"><li class="estado {{doc.estado}}" ng-click="filterState(doc.estado)">{{doc.estado}}</li></ul></td>
                   <td><a ng-click="editDoc(doc.id_doc)" class="btn btn-small btn-primary">Editar</a></td>
-                  <td><a ng-click="deleteDoc(doc.id_doc)" class="btn btn-small btn-danger">Borrar</a></td>
+                  <td><a popover={{showPopOver(doc.estado)}} popover-trigger="mouseenter"  ng-click="deleteDoc(doc.id_doc, doc.estado)" class="btn btn-small btn-danger">Borrar</a></td>
               </tr>
           </tbody>
       </table>

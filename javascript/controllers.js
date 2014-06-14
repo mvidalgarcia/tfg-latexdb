@@ -121,7 +121,7 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 		$http.post("save_problem.php", p).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
-			window.history.back();  // <-- Tras guardar, volvemos a la vista anterior
+        	$location = $location.path("/list/");
     	})
 		.error(function(data){
 			console.log("Error al guardar problema.");
@@ -160,15 +160,23 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
     }
     // Si se pulsa el botón Borrar, se manda un método DELETE
     // al servidor PHP, el id va en la URL
-    $scope.deleteDoc = function (id) {
-		//TODO: Gestionar en que estado está el documento.
-        $http.delete("delete_doc.php?id_doc=" + id).error(function(data, status) {
-            console.log(status, data);
-        }).success(function(data, status) {
-            console.log(status, data);
-			$location.path("/delete-doc/" + id);
-        });
-    }
+    $scope.deleteDoc = function (id, estado) {
+	
+		// Si el documento está abierto, se puede borrar.
+		if (estado == "abierto") {
+        	$http.delete("delete_doc.php?id_doc=" + id).error(function(data, status) {
+            	console.log(status, data);
+	        }).success(function(data, status) {
+    	        console.log(status, data);
+				$location.path("/delete-doc/" + id);
+	        });
+   		 }
+		// Si el documento está cerrado o publicado, no se puede borrar. Informar al usuario.
+		else {
+			//TODO: Controlar que solo se puedan borrar los documentos abiertos.
+		}
+	}
+	
     // Si se pulsa el botón Editar, se va a la vista "edit"
     // donde se pueden cambiar los datos del documento. Su correspondiente
     // controlador registrará acciones para cuando se dé a Guardar,
@@ -182,7 +190,18 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
     $scope.createNewDoc = function () {
         $location = $location.path("/new-doc/");
     }
-  });
+	
+	// Función que retorna un mensaje mostrado en un "bocadillo"
+	// cuando se pasa el ratón por encima del botón Borrar 
+	// en el caso de que el documento no esté cerrado/publicado.
+	$scope.showPopOver = function (estado) {
+    	if (estado != "abierto")
+			return "Solo se pueden eliminar abiertos!";
+		else
+			return "";
+	}
+
+});
 
 // Este controlador maneja la vista /view-doc, /edit-doc y la vista /new-doc
 problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeParams, $location) {
@@ -216,27 +235,26 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     $scope.vars = {'query': "" }; 
     // Si se pulsa el botón "Guardar".
     $scope.sendDoc = function (doc) {
-        // Habría que preparar una petición POST o PUT al servidor con un JSON apropiado
-        // Entre otras cosas habría que recorrer el array de problemas para asignar a cada una
-        // una posición que sea igual a su índice dentro de ese array (más uno)
-        //
+
+		// Habría que preparar una petición POST o PUT al servidor con un JSON apropiado
+		// Entre otras cosas habría que recorrer el array de problemas para asignar a cada una
+		// una posición que sea igual a su índice dentro de ese array (más uno)
+		//
         // De momento me limito a volcar por consola lo que he recibido
 		for (var i = 0; i < doc.problemas.length; i++)
 			doc.problemas[i].posicion = i + 1;
-
-        console.log(doc);
+			
+		console.log(doc);
 		
-		/*
 		$http.post("save_doc.php", doc).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
-			$location = $location.path("/view-doc/");
+        	$location = $location.path("/list-doc/");
     	})
 		.error(function(data){
 			console.log("Error al guardar documento.");
-		}); */
-
-    }
+		});
+	} 
 	
 
 	/*** Funciones para las listas de problemas dragables. ***/
