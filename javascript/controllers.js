@@ -213,7 +213,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     }
     // Funciones de respuesta a clicks
     
-    
+    $scope.vars = {'query': "" }; 
     // Si se pulsa el botón "Guardar".
     $scope.sendDoc = function (doc) {
         // Habría que preparar una petición POST o PUT al servidor con un JSON apropiado
@@ -281,11 +281,11 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     }
 	
 	// En la X a la derecha del query, borramos la query
-    $scope.clearQuery = function() {$scope.query=""; };
+    $scope.clearQuery = function() { $scope.vars.query=""; };
 	
 	// Cuando el usuario pincha en un tag
     $scope.filterTag = function (tag) {
-        $scope.query=tag;  // Lo usamos como valor de la query
+        $scope.vars.query=tag;  // Lo usamos como valor de la query
     };
 
 });
