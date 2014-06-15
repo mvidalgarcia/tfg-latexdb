@@ -1,4 +1,9 @@
-<h1>Documento {{id_doc}}</h1>
+<h2>Documento {{id_doc}}
+	<div class="botonera">
+		<h5><button popover={{showPopEditar(doc.estado)}} popover-trigger="mouseenter" popover-placement="bottom" class="btn btn-primary" ng-click="editThisDoc()">Editar</button>
+		<button class="btn btn-default" onClick="window.history.back()">Volver</button></h5>
+	</div>
+</h2>
 
 <form>
 <div class="jumbotron">
@@ -22,5 +27,4 @@
 			</div>
         </div>
 </div>
-<span class="btn"><a href="#/list-doc">Volver</a></span>
 </form>

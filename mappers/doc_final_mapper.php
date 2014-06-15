@@ -52,13 +52,14 @@ class DocFinalMapper
     {
         // Guardar documento.
 		$STH = self::$dbh->prepare(
-         "INSERT INTO doc_final (titulacion, asignatura, convocatoria, fecha, estado) 
-								 values (:titulacion, :asignatura, :convocatoria, :fecha, :estado)"); 
+         "INSERT INTO doc_final (titulacion, asignatura, convocatoria, fecha, estado, instrucciones) 
+								 values (:titulacion, :asignatura, :convocatoria, :fecha, :estado, :instrucciones)"); 
         $STH->bindParam(':titulacion', $Doc->titulacion);
         $STH->bindParam(':asignatura', $Doc->asignatura);
         $STH->bindParam(':convocatoria', $Doc->convocatoria);
         $STH->bindParam(':fecha', $Doc->fecha);
         $STH->bindParam(':estado', $Doc->estado);
+        $STH->bindParam(':instrucciones', $Doc->instrucciones);
         $STH->execute(); 
         $Doc->id_doc = self::$dbh->lastInsertId();
 
@@ -78,9 +79,39 @@ class DocFinalMapper
         $STH->execute(); 
     }
 
+
+	/* Función que actualiza un documento y sus problemas
+	 * asociados en base de datos */
+ 	public function UpdateDoc($Doc)
+    {
+		// Actualizar los datos comunes del documento.
+		$STH = self::$dbh->prepare(
+         "UPDATE doc_final SET titulacion = :titulacion, asignatura = :asignatura, convocatoria = :convocatoria,
+							   fecha = :fecha, estado = :estado, instrucciones = :instrucciones WHERE id_doc = :id_doc"); 
+        $STH->bindParam(':titulacion', $Doc->titulacion);
+        $STH->bindParam(':asignatura', $Doc->asignatura);
+        $STH->bindParam(':convocatoria', $Doc->convocatoria);
+        $STH->bindParam(':fecha', $Doc->fecha);
+        $STH->bindParam(':estado', $Doc->estado);
+        $STH->bindParam(':instrucciones', $Doc->instrucciones);
+        $STH->bindParam(':id_doc', $Doc->id_doc);
+		$STH->execute();
+
+		// Actualizar los problemas del documento. Primero eliminar todas las relaciones y después insertar los problemas.
+		$STH = self::$dbh->prepare('DELETE FROM problema_doc_final WHERE id_doc = :id_doc');
+        $STH->bindParam(':id_doc', $Doc->id_doc); 
+        $STH->execute();
+
+		// Guardar asociación con problemas.
+		foreach ($Doc->problemas as $problema) {
+			$this->InsertDocProb($problema, $Doc->id_doc);	
+		}
+
+	}
+
 	/******** Funciones auxiliares ********/
 	
-	/* Función que devuelve los ids, posiciones y resúmenes de problemas asociados
+	/* Función que devuelve los ids, posiciones, resúmenes y tags de problemas asociados
 	 * a un documento. */
 	private function FindProblemsByIdDoc($id)
 	{
@@ -93,6 +124,19 @@ class DocFinalMapper
         $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');  
         $STH->execute(); 
         $problemas = $STH->fetchAll();
+
+		// Iterar sobre los ids de problema y almacenar los tags asociados a cada uno.
+		foreach($problemas as $problema){
+			$STH = self::$dbh->prepare('SELECT t.nombre FROM problema as prob 
+										JOIN problema_tag as pt ON prob.id_problema=pt.id_problema 
+										JOIN tag as t ON pt.id_tag=t.id_tag
+										WHERE pt.id_problema=:id_problema');
+        	$STH->bindParam(':id_problema', $problema->id_problema);
+			$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');       
+			$STH->execute();
+        	$tags = $STH->fetchAll();
+			$problema->tags = $tags;
+		}
 
 		return $problemas;
 	}

@@ -161,7 +161,6 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
     // Si se pulsa el botón Borrar, se manda un método DELETE
     // al servidor PHP, el id va en la URL
     $scope.deleteDoc = function (id, estado) {
-	
 		// Si el documento está abierto, se puede borrar.
 		if (estado == "abierto") {
         	$http.delete("delete_doc.php?id_doc=" + id).error(function(data, status) {
@@ -170,18 +169,17 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
     	        console.log(status, data);
 				$location.path("/delete-doc/" + id);
 	        });
-   		 }
-		// Si el documento está cerrado o publicado, no se puede borrar. Informar al usuario.
-		else {
-			//TODO: Controlar que solo se puedan borrar los documentos abiertos.
 		}
 	}
 	
     // Si se pulsa el botón Editar, se va a la vista "edit"
     // donde se pueden cambiar los datos del documento. Su correspondiente
     // controlador registrará acciones para cuando se dé a Guardar,
-    $scope.editDoc = function (id) {
-        $location = $location.path("/edit-doc/" + id);
+    $scope.editDoc = function (id, estado) {
+		// Si el documento está abierto, se puede borrar.
+		if (estado == "abierto") {
+        	$location = $location.path("/edit-doc/" + id);
+		}
     }
     // Si se pulsa el botón "Nuevo Documento" se va a la vista "new-doc"
     // que en realidad carga el mismo parcial html, pero con un
@@ -194,9 +192,19 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
 	// Función que retorna un mensaje mostrado en un "bocadillo"
 	// cuando se pasa el ratón por encima del botón Borrar 
 	// en el caso de que el documento no esté cerrado/publicado.
-	$scope.showPopOver = function (estado) {
+	$scope.showPopBorrar = function (estado) {
     	if (estado != "abierto")
-			return "Solo se pueden eliminar abiertos!";
+			return "Solo se pueden borrar abiertos!";
+		else
+			return "";
+	}
+
+	// Función que retorna un mensaje mostrado en un "bocadillo"
+	// cuando se pasa el ratón por encima del botón Editar 
+	// en el caso de que el documento no esté cerrado/publicado.
+	$scope.showPopEditar = function (estado) {
+    	if (estado != "abierto")
+			return "Solo se pueden editar abiertos!";
 		else
 			return "";
 	}
@@ -219,6 +227,15 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
         $scope.id_doc = $routeParams.id_doc;
         $http.get("get_doc.php?id_doc=" + $scope.id_doc).success(function(data){
             $scope.doc = data;
+			$scope.doc_aux = angular.copy($scope.doc);
+			// Ordenar en función de la posición ya que según lo saca de base de datos
+			// lo saca en orden "aleatorio" y hay que mostrarselo al usuario en el orden 
+			// que lo guardó. Nos apoyamos en una variable auxiliar.
+			for (var i = 0; i < $scope.doc.problemas.length; i++)
+				$scope.doc_aux.problemas[$scope.doc.problemas[i].posicion-1] = $scope.doc.problemas[i];
+			
+			$scope.doc.problemas = $scope.doc_aux.problemas;
+			console.log($scope.doc_aux);
         });
     } else {
         // Si no recibimos un id_doc, es la vista /new-doc
@@ -257,6 +274,22 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 	} 
 	
 
+    $scope.editThisDoc = function () {
+		// Solo se pueden editar documentos en estado 'abierto'.
+		if ($scope.doc.estado == "abierto")
+	        $location = $location.path("/edit-doc/" + $scope.doc.id_doc);
+    };
+	
+	// Función que retorna un mensaje mostrado en un "bocadillo"
+	// cuando se pasa el ratón por encima del botón Editar 
+	// en el caso de que el documento no esté cerrado/publicado.
+	$scope.showPopEditar = function (estado) {
+    	if (estado != "abierto")
+			return "Solo se pueden editar abiertos!";
+		else
+			return "";
+	}
+
 	/*** Funciones para las listas de problemas dragables. ***/
 
 	// Define las listas que están conectadas entre sí, y que
@@ -270,7 +303,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     // en el caso de que el valor cambie, no solo la referencia.
 	// De esta forma al cambiar el orden de los problemas de un mismo panel también 
 	// se llama a la función callback.
-    $scope.$watch("problemas_bd", function(value) {
+    /*$scope.$watch("problemas_bd", function(value) {
 		if (!angular.isUndefined($scope.problemas_bd))
         console.log("Problemas_BD: " + value.map(function(e){return e.id_problema}).join(','));
     },true);
@@ -279,7 +312,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     $scope.$watch("doc.problemas", function(value) {
 		if (!angular.isUndefined($scope.doc.problemas))
         	console.log("Doc.Problemas: " + value.map(function(e){return e.id_problema}).join(','));
-    },true);
+    },true);*/
 
 	// Al cargar la página por primera vez las variables problemas_bd/doc.problemas 
 	// aun no está cargada y se genera un error en consola. Se controla comprobando
@@ -292,7 +325,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     }
 
     $scope.targetEmpty = function() {
-		if (angular.isUndefined($scope.doc.problemas))
+		if (angular.isUndefined($scope.doc))
 			return false;
 		else
         	return $scope.doc.problemas.length == 0;

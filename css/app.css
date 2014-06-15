@@ -84,6 +84,12 @@ body {
     float:right;
 }
 
+.botonera h5 {
+	display: inline-block;
+	position:relative;
+	bottom:10px;
+}
+
 .mover {
     position:relative;
     float: left;
