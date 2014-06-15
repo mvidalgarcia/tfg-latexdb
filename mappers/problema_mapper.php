@@ -84,7 +84,8 @@ class ProblemaMapper
 		// Obtener datos preguntas
 		$STH = self::$dbh->prepare('SELECT preg.id_pregunta, preg.enunciado, preg.solucion, 
 											preg.explicacion, preg.puntuacion, preg.posicion 
-											FROM pregunta as preg WHERE id_problema = :id');
+											FROM pregunta as preg WHERE id_problema = :id
+											ORDER BY preg.posicion');
         $STH->bindParam(':id', $id);
         $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
         $STH->execute(); 

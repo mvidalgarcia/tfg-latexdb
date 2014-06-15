@@ -227,15 +227,6 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
         $scope.id_doc = $routeParams.id_doc;
         $http.get("get_doc.php?id_doc=" + $scope.id_doc).success(function(data){
             $scope.doc = data;
-			$scope.doc_aux = angular.copy($scope.doc);
-			// Ordenar en función de la posición ya que según lo saca de base de datos
-			// lo saca en orden "aleatorio" y hay que mostrarselo al usuario en el orden 
-			// que lo guardó. Nos apoyamos en una variable auxiliar.
-			for (var i = 0; i < $scope.doc.problemas.length; i++)
-				$scope.doc_aux.problemas[$scope.doc.problemas[i].posicion-1] = $scope.doc.problemas[i];
-			
-			$scope.doc.problemas = $scope.doc_aux.problemas;
-			console.log($scope.doc_aux);
         });
     } else {
         // Si no recibimos un id_doc, es la vista /new-doc

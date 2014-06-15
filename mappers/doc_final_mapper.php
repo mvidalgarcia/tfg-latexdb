@@ -119,7 +119,8 @@ class DocFinalMapper
 		$STH = self::$dbh->prepare('SELECT pdoc.id_problema, pdoc.posicion, prob.resumen 
 									FROM problema_doc_final AS pdoc 
 									JOIN problema AS prob ON pdoc.id_problema=prob.id_problema 
-									WHERE id_doc=:id');
+									WHERE id_doc=:id 
+									ORDER BY pdoc.posicion');
         $STH->bindParam(':id', $id);
         $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');  
         $STH->execute(); 
