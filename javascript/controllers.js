@@ -231,7 +231,7 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
 });
 
 // Este controlador maneja la vista /view-doc, /edit-doc y la vista /new-doc
-problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeParams, $location) {
+problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeParams, $location, $filter) {
     
 	// En cualquier caso, hay que cargar los resúmenes y tags de todos los
 	// problemas almacenados en la aplicación para mostrarlos en la lista dragable.
@@ -305,19 +305,42 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 	// Define las listas que están conectadas entre sí, y que
 	// por tanto es posible arrastrar elementos entre ellas.
     $scope.sortableOptions  = {
-        connectWith: '.connector'
+        connectWith: '.connector',
+        placeholder: 'beingDragged'
     }
 
+    // Esta función es llamada cuando cambia el valor de la query (via ng-change)
+    // para actualizar la lista de los que encajan en el filtro
+    $scope.filtrar = function () {
+        $scope.vars.elegidos = $filter("filter")($scope.problemas_bd, $scope.vars.query);
+    }
+
+    // Esta función retorna true si el problema debe mostrarse en la lista
+    // de seleccionables, y false si no. Es usada por la directiva ng-show en la
+    // lista de problemas, en lugar de usar un filtro angular, de este modo el
+    // arrastrar y soltar funciona aunque haya elementos filtrados
+    //
+    // Para determinar si está elegido o no, lo buscamos en la lista
+    // de elegidos (actualizada desde filtrar() cada vez que cambia la query)
+    $scope.elegido = function (problema) {
+        if ($scope.vars.elegidos) // Si la lista existe
+            return ($scope.vars.elegidos.indexOf(problema)!=-1);
+        else 
+            return true;
+
+    }
     // DEBUG, llama a una función callback cada vez que cambia el valor de "model"
 	// El valor 'true' de $watch sirve para que también se actualice
     // en el caso de que el valor cambie, no solo la referencia.
 	// De esta forma al cambiar el orden de los problemas de un mismo panel también 
 	// se llama a la función callback.
-    /*$scope.$watch("problemas_bd", function(value) {
-		if (!angular.isUndefined($scope.problemas_bd))
-        console.log("Problemas_BD: " + value.map(function(e){return e.id_problema}).join(','));
+    $scope.$watch("problemas_bd", function(value) {
+        $scope.filtrar();
+		// if (!angular.isUndefined($scope.problemas_bd))
+        // console.log("Problemas_BD: " + value.map(function(e){return e.id_problema}).join(','));
     },true);
 
+    /*
     // DEBUG, llama a una función callback cada vez que cambia el valor de "source"
     $scope.$watch("doc.problemas", function(value) {
 		if (!angular.isUndefined($scope.doc.problemas))
@@ -330,8 +353,9 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     $scope.sourceEmpty = function() {
 		if (angular.isUndefined($scope.problemas_bd))
 			return false;
-		else
-        	return $scope.problemas_bd.length == 0;
+        if ($scope.vars.elegidos)
+            return ($scope.vars.elegidos.length ==0);
+	    return ($scope.problemas_bd.length == 0);
     }
 
     $scope.targetEmpty = function() {
@@ -342,7 +366,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     }
 	
 	// En la X a la derecha del query, borramos la query
-    $scope.clearQuery = function() { $scope.vars.query=""; };
+    $scope.clearQuery = function() { $scope.vars.query=""; $scope.filtrar();};
 	
 	// Cuando el usuario pincha en un tag
     $scope.filterTag = function (tag) {

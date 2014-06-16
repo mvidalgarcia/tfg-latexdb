@@ -114,6 +114,14 @@ border-color: #78FA89;
   border: dashed 1pt #ccc;
 }
 .droppableList {
-  padding-bottom: 30px;
-  border-bottom: dashed 2pt #ccc;
+  padding-bottom: 70px;
+  border: none;
+}
+
+.beingDragged {
+        height: 70px;
+        margin-bottom: .5em !important;
+        border: 2px dotted #ccc !important;
+        background: #ffc !important;
+        list-style: none !important;
 }
