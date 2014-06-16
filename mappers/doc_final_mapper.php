@@ -109,6 +109,17 @@ class DocFinalMapper
 
 	}
 
+	/* Función que actualiza el estado de un documento */
+ 	public function ChangeDocStatus($IdDoc, $Estado)
+    {
+		$STH = self::$dbh->prepare(
+         "UPDATE doc_final SET estado = :estado WHERE id_doc = :id_doc"); 
+        $STH->bindParam(':estado', $Estado);
+        $STH->bindParam(':id_doc', $IdDoc);
+		$STH->execute();
+	}
+
+
 	/******** Funciones auxiliares ********/
 	
 	/* Función que devuelve los ids, posiciones, resúmenes y tags de problemas asociados
