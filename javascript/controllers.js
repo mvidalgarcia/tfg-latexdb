@@ -334,11 +334,13 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     // en el caso de que el valor cambie, no solo la referencia.
 	// De esta forma al cambiar el orden de los problemas de un mismo panel también 
 	// se llama a la función callback.
-    /*$scope.$watch("problemas_bd", function(value) {
-		if (!angular.isUndefined($scope.problemas_bd))
-        console.log("Problemas_BD: " + value.map(function(e){return e.id_problema}).join(','));
+    $scope.$watch("problemas_bd", function(value) {
+        $scope.filtrar();
+		// if (!angular.isUndefined($scope.problemas_bd))
+        // console.log("Problemas_BD: " + value.map(function(e){return e.id_problema}).join(','));
     },true);
 
+    /*
     // DEBUG, llama a una función callback cada vez que cambia el valor de "source"
     $scope.$watch("doc.problemas", function(value) {
 		if (!angular.isUndefined($scope.doc.problemas))
@@ -351,8 +353,9 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     $scope.sourceEmpty = function() {
 		if (angular.isUndefined($scope.problemas_bd))
 			return false;
-		else
-        	return $scope.problemas_bd.length == 0;
+        if ($scope.vars.elegidos)
+            return ($scope.vars.elegidos.length ==0);
+	    return ($scope.problemas_bd.length == 0);
     }
 
     $scope.targetEmpty = function() {
