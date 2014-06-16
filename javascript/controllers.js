@@ -286,7 +286,8 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 	// Define las listas que están conectadas entre sí, y que
 	// por tanto es posible arrastrar elementos entre ellas.
     $scope.sortableOptions  = {
-        connectWith: '.connector'
+        connectWith: '.connector',
+        placeholder: 'beingDragged'
     }
 
     // DEBUG, llama a una función callback cada vez que cambia el valor de "model"
