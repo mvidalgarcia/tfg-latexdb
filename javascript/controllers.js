@@ -1,6 +1,6 @@
 'use strict';
 
-var problemsControllers = angular.module("problemsControllers", []);
+var problemsControllers = angular.module("problemsControllers", ['ui.bootstrap', 'ngReallyClickModule']);
 
 
 /***** Controladores para problemas *****/
@@ -208,6 +208,25 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
 		else
 			return "";
 	}
+	
+	// Función que gestiona los eventos de cambio de estado de los documentos
+	// cuando se pulsa los botones 'Abrir', 'Cerrar' o 'Publicar'.
+	// Actualiza el estado del documento correspondiente en base de datos y en la vista.
+	$scope.changeStatus = function (doc, nuevo_estado) {
+		var info = {"id_doc":doc.id_doc, "nuevo_estado":nuevo_estado };
+		$http.post("change_doc_status.php", info).success(function(data){
+        	console.log("Cambiando estado de documento " + doc.id_doc + " al estado " + nuevo_estado + ".");
+        	// Volcar a consola la respuesta del servidor
+			console.log(data);
+			// Actualizamos el estado en la vista para que sea inmediatamente visible el cambio.
+			doc.estado = nuevo_estado;
+    	})
+		.error(function(data){
+			console.log("Error al cambiar el estado del documento " + doc.id_doc + " al estado " + nuevo_estado + ".");
+		});
+
+
+	}
 
 });
 
@@ -341,3 +360,54 @@ function HeaderController($scope, $location)
     };
 }
 
+// Directiva para crear diálogos. Permite ejecutar una función cuando se da a OK.
+angular.module('ngReallyClickModule', ['ui.bootstrap'])
+  .directive('ngReallyClick', ['$modal',
+    function($modal) {
+		
+	  // Controlador del diálogo. Maneja los eventos de los botones del diálogo.
+      var ModalInstanceCtrl = function($scope, $modalInstance) {
+        $scope.ok = function() {
+          $modalInstance.close();
+        };
+
+        $scope.cancel = function() {
+          $modalInstance.dismiss('cancel');
+        };
+      };
+
+      return {
+        restrict: 'A', //Directiva en forma de atributo
+        // Atributos
+		scope:{
+          ngReallyClick:"&", //Binding de una función en atributo ng-really-click
+        },
+        link: function(scope, element, attrs) {
+          // Función bind
+		  element.bind('click', function() {
+			// Mensaje que se muestra en el diálogo. Se escribe en otro atributo ng-really-message.
+            var message = attrs.ngReallyMessage || "¿Está seguro?";
+			
+			// Dialogo en sí.
+            var modalHtml = '<div class="modal-body">' + message + '</div>';
+            modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancelar</button></div>';
+			
+			// Creación del diálogo: con su template HTML y su controlador que gestiona OK y Cancelar
+            var modalInstance = $modal.open({
+              template: modalHtml,
+              controller: ModalInstanceCtrl
+            });
+			// Si se da a ok se ejecuta la función que esté en ng-really-click.
+            modalInstance.result.then(function() {
+              scope.ngReallyClick(); //raise an error : $digest already in progress
+            }, function() {
+              //Modal dismissed
+            });
+            //*/
+            
+          });
+
+        }
+      }
+    }
+  ]);
