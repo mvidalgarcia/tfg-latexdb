@@ -20,19 +20,19 @@
 							<span class="label label-default ">{{doc.fecha}}</span>
 						</div>
 						<span ng-really-message="¿Está seguro de que quiere cambiar el documento al estado 'abierto'?<br><br><small>Esta operación solo debería realizarse en el caso de haber cerrado el documento por error.</small>" ng-really-click="changeStatus(doc, 'abierto')">
-							<a  popover="Pasar al estado abierto" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='cerrado'}"><span class="glyphicon glyphicon glyphicon-file"></span> Abrir</a>
+							<a  popover="Pasar al estado abierto" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='cerrado'}"><i class="fa fa-unlock"></i> Abrir</a>
 						</span>
 						<span ng-really-message="¿Está seguro de que quiere cambiar el documento al estado 'cerrado'?" ng-really-click="changeStatus(doc, 'cerrado')">
-							<a popover="Pasar al estado cerrado" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='abierto'}"><span class="glyphicon glyphicon glyphicon-lock"></span> Cerrar</a>
+							<a popover="Pasar al estado cerrado" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='abierto'}"><i class="fa fa-lock"></i> Cerrar</a>
 						</span>
 						<span ng-really-message="¿Está seguro de que quiere cambiar el documento al estado 'publicado'?" ng-really-click="changeStatus(doc, 'publicado')">
-							<a popover="Pasar al estado publicado" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='cerrado'}"><span class="glyphicon glyphicon glyphicon-globe"></span> Publicar</a>
+							<a popover="Pasar al estado publicado" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='cerrado'}"><i class="fa fa-globe"></i> Publicar</a>
 						</div>
 				  </td>
                   <td><ul class="list-inline"><li class="estado {{doc.estado}} cursor-pointer" ng-click="filterState(doc.estado)">{{doc.estado}}</li></ul></td>
-                  <td><a ng-click="viewDoc(doc.id_doc)" class="btn btn-small btn-info" >Ver</a></td>
-                  <td><a popover={{showPopEditar(doc.estado)}} popover-trigger="mouseenter" ng-click="editDoc(doc.id_doc, doc.estado)" class="btn btn-small btn-primary" ng-class="{disabled : doc.estado != 'abierto'}">Editar</a></td>
-                  <td><a popover={{showPopBorrar(doc.estado)}} popover-trigger="mouseenter" popover-placement="right" ng-click="deleteDoc(doc.id_doc, doc.estado)" class="btn btn-small btn-danger" ng-class="{disabled : doc.estado != 'abierto'}">Borrar</a></td>
+                  <td><a ng-click="viewDoc(doc.id_doc)" class="btn btn-small btn-info" ><i class="fa fa-eye"></i> Ver</a></td>
+                  <td><a popover={{showPopEditar(doc.estado)}} popover-trigger="mouseenter" ng-click="editDoc(doc.id_doc, doc.estado)" class="btn btn-small btn-primary" ng-class="{disabled : doc.estado != 'abierto'}"><i class="fa fa-edit"></i> Editar</a></td>
+                  <td><a popover={{showPopBorrar(doc.estado)}} popover-trigger="mouseenter" popover-placement="right" ng-click="deleteDoc(doc.id_doc, doc.estado)" class="btn btn-small btn-danger" ng-class="{disabled : doc.estado != 'abierto'}"><i class="fa fa-trash-o"></i> Borrar</a></td>
               </tr>
           </tbody>
       </table>
@@ -40,8 +40,8 @@
     <div class="row">
         <div class="col-md-3">
         <!--Sidebar content-->
-        Filtro: <input size="10" ng-model="query"><span class="btn tag" ng-click="clearQuery()">x</span>
+        <i class="fa fa-search"></i> Filtro: <input size="10" ng-model="query"><span class="btn tag" ng-click="clearQuery()">&times;</span>
     </div>
 </div>
-<a ng-click="createNewDoc()" class="btn btn-success">Documento Nuevo</a>
+<a ng-click="createNewDoc()" class="btn btn-success"><i class="fa fa-file-text-o"></i> Documento Nuevo</a>
 

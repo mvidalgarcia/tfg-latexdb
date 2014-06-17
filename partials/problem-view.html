@@ -1,13 +1,13 @@
 <h2>Problema: {{problema.resumen}} <!-- TODO: truncate filter -->
     <div class="botonera">
-      <button class="btn btn-primary" ng-click="editThisProblem()">Editar</button>
-      <button class="btn btn-default" onClick="window.history.back()">Volver</button>
+      <button class="btn btn-primary" ng-click="editThisProblem()"><i class="fa fa-edit"></i> Editar</button>
+      <button class="btn btn-default" onClick="window.history.back()"><i class="fa fa-mail-reply"></i> Volver</button>
     </div>
 </h2>
 
 <div class="tags">
     <ul class="list-inline">
-        <li class="tag" ng-repeat="tag in problema.tags.split(',')">{{tag}}</li> 
+        <i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags.split(',')">{{tag}}</li> 
     </ul>
 </div>
 <pre class="bg-info jumbotron">{{problema.enunciado_general}}</pre>

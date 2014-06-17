@@ -371,6 +371,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 	// Cuando el usuario pincha en un tag
     $scope.filterTag = function (tag) {
         $scope.vars.query=tag;  // Lo usamos como valor de la query
+		$scope.filtrar();
     };
 
 });

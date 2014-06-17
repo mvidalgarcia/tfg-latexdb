@@ -5,7 +5,7 @@
             <thead>
                 <tr>
                     <th style="min-width:120px">Resumen</th>
-                    <th style="min-width:70px">Tags</th>
+                    <th style="min-width:70px"><i class="fa fa-tags"></i> Tags</th>
                     <th style="width:20px"></th>
                     <th style="width:20px"></th>
                 </tr>
@@ -14,8 +14,8 @@
               <tr ng-repeat="problema in problemas | filter:query">
                   <td><a ng-click="viewProblem(problema.id_problema)">{{problema.resumen}}</a></td>
                   <td><ul class="list-inline"><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul></td>
-                  <td><a ng-click="editProblem(problema.id_problema)" class="btn btn-small btn-primary">Editar</a></td>
-                  <td><a ng-click="deleteProblem(problema.id_problema)" class="btn btn-small btn-danger">Borrar</a></td>
+                  <td><a ng-click="editProblem(problema.id_problema)" class="btn btn-small btn-primary"><i class="fa fa-edit"></i> Editar</a></td>
+                  <td><a ng-click="deleteProblem(problema.id_problema)" class="btn btn-small btn-danger"><i class="fa fa-trash-o"></i> Borrar</a></td>
               </tr>
           </tbody>
       </table>
@@ -23,8 +23,8 @@
     <div class="row">
         <div class="col-md-3">
         <!--Sidebar content-->
-        Filtro: <input size="10" ng-model="query"><span class="btn tag" ng-click="clearQuery()">x</span>
+        <i class="fa fa-search"></i> Filtro: <input size="10" ng-model="query"><span class="btn tag" ng-click="clearQuery()">&times;</span>
     </div>
 </div>
-<a ng-click="createNewProblem()" class="btn btn-success">Problema Nuevo</a>
+<a ng-click="createNewProblem()" class="btn btn-success"><i class="fa fa-file"></i> Problema Nuevo</a>
 
