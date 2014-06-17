@@ -111,7 +111,8 @@ class ProblemaMapper
 
 	
 	/* Función que obtiene toda la información nececesaria para listar 
-	 * todos los problemas. Incluye resúmenes de problemas y tags asociados */
+	 * todos los problemas. Incluye resúmenes de problemas, tags asociados,
+	 * número de preguntas y si el problema pertenece a un documento cerrado/publicado */
 	public function FindProblemList()
     {
 		// Obtener todos los ids de problemas y resúmenes
@@ -122,21 +123,14 @@ class ProblemaMapper
 		
 		// Iterar sobre los ids de problema y almacenar los tags asociados a cada uno y el número de preguntas.
 		foreach($problemas as $problema){
-			$STH = self::$dbh->prepare('SELECT t.nombre FROM problema as prob 
-										JOIN problema_tag as pt ON prob.id_problema=pt.id_problema 
-										JOIN tag as t ON pt.id_tag=t.id_tag
-										WHERE pt.id_problema=:id_problema');
-        	$STH->bindParam(':id_problema', $problema->id_problema);
-			$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');       
-			$STH->execute();
-        	$tags = $STH->fetchAll();
-			$problema->tags = $tags;
+			// Obtener los tags.
+			$problema->tags = $this->FindTagsByIdProblem($problema->id_problema);
 
-			$STH = self::$dbh->prepare('SELECT count(*) as npreg FROM pregunta WHERE id_problema = :id_problema');
-        	$STH->bindParam(':id_problema', $problema->id_problema);
-			$STH->execute();
-        	$info = $STH->fetch();
-			$problema->num_preguntas = $info['npreg'];
+			// Obtener el número de preguntas.
+			$problema->num_preguntas = $this->GetNumberOfQuestions($problema->id_problema);
+
+			// Comprobar si pertenece a un documento 'cerrado' o 'publicado'. En ese caso marcar los booleanos.
+			$this->CheckDocBelonging($problema);
 		}
 
 		return $problemas; 
@@ -242,6 +236,19 @@ class ProblemaMapper
 		return $tag->id_tag;
     }
 
+	// Función que busca todos los tags de un problema por el id problema.
+	private function FindTagsByIdProblem($IdProblema)
+    {
+		$STH = self::$dbh->prepare('SELECT t.nombre FROM problema as prob 
+									JOIN problema_tag as pt ON prob.id_problema=pt.id_problema 
+									JOIN tag as t ON pt.id_tag=t.id_tag
+									WHERE pt.id_problema=:id_problema');
+        $STH->bindParam(':id_problema', $IdProblema);
+		$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');       
+		$STH->execute();
+        $tags = $STH->fetchAll();
+		return $tags;
+	}
 
 	// Función que introduce un tag nuevo y lo relaciona con un problema.
 	private function InsertNewTag($Tag, $IdProblema)
@@ -303,7 +310,64 @@ class ProblemaMapper
 	}
 
 
+	// Función que obtiene el número de preguntas de un problema.
+	private function GetNumberOfQuestions($IdProblema)
+	{
+		$STH = self::$dbh->prepare('SELECT count(*) as npreg FROM pregunta WHERE id_problema = :id_problema');
+        $STH->bindParam(':id_problema', $IdProblema);
+		$STH->execute();
+        $info = $STH->fetch();
+		return $info['npreg'];
+	}
+
+	
+	// Función que comprueba si un problema pertenece a un documento 'abierto' o 'cerrado/publicado'
+	// para rellenar los booleanos $estaEnDocAbierto o $estaEnDocCerradoPublicado. Estas variables 
+	// son excluyentes. Si está en un documento 'cerrado/publicado' ya no nos interesa si está en un
+	// documento abierto, ya que no se va a poder editar/eliminar de todas maneras.
+	private function CheckDocBelonging($Problema)
+	{
+		// 1º) Comprobar si el problema pertenece a algún documento 'cerrado' o 'publicado'.
+		// Si se da el caso, asignar el valor true al booleano $estaEnDocCerradoPublicado y
+		// el valor false al booleano $estaEnDocAbierto y retornar.
+		$STH = self::$dbh->prepare("SELECT df.estado='publicado' OR df.estado='cerrado' as result
+									FROM problema_doc_final AS pdf 
+									JOIN doc_final AS df ON pdf.id_doc = df.id_doc 
+									WHERE id_problema = :id_problema");
+        $STH->bindParam(':id_problema', $Problema->id_problema);
+		$STH->setFetchMode(PDO::FETCH_ASSOC);       
+		$STH->execute();
+        $resultados = $STH->fetchAll();
+		//var_dump($resultados);
+		
+		// Si no obtengo ningún resultado quiere decir que el problema no pertenece
+		// a ningún documento. Por lo tanto pongo ambos booleanos a false.
+		if (empty($resultados)) {
+			$Problema->estaEnDocCerradoPublicado = false;
+			$Problema->estaEnDocAbierto = false;
+			//echo "No tengo docs asociados.\n";
+			return;
+		}
+
+		foreach ($resultados as $item) {
+			// Si encuentro un documento cerrado/publicado al que pertenece el problema
+			// asigno los booleanos y retorno.
+			if ($item["result"] == 1) {
+				$Problema->estaEnDocCerradoPublicado = true;
+				$Problema->estaEnDocAbierto = false; // Puede que esté pero no me interesa.
+				//echo "Estoy en algún doc publico/cerrado.\n";
+				return;
+			}
+		}
+		
+		// Si no encuentro ningún documento cerrado/publicado al que pertenece el
+		// problema (pero en cambio, si obtengo resultados de pertenecer a problemas)
+		// entonces es que pertenece a algún documento abierto.
+		$Problema->estaEnDocCerradoPublicado = false;
+		$Problema->estaEnDocAbierto = true;
+		//echo "Estoy solo en docs abiertos.\n";
+		
+	}
+
 }
-
-
 ?>
