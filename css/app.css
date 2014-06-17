@@ -125,6 +125,10 @@ border-color: #78FA89;
   min-height: 100px;
   border: dashed 1pt #ccc;
 }
+.minimalList:after {
+    content: "Arrastrar y soltar aquí";
+    color: #ccc;
+}
 .droppableList {
   padding-bottom: 70px;
   border: none;
@@ -136,4 +140,9 @@ border-color: #78FA89;
         border: 2px dotted #ccc !important;
         background: #ffc !important;
         list-style: none !important;
+}
+
+.accordion-toggle:hover {
+    text-decoration: none;
+    color: #428bca;  /* bootstrap @brand-primary */
 }
