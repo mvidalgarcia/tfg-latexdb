@@ -8,7 +8,7 @@
 		<accordion-group is-open="status.open">
 			<accordion-heading>
 				<h4>
-					<i class="fa fa-align-left"></i>
+					<i class="fa fa-align-left"></i>&nbsp;
 					 Datos comunes del documento 
 					<i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
 				</h4>
@@ -36,10 +36,11 @@
 	<accordion>
 		<accordion-group is-open="status.open">
 			<accordion-heading>
-				<h4>
-				<i class="fa fa-exchange"></i>
-					Problemas del documento 
-					<i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
+				<h4 class="accordion-heading">
+				<i class="fa fa-exchange"></i>&nbsp;
+                Problemas del documento 
+                &nbsp;<span class="label label-success">{{doc.total_puntos}} pts</span> 
+                <i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
 				</h4>
         	</accordion-heading>
  			<!-- Contenido del panel -->
@@ -48,7 +49,9 @@
 					<div class="col-md-5">
 						<h5><strong>Problemas añadidos al documento<small>  Arrastrar aquí</small></strong></h5>
           				<ol ui-sortable="sortableOptions" ng-model="doc.problemas" id="targetList" ng-class="{'minimalList':targetEmpty(), 'droppableList': !targetEmpty()}" class="connector">
-                            <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas">{{problema.resumen}}
+                            <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas">
+                               {{problema.resumen}}
+                               &nbsp;<span class="label label-success pull-right">{{problema.puntos}}</span>
 								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul>
 							</li>
 						
@@ -67,6 +70,7 @@
                             <div class="alert alert-warning nomargin" 
                                  ng-repeat="problema in problemas_bd" 
                                  ng-show="elegido(problema)">{{problema.resumen}}
+                                 &nbsp;<span class="label label-warning pull-right">{{problema.puntos}}</span>
 								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)"> {{tag.nombre}}</li></ul>
 							</div>
 

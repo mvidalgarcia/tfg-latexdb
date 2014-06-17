@@ -240,12 +240,23 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
         $scope.problemas_bd = data;
     });
 
+    $scope.actualizar_puntuacion = function () {
+        if ($scope.doc) {
+            var total_puntos = 0;
+            for (var i=0; i<$scope.doc.problemas.length; i++)
+              total_puntos += $scope.doc.problemas[i].puntos;
+            $scope.doc.total_puntos = total_puntos;
+        }
+    }
+
+
 	// Si recibimos un id_doc, es la vista /edit/:id_doc o la vista /view/:id_doc
     if ($routeParams.id_doc) {
         // Entonces usamos el id para pedir datos del documento al servidor
         $scope.id_doc = $routeParams.id_doc;
         $http.get("get_doc.php?id_doc=" + $scope.id_doc).success(function(data){
             $scope.doc = data;
+            $scope.actualizar_puntuacion();
         });
     } else {
         // Si no recibimos un id_doc, es la vista /new-doc
@@ -254,7 +265,8 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
         $scope.id_doc = "Nuevo";
         $scope.doc = {
             "id_doc":$scope.id_doc, "titulacion": "", "asignatura":"", "convocatoria":"", "instrucciones":"", "fecha":"", "estado":"abierto",
-            "problemas": []
+            "problemas": [],
+            "total_puntos": 0
         };
     }
     // Funciones de respuesta a clicks
@@ -329,6 +341,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
             return true;
 
     }
+
     // DEBUG, llama a una función callback cada vez que cambia el valor de "model"
 	// El valor 'true' de $watch sirve para que también se actualice
     // en el caso de que el valor cambie, no solo la referencia.
@@ -340,12 +353,12 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
         // console.log("Problemas_BD: " + value.map(function(e){return e.id_problema}).join(','));
     },true);
 
-    /*
+    
     // DEBUG, llama a una función callback cada vez que cambia el valor de "source"
     $scope.$watch("doc.problemas", function(value) {
-		if (!angular.isUndefined($scope.doc.problemas))
-        	console.log("Doc.Problemas: " + value.map(function(e){return e.id_problema}).join(','));
-    },true);*/
+        $scope.actualizar_puntuacion();
+    },true);
+
 
 	// Al cargar la página por primera vez las variables problemas_bd/doc.problemas 
 	// aun no está cargada y se genera un error en consola. Se controla comprobando
