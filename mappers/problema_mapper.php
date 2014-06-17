@@ -120,7 +120,7 @@ class ProblemaMapper
 		$STH->execute();
         $problemas = $STH->fetchAll();
 		
-		// Iterar sobre los ids de problema y almacenar los tags asociados a cada uno.
+		// Iterar sobre los ids de problema y almacenar los tags asociados a cada uno y el número de preguntas.
 		foreach($problemas as $problema){
 			$STH = self::$dbh->prepare('SELECT t.nombre FROM problema as prob 
 										JOIN problema_tag as pt ON prob.id_problema=pt.id_problema 
@@ -131,6 +131,12 @@ class ProblemaMapper
 			$STH->execute();
         	$tags = $STH->fetchAll();
 			$problema->tags = $tags;
+
+			$STH = self::$dbh->prepare('SELECT count(*) as npreg FROM pregunta WHERE id_problema = :id_problema');
+        	$STH->bindParam(':id_problema', $problema->id_problema);
+			$STH->execute();
+        	$info = $STH->fetch();
+			$problema->num_preguntas = $info['npreg'];
 		}
 
 		return $problemas; 
