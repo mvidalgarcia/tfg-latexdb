@@ -9,7 +9,7 @@ try
 
 	//RETURN
     header('Content-type: application/json');
-    echo(json_encode($docs)); 
+    echo(json_encode($docs,JSON_NUMERIC_CHECK)); 
 }
 catch(PDOException $e)
 {
