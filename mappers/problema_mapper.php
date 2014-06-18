@@ -106,6 +106,10 @@ class ProblemaMapper
 		$problema->preguntas = $preguntas;
 		$problema->tags = $tags;
 
+		// Obtener los ids de documentos a los que pertence el problema.
+		$problema->id_docs_cerrados_publicados = $this->GetIdDocs($problema, "published");
+		$problema->id_docs_abiertos = $this->GetIdDocs($problema, "open");
+
 		return $problema;
     }
 

@@ -54,6 +54,8 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 	// cuando el usuario trata de editar un problema que pertenece
 	// a un documento 'abierto' o 'cerrado/publicado'.
 	$scope.getDialogMsgEdit = function(problema) {
+		if (angular.isUndefined(problema))
+			return "";
 		// Si no pertenece a ningún documento, el problema puede ser editado.
 		if (problema.id_docs_cerrados_publicados.length == 0 && problema.id_docs_abiertos.length == 0) {
 			return "¿Quiere editar este problema?";
@@ -95,7 +97,9 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 
 	// Retorna verdadero en el caso de que deba ocultar los botones OK y Cancelar y poner solo Volver.
 	$scope.hideDialogButtons = function(problema) {
-		if (problema.id_docs_cerrados_publicados.length > 0)
+		if (angular.isUndefined(problema))
+			return;
+		else if (problema.id_docs_cerrados_publicados.length > 0)
 			return "hay-cerrados";
 		else if (problema.id_docs_abiertos.length > 0)
 			return "hay-abiertos";		
@@ -185,9 +189,6 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 
     };
 
-    $scope.editThisProblem = function () {
-        $location = $location.path("/edit/" + $scope.problema.id_problema);
-    };
 });
 
 
