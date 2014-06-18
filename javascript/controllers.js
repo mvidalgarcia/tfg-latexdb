@@ -49,6 +49,58 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
     $scope.createNewProblem = function () {
         $location = $location.path("/new/");
     }
+
+	// Función que devuelve el mensaje que se debe mostrar en un diálogo
+	// cuando el usuario trata de editar un problema que pertenece
+	// a un documento 'abierto' o 'cerrado/publicado'.
+	$scope.getDialogMsgEdit = function(problema) {
+		// Si no pertenece a ningún documento, el problema puede ser editado.
+		if (problema.id_docs_cerrados_publicados.length == 0 && problema.id_docs_abiertos.length == 0) {
+			return "¿Quiere editar este problema?";
+		}
+		
+		var msg;
+		// Si está en algún documento cerrado o publicado no se permite editarlo
+		// y se informa al usuario en qué documentos aparece el problema.
+		if (problema.id_docs_cerrados_publicados.length > 0) {
+				msg = "Este problema no puede ser editado debido a que pertenece a los documentos con estado 'cerrado' o 'publicado' siguientes: ";
+			for (var i=0; i < problema.id_docs_cerrados_publicados.length; i++) {
+				msg += problema.id_docs_cerrados_publicados[i]["id_doc"];
+				if (i != problema.id_docs_cerrados_publicados.length - 1)
+					msg += ", ";
+			}
+			msg += ".";
+		}
+		// Si solo está en documentos abiertos, se le informará en cuales
+		// y se le permitirá hacer una copia
+		else if (problema.id_docs_abiertos.length > 0) {
+			msg = "Este problema no puede ser editado debido a que pertenece a los documentos con estado 'abierto' siguientes: ";
+			for (var i=0; i < problema.id_docs_abiertos.length; i++) {
+				msg += problema.id_docs_abiertos[i]["id_doc"];
+				if (i != problema.id_docs_abiertos.length - 1)
+					msg += ", ";
+			}
+			msg += ".";
+			msg += "<br><br>Sin embargo, es posible hacer una copia del problema y realizar las modificaciones oportunas sobre ella."
+
+		}
+		return msg;
+	}
+
+	// Función que realiza la copia de un problema cuando acepta el dialogo
+	// el usuario en el caso de que el problema perteneza a documentos abiertos.
+	$scope.copyProblem = function(id) {
+		$location = $location.path("/edit/" + id + "/copy" );
+	}
+
+	// Retorna verdadero en el caso de que deba ocultar los botones OK y Cancelar y poner solo Volver.
+	$scope.hideDialogButtons = function(problema) {
+		if (problema.id_docs_cerrados_publicados.length > 0)
+			return "hay-cerrados";
+		else if (problema.id_docs_abiertos.length > 0)
+			return "hay-abiertos";		
+	}
+
   });
 
 // Este controlador maneja la vista /view /edit y la vista /new
@@ -60,7 +112,8 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 // De momento esta función se limita a volcar en consola lo que recibe
 // de la vista, para depuración.
 problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams, $location) {
-    // Si recibimos un id_problema, es la vista /edit/:id_problema o la vista /view/:id_problema
+    
+	// Si recibimos un id_problema, es la vista /edit/:id_problema o la vista /view/:id_problema
     if ($routeParams.id_problema) {
         // Entonces usamos el id para pedir datos del problema al servidor
         $scope.id_problema = $routeParams.id_problema;
@@ -75,13 +128,16 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
                 this.push(v["nombre"]);
             }, tags);
             $scope.problema.tags = tags.join(", ");
-			
-			// Pasar las puntuaciones a integer
-			for (var i = 0; i < $scope.problema.preguntas.length; i++)
-				$scope.problema.preguntas[i].puntuacion = parseInt($scope.problema.preguntas[i].puntuacion);
+
+			// Si ademas del id_problema, recibimos un parámetro "copy"
+			if ($routeParams.copy) {
+				$scope.id_problema = "Copia";
+				$scope.problema.id_problema = $scope.id_problema;
+				$scope.problema.resumen += " (copia)";
+			}
         });
     } else {
-        // Si no recibimos un id_problema, es la vista /new
+		// Si no recibimos un id_problema, es la vista /new
         // En este caso creamos un problema nuevo, con un id especial para
         // poder detectarlo más tarde cuando haya que enviarlo al servidor
         $scope.id_problema = "Nuevo";
@@ -418,31 +474,50 @@ angular.module('ngReallyClickModule', ['ui.bootstrap'])
         restrict: 'A', //Directiva en forma de atributo
         // Atributos
 		scope:{
-          ngReallyClick:"&", //Binding de una función en atributo ng-really-click
+          ngReallyClick:"&" //Binding de una función en atributo ng-really-click
         },
         link: function(scope, element, attrs) {
           // Función bind
 		  element.bind('click', function() {
 			// Mensaje que se muestra en el diálogo. Se escribe en otro atributo ng-really-message.
-            var message = attrs.ngReallyMessage || "¿Está seguro?";
+            var message = attrs.ngReallyMessage || "";
+			var hide_buttons = attrs.hideDialogButtons;
 			
-			// Dialogo en sí.
-            var modalHtml = '<div class="modal-body">' + message + '</div>';
-            modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button class="btn btn-warning" ng-click="cancel()">Cancelar</button></div>';
+			// Si no se escribe nada en ng-really-message NO se muestra ningún diálogo.
+			if (message != "") {
+				var modalHtml;		
+				// Generar un diálogo diferente en función de si hay que cambiar los botones del diálogo.
+				if (hide_buttons == "hay-cerrados") {
+					// Dialogo quitando botones. Mostrando solo un botón Volver. Adecuado para advertencias.
+    	        	modalHtml = '<div class="modal-body">' + message + '</div>';
+        	   	 	modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="cancel()">Volver</button></div>';
+				}
+				// Diálogo con un botón que permita hacer la copia de un problema.
+				else if (hide_buttons == "hay-abiertos") {
+					modalHtml = '<div class="modal-body">' + message + '</div>';
+        	   	 	modalHtml += '<div class="modal-footer" ng-controller="ProblemListCtrl"><button class="btn btn-success" ng-click="copyProblem('+attrs.problema+'); cancel()">Hacer copia</button><button  class="btn btn-warning" ng-click="cancel()">Cancelar</button></div>';
+				}
+				else {
+					// Dialogo habitual.
+    	        	modalHtml = '<div class="modal-body">' + message + '</div>';
+        	   	 	modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="ok()">OK</button><button  class="btn btn-warning" ng-click="cancel()">Cancelar</button></div>';
+				}
 			
-			// Creación del diálogo: con su template HTML y su controlador que gestiona OK y Cancelar
-            var modalInstance = $modal.open({
-              template: modalHtml,
-              controller: ModalInstanceCtrl
-            });
-			// Si se da a ok se ejecuta la función que esté en ng-really-click.
-            modalInstance.result.then(function() {
-              scope.ngReallyClick(); //raise an error : $digest already in progress
-            }, function() {
-              //Modal dismissed
-            });
-            //*/
-            
+				// Creación del diálogo: con su template HTML y su controlador que gestiona OK y Cancelar
+            	var modalInstance = $modal.open({
+            	  template: modalHtml,
+            	  controller: ModalInstanceCtrl
+           	 	});
+	
+				// Si se da a ok se ejecuta la función que esté en ng-really-click.
+            	modalInstance.result.then(function() {
+					scope.ngReallyClick(); //raise an error : $digest already in progress
+				}, function() {
+           		//Modal dismissed
+            	});
+            	//*/
+            }
+			
           });
 
         }

@@ -10,8 +10,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// Crear el mapper para almacenar problemas.
 	$ProblemaMapper = new ProblemaMapper;
 
-	// Caso de problema nuevo
-	if ($problema->id_problema == "Nuevo") {
+	// Caso de problema nuevo o copia
+	if ($problema->id_problema == "Nuevo" or $problema->id_problema == "Copia") {
 
 		// Guardar problema nuevo en base de datos.
 		$ProblemaMapper->InsertProblem($problema);

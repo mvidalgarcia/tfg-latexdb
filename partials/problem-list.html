@@ -14,7 +14,7 @@
               <tr ng-repeat="problema in problemas | filter:query">
                   <td><a ng-click="viewProblem(problema.id_problema)">{{problema.resumen}}</a></td>
                   <td><ul class="list-inline"><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul></td>
-                  <td><a ng-click="editProblem(problema.id_problema)" class="btn btn-small btn-primary"><i class="fa fa-edit"></i> Editar</a></td>
+                  <td><a problema={{problema.id_problema}} hide-dialog-buttons={{hideDialogButtons(problema)}} ng-really-message={{getDialogMsgEdit(problema)}} ng-really-click="editProblem(problema.id_problema)" class="btn btn-small btn-primary"><i class="fa fa-edit"></i> Editar</a></td>
                   <td><a ng-click="deleteProblem(problema.id_problema)" class="btn btn-small btn-danger"><i class="fa fa-trash-o"></i> Borrar</a></td>
               </tr>
           </tbody>

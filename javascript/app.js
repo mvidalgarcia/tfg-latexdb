@@ -23,6 +23,10 @@ problemsCollection.config(['$routeProvider',
              templateUrl: 'partials/problem-details.html',
              controller:  'ProblemDetailsCtrl'
            }).
+       when('/edit/:id_problema/:copy', {
+             templateUrl: 'partials/problem-details.html',
+             controller:  'ProblemDetailsCtrl'
+           }).
        when('/new', {
              templateUrl: 'partials/problem-details.html',
              controller:  'ProblemDetailsCtrl'
