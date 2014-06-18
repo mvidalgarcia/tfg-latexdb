@@ -123,7 +123,7 @@ class DocFinalMapper
 	/******** Funciones auxiliares ********/
 	
 	/* Función que devuelve los ids, posiciones, resúmenes y tags de problemas asociados
-	 * a un documento. */
+	 * a un documento, asi como su puntuación y número de preguntas. */
 	private function FindProblemsByIdDoc($id)
 	{
 		// Obtener datos de problemas asociados al documento.
@@ -137,9 +137,13 @@ class DocFinalMapper
         $STH->execute(); 
         $problemas = $STH->fetchAll();
 
-		// Iterar sobre los ids de problema y almacenar los tags asociados a cada uno.
+        // Iterar sobre los ids de problema y almacenar los tags asociados a cada uno.
+        // TODO: Refactorizar. Esta función tiene mucho código duplicado de problema_mapper
+        // entiendo que en lugar de replicar, debe instanciar un ProblemaMapper y usar
+        // sus funciones
 		foreach($problemas as $problema){
-			$STH = self::$dbh->prepare('SELECT t.nombre FROM problema as prob 
+            // Tags (replicado de ProblemMapper::FindTagsByIdProblem)
+            $STH = self::$dbh->prepare('SELECT t.nombre FROM problema as prob 
 										JOIN problema_tag as pt ON prob.id_problema=pt.id_problema 
 										JOIN tag as t ON pt.id_tag=t.id_tag
 										WHERE pt.id_problema=:id_problema');
@@ -147,7 +151,16 @@ class DocFinalMapper
 			$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');       
 			$STH->execute();
         	$tags = $STH->fetchAll();
-			$problema->tags = $tags;
+            $problema->tags = $tags;
+
+            // Numero de preguntas (replicado de ProblemMapper::GetNumberOfQuestions)
+            // (y de ProblemMapper:GetScore)
+            $STH = self::$dbh->prepare('SELECT count(*) as npreg, sum(puntuacion) as score FROM pregunta WHERE id_problema = :id_problema');
+            $STH->bindParam(':id_problema', $problema->id_problema);
+            $STH->execute();
+            $info = $STH->fetch();
+            $problema->num_preguntas= $info['npreg'];
+            $problema->puntos = $info['score'];
 		}
 
 		return $problemas;

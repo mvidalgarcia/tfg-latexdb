@@ -15,7 +15,7 @@ try
   
 	//RETURN
 	header('Content-type: application/json');
-	echo(json_encode($doc));
+	echo(json_encode($doc, JSON_NUMERIC_CHECK));
 	
 }
 catch(PDOException $e)

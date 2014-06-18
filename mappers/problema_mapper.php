@@ -129,6 +129,10 @@ class ProblemaMapper
 			// Obtener el número de preguntas.
 			$problema->num_preguntas = $this->GetNumberOfQuestions($problema->id_problema);
 
+			// Obtener la puntuación total preguntas.
+			$problema->puntos = $this->GetScore($problema->id_problema);
+
+
 			// Comprobar si pertenece a un documento 'cerrado' o 'publicado'. En ese caso marcar los booleanos.
 			$this->CheckDocBelonging($problema);
 		}
@@ -319,6 +323,17 @@ class ProblemaMapper
         $info = $STH->fetch();
 		return $info['npreg'];
 	}
+
+	// Función que obtiene la puntuación total de un problema
+	private function GetScore($IdProblema)
+	{
+		$STH = self::$dbh->prepare('SELECT sum(puntuacion) as score FROM pregunta WHERE id_problema = :id_problema');
+        $STH->bindParam(':id_problema', $IdProblema);
+		$STH->execute();
+        $info = $STH->fetch();
+		return $info['score'];
+	}
+
 
 	
 	// Función que comprueba si un problema pertenece a un documento 'abierto' o 'cerrado/publicado'
