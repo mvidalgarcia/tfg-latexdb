@@ -112,7 +112,8 @@ class ProblemaMapper
 	
 	/* Función que obtiene toda la información nececesaria para listar 
 	 * todos los problemas. Incluye resúmenes de problemas, tags asociados,
-	 * número de preguntas y si el problema pertenece a un documento cerrado/publicado */
+	 * número de preguntas e ids de documentos abiertos o cerrados/publicados
+	 * asociados a los mismos. */
 	public function FindProblemList()
     {
 		// Obtener todos los ids de problemas y resúmenes
@@ -133,8 +134,10 @@ class ProblemaMapper
 			$problema->puntos = $this->GetScore($problema->id_problema);
 
 
-			// Comprobar si pertenece a un documento 'cerrado' o 'publicado'. En ese caso marcar los booleanos.
-			$this->CheckDocBelonging($problema);
+			// Obtener los ids de documentos 'cerrados/publicados' en los que está presente el problema.
+			$problema->id_docs_cerrados_publicados = $this->GetIdDocs($problema, "published");
+			// Obtener los ids de documentos 'abiertos' en los que está presente el problema.
+			$problema->id_docs_abiertos = $this->GetIdDocs($problema, "open");
 		}
 
 		return $problemas; 
@@ -335,25 +338,25 @@ class ProblemaMapper
 	}
 
 
-	
+	//TODO: BORRAR AL FINALIZAR.
 	// Función que comprueba si un problema pertenece a un documento 'abierto' o 'cerrado/publicado'
 	// para rellenar los booleanos $estaEnDocAbierto o $estaEnDocCerradoPublicado. Estas variables 
 	// son excluyentes. Si está en un documento 'cerrado/publicado' ya no nos interesa si está en un
 	// documento abierto, ya que no se va a poder editar/eliminar de todas maneras.
-	private function CheckDocBelonging($Problema)
+	/*private function CheckDocBelonging($Problema)
 	{
 		// 1º) Comprobar si el problema pertenece a algún documento 'cerrado' o 'publicado'.
 		// Si se da el caso, asignar el valor true al booleano $estaEnDocCerradoPublicado y
 		// el valor false al booleano $estaEnDocAbierto y retornar.
-		$STH = self::$dbh->prepare("SELECT df.estado='publicado' OR df.estado='cerrado' as result
+		$STH = self::$dbh->prepare("SELECT df.estado='publicado' OR df.estado='cerrado' AS result, df.id_doc AS id_doc
 									FROM problema_doc_final AS pdf 
 									JOIN doc_final AS df ON pdf.id_doc = df.id_doc 
-									WHERE id_problema = :id_problema");
+									WHERE pdf.id_problema = :id_problema");
         $STH->bindParam(':id_problema', $Problema->id_problema);
 		$STH->setFetchMode(PDO::FETCH_ASSOC);       
 		$STH->execute();
         $resultados = $STH->fetchAll();
-		//var_dump($resultados);
+		var_dump($resultados);
 		
 		// Si no obtengo ningún resultado quiere decir que el problema no pertenece
 		// a ningún documento. Por lo tanto pongo ambos booleanos a false.
@@ -367,12 +370,15 @@ class ProblemaMapper
 		foreach ($resultados as $item) {
 			// Si encuentro un documento cerrado/publicado al que pertenece el problema
 			// asigno los booleanos y retorno.
-			if ($item["result"] == 1) {
+			if ($item["result"] == 1) { // Doc cerrado/publicado
 				$Problema->estaEnDocCerradoPublicado = true;
 				$Problema->estaEnDocAbierto = false; // Puede que esté pero no me interesa.
 				//echo "Estoy en algún doc publico/cerrado.\n";
+				// Rellenar los ids de los documentos
+				
 				return;
 			}
+			elseif (($item["result"] == 0)
 		}
 		
 		// Si no encuentro ningún documento cerrado/publicado al que pertenece el
@@ -382,6 +388,34 @@ class ProblemaMapper
 		$Problema->estaEnDocAbierto = true;
 		//echo "Estoy solo en docs abiertos.\n";
 		
+	}*/
+
+	// Función que obtiene todos los ids de documentos abiertos o cerrados/publicados en los que esté
+	// el problema pasado como primer parámetro. El segundo parámetro indica el tipo de busqueda que 
+	// debe hacer; "publish": Busca sobre documentos cerrados/publicados, "open": Busca sobre documentos
+	// abiertos. Guarda esos ids en la propia variable del problema.
+	private function GetIdDocs($Problema, $tipo)
+	{
+		if ($tipo == "published") {
+			$STH = self::$dbh->prepare("SELECT pdf.id_doc AS id_doc
+										FROM problema_doc_final AS pdf 
+										JOIN doc_final AS df ON pdf.id_doc = df.id_doc 
+										WHERE pdf.id_problema = :id_problema AND
+											(df.estado = 'cerrado' OR df.estado = 'publicado')");
+		}
+		
+		elseif ($tipo == "open") {
+			$STH = self::$dbh->prepare("SELECT pdf.id_doc AS id_doc
+										FROM problema_doc_final AS pdf 
+										JOIN doc_final AS df ON pdf.id_doc = df.id_doc 
+										WHERE pdf.id_problema = :id_problema AND df.estado = 'abierto'");
+		}
+
+        $STH->bindParam(':id_problema', $Problema->id_problema);
+		$STH->setFetchMode(PDO::FETCH_ASSOC);       
+		$STH->execute();
+        $resultados = $STH->fetchAll();
+		return $resultados;
 	}
 
 }
