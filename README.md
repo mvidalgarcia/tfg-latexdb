@@ -1,5 +1,9 @@
-## Instrucciones para la puesta en marcha de la aplicación.
-Se ha empleado un entorno Linux (Ubuntu Server) para el desarrollo de esta aplicación, con la distribución XAMPP versión 1.8.3-3
+# **Manual de usuario y del instalador.** #
+
+## 1. Instrucciones para instalación de la aplicación.
+* En el desarrollo, pruebas y puesta en marcha de esta aplicación se ha empleado un entorno **Unix/Linux**, concretamente Ubuntu Server 12.04.4 LTS en su versión de 64 bits (se puede descargar [aquí](http://releases.ubuntu.com/precise/), bajo el nombre ``ubuntu-12.04.4-server-amd64.iso``). En cualquier caso, las instrucciones que se explicarán a continuación son válidas para la puesta en marcha de la aplicación en cualquier otra distribución de Unix/Linux actual.  
+  
+* Debido a que parte de la aplicación ha sido desarrollada en el lenguaje de programación **PHP**, el servidor web utilizado ha sido **Apache** y el Sistema de Gestión de Base de Datos utilizado ha sido **MySQL**, se ha optado por utilizar una solución de servidor web "empaquetado" como es XAMPP. XAMPP es multiplataforma e incluye Apache, MySQL, PHP y Pearl en un "todo en uno". Concretamente la versión utilizada ha sido la 1.8.3-3 y se puede descargar de en este [sitio](https://www.apachefriends.org/download.html) para diferentes sistemas operativos, incluido Linux. Sin embargo, se podrían instalar cada uno de los componentes por separado (PHP, Apache y MySQL) en el sistema Linux y los siguiente pasos serían igualmente válidos.
 
 1. En primera instancia hay que crear una base de datos auxiliar llamada 'test', para ello basta con acceder a la línea de comandos de mysql e introducir:  
 `mysql> create database test;`.
