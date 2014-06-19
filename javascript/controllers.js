@@ -50,20 +50,24 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
         $location = $location.path("/new/");
     }
 
+	// Chequea previamente si es un problema que no está en ningún documento
+	// para proseguir con la edición.
+	$scope.mightEditProblem = function(problema) {
+		if (problema.id_docs_cerrados_publicados.length == 0 && problema.id_docs_abiertos.length == 0)
+			$location = $location.path("/edit/" + problema.id_problema);
+	}
+
 	// Función que devuelve el mensaje que se debe mostrar en un diálogo
 	// cuando el usuario trata de editar un problema que pertenece
 	// a un documento 'abierto' o 'cerrado/publicado'.
 	$scope.getDialogMsgEdit = function(problema) {
 		if (angular.isUndefined(problema))
 			return "";
-		// Si no pertenece a ningún documento, el problema puede ser editado.
-		if (problema.id_docs_cerrados_publicados.length == 0 && problema.id_docs_abiertos.length == 0) {
-			return "¿Quiere editar este problema?";
-		}
 		
 		var msg;
 		// Si está en algún documento cerrado o publicado no se permite editarlo
-		// y se informa al usuario en qué documentos aparece el problema.
+		// y se informa al usuario en qué documentos aparece el problema. Se le 
+		// permitirá al usuario realizar una copia del problema.
 		if (problema.id_docs_cerrados_publicados.length > 0) {
 				msg = "Este problema no puede ser editado debido a que pertenece a los documentos con estado 'cerrado' o 'publicado' siguientes: ";
 			for (var i=0; i < problema.id_docs_cerrados_publicados.length; i++) {
@@ -72,18 +76,20 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 					msg += ", ";
 			}
 			msg += ".";
+			msg += "<br><br>Sin embargo, es posible hacer una copia del problema y realizar las modificaciones oportunas sobre ella."
 		}
 		// Si solo está en documentos abiertos, se le informará en cuales
-		// y se le permitirá hacer una copia
+		// y se le permitirá la edición del problema.
 		else if (problema.id_docs_abiertos.length > 0) {
-			msg = "Este problema no puede ser editado debido a que pertenece a los documentos con estado 'abierto' siguientes: ";
+			msg = "Este problema pertenece a los documentos con estado 'abierto' siguientes: ";
 			for (var i=0; i < problema.id_docs_abiertos.length; i++) {
 				msg += problema.id_docs_abiertos[i]["id_doc"];
 				if (i != problema.id_docs_abiertos.length - 1)
 					msg += ", ";
 			}
 			msg += ".";
-			msg += "<br><br>Sin embargo, es posible hacer una copia del problema y realizar las modificaciones oportunas sobre ella."
+			msg += "<br><strong>¿Está seguro que desea modificar su contenido?</strong>"+
+				   "<br><small>Las modificaciones realizadas se verán reflejadas en todos los documentos en los que aparezca este problema.</small>"
 
 		}
 		return msg;
@@ -100,9 +106,9 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 		if (angular.isUndefined(problema))
 			return;
 		else if (problema.id_docs_cerrados_publicados.length > 0)
-			return "hay-cerrados";
-		else if (problema.id_docs_abiertos.length > 0)
-			return "hay-abiertos";		
+			return "permitir-copia";
+		//else if (problema.id_docs_abiertos.length > 0)
+		//	return "hay-abiertos";		
 	}
 
   });
@@ -488,13 +494,13 @@ angular.module('ngReallyClickModule', ['ui.bootstrap'])
 			if (message != "") {
 				var modalHtml;		
 				// Generar un diálogo diferente en función de si hay que cambiar los botones del diálogo.
-				if (hide_buttons == "hay-cerrados") {
+				/*if (hide_buttons == "") {
 					// Dialogo quitando botones. Mostrando solo un botón Volver. Adecuado para advertencias.
     	        	modalHtml = '<div class="modal-body">' + message + '</div>';
         	   	 	modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="cancel()">Volver</button></div>';
 				}
 				// Diálogo con un botón que permita hacer la copia de un problema.
-				else if (hide_buttons == "hay-abiertos") {
+				else*/ if (hide_buttons == "permitir-copia") {
 					modalHtml = '<div class="modal-body">' + message + '</div>';
         	   	 	modalHtml += '<div class="modal-footer" ng-controller="ProblemListCtrl"><button class="btn btn-success" ng-click="copyProblem('+attrs.problema+'); cancel()">Hacer copia</button><button  class="btn btn-warning" ng-click="cancel()">Cancelar</button></div>';
 				}

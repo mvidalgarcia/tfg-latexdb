@@ -4,8 +4,8 @@
         <table class="table table-stripped table-condensed">
             <thead>
                 <tr>
-                    <th style="min-width:120px">Resumen</th>
-                    <th style="min-width:70px"><i class="fa fa-tags"></i> Tags</th>
+                    <th style="min-width:100px">Resumen</th>
+                    <th style="min-width:100px"><i class="fa fa-tags"></i> Tags</th>
                     <th style="width:20px"></th>
                     <th style="width:20px"></th>
                     <th style="width:20px"></th>
@@ -16,14 +16,14 @@
                   <td>{{problema.resumen}}</td>
                   <td><ul class="list-inline"><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul></td>
                   <td><a ng-click="viewProblem(problema.id_problema)" class="btn btn-small btn-info"><i class="fa fa-eye"></i> Ver</a></td>
-                  <td><a problema={{problema.id_problema}} hide-dialog-buttons={{hideDialogButtons(problema)}} ng-really-message={{getDialogMsgEdit(problema)}} ng-really-click="editProblem(problema.id_problema)" class="btn btn-small btn-primary"><i class="fa fa-edit"></i> Editar</a></td>
+                  <td><a problema={{problema.id_problema}} hide-dialog-buttons={{hideDialogButtons(problema)}} ng-really-message={{getDialogMsgEdit(problema)}} ng-really-click="editProblem(problema.id_problema)" ng-click="mightEditProblem(problema)" class="btn btn-small btn-primary"><i class="fa fa-edit"></i> Editar</a></td>
                   <td><a ng-click="deleteProblem(problema.id_problema)" class="btn btn-small btn-danger"><i class="fa fa-trash-o"></i> Borrar</a></td>
               </tr>
           </tbody>
       </table>
     </div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-">
         <!--Sidebar content-->
         <i class="fa fa-search"></i> Filtro: <input size="10" ng-model="query"><span class="btn tag" ng-click="clearQuery()">&times;</span>
     </div>
