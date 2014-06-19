@@ -54,8 +54,9 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 	// para proseguir con la edición.
 	$scope.mightEditProblem = function(problema) {
 		if (problema.id_docs_cerrados_publicados.length == 0 && problema.id_docs_abiertos.length == 0)
-			$location = $location.path("/edit/" + problema.id_problema);
+			$scope.editProblem(problema.id_problema);
 	}
+
 
 	// Función que devuelve el mensaje que se debe mostrar en un diálogo
 	// cuando el usuario trata de editar un problema que pertenece
@@ -94,6 +95,47 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 		}
 		return msg;
 	}
+	
+	
+	// Función que devuelve el mensaje que se debe mostrar en un diálogo
+	// cuando el usuario trata de eliminar un problema que pertenece
+	// a un documento 'abierto' o 'cerrado/publicado'.
+	$scope.getDialogMsgDelete = function(problema) {
+		if (angular.isUndefined(problema))
+			return "";
+		
+		var msg;
+		// Si no está en ningún documento, se le pedirá confirmación al usuario
+		// antes de proceder a eliminarlo.
+		if (problema.id_docs_cerrados_publicados.length == 0 && problema.id_docs_abiertos.length == 0)
+			msg = "¿Está seguro de que quiere eliminar este problema?";
+		// Si está en algún documento cerrado o publicado no se permite eliminarlo
+		// y se informa al usuario en qué documentos aparece el problema.
+		else if (problema.id_docs_cerrados_publicados.length > 0) {
+				msg = "Este problema no puede ser eliminado debido a que pertenece a los documentos con estado 'cerrado' o 'publicado' siguientes: ";
+			for (var i=0; i < problema.id_docs_cerrados_publicados.length; i++) {
+				msg += problema.id_docs_cerrados_publicados[i]["id_doc"];
+				if (i != problema.id_docs_cerrados_publicados.length - 1)
+					msg += ", ";
+			}
+			msg += ".";
+		}
+		// Si solo está en documentos abiertos, tampoco se permite eliminarlo
+		// pero se le dan unas breves indicaciones al usuario sobre como podría
+		// eliminarlo.
+		else if (problema.id_docs_abiertos.length > 0) {
+			msg = "Este problema no puede ser eliminado debido a que pertenece a los documentos con estado 'abierto' siguientes: ";
+			for (var i=0; i < problema.id_docs_abiertos.length; i++) {
+				msg += problema.id_docs_abiertos[i]["id_doc"];
+				if (i != problema.id_docs_abiertos.length - 1)
+					msg += ", ";
+			}
+			msg += ".";
+			msg += "<br><small>Para eliminar este problema debe eliminarlo previamente de los documentos indicados.</small>";
+		}
+		return msg;
+	}
+
 
 	// Función que realiza la copia de un problema cuando acepta el dialogo
 	// el usuario en el caso de que el problema perteneza a documentos abiertos.
@@ -101,15 +143,24 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 		$location = $location.path("/edit/" + id + "/copy" );
 	}
 
-	// Retorna verdadero en el caso de que deba ocultar los botones OK y Cancelar y poner solo Volver.
-	$scope.hideDialogButtons = function(problema) {
+	// Establece que dialogo se debe usar en función de los parámetros de cada problema
+	// al darle al botón editar.
+	$scope.editDialogButtons = function(problema) {
 		if (angular.isUndefined(problema))
 			return;
 		else if (problema.id_docs_cerrados_publicados.length > 0)
 			return "permitir-copia";
-		//else if (problema.id_docs_abiertos.length > 0)
-		//	return "hay-abiertos";		
 	}
+	
+	// Establece que dialogo se debe usar en función de los parámetros de cada problema
+	// al darle al botón borrar.
+	$scope.deleteDialogButtons = function(problema) {
+		if (angular.isUndefined(problema))
+			return;
+		else if (problema.id_docs_cerrados_publicados.length > 0 || problema.id_docs_abiertos.length > 0)
+			return "solo-volver";
+	}
+
 
   });
 
@@ -488,19 +539,19 @@ angular.module('ngReallyClickModule', ['ui.bootstrap'])
 		  element.bind('click', function() {
 			// Mensaje que se muestra en el diálogo. Se escribe en otro atributo ng-really-message.
             var message = attrs.ngReallyMessage || "";
-			var hide_buttons = attrs.hideDialogButtons;
+			var custom_buttons = attrs.customDialogButtons;
 			
 			// Si no se escribe nada en ng-really-message NO se muestra ningún diálogo.
 			if (message != "") {
 				var modalHtml;		
 				// Generar un diálogo diferente en función de si hay que cambiar los botones del diálogo.
-				/*if (hide_buttons == "") {
+				if (custom_buttons == "solo-volver") {
 					// Dialogo quitando botones. Mostrando solo un botón Volver. Adecuado para advertencias.
     	        	modalHtml = '<div class="modal-body">' + message + '</div>';
         	   	 	modalHtml += '<div class="modal-footer"><button class="btn btn-primary" ng-click="cancel()">Volver</button></div>';
 				}
 				// Diálogo con un botón que permita hacer la copia de un problema.
-				else*/ if (hide_buttons == "permitir-copia") {
+				else if (custom_buttons == "permitir-copia") {
 					modalHtml = '<div class="modal-body">' + message + '</div>';
         	   	 	modalHtml += '<div class="modal-footer" ng-controller="ProblemListCtrl"><button class="btn btn-success" ng-click="copyProblem('+attrs.problema+'); cancel()">Hacer copia</button><button  class="btn btn-warning" ng-click="cancel()">Cancelar</button></div>';
 				}
