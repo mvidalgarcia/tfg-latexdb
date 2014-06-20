@@ -352,6 +352,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 	// Rellenar la lista
     $http.get("get_problems_list.php").success(function(data){
         $scope.problemas_bd = data;
+        $scope.actualizar_lista_problemas();
     });
 
     $scope.actualizar_puntuacion = function () {
@@ -363,6 +364,17 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
         }
     }
 
+    $scope.actualizar_lista_problemas = function () {
+        if ($scope.problemas_bd && $scope.doc) {
+            for (var i=0; i<$scope.doc.problemas.length; i++) {
+                for (var j=0; j<$scope.problemas_bd.length; j++) {
+                    if ($scope.problemas_bd[j].id_problema == $scope.doc.problemas[i].id_problema)
+                    $scope.problemas_bd.splice(j,1);
+                }         
+            }
+         }
+    }
+
 
 	// Si recibimos un id_doc, es la vista /edit/:id_doc o la vista /view/:id_doc
     if ($routeParams.id_doc) {
@@ -371,6 +383,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
         $http.get("get_doc.php?id_doc=" + $scope.id_doc).success(function(data){
             $scope.doc = data;
             $scope.actualizar_puntuacion();
+            $scope.actualizar_lista_problemas();
         });
     } else {
         // Si no recibimos un id_doc, es la vista /new-doc
