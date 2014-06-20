@@ -14,7 +14,7 @@ Una vez tenemos nuestro equipo con la distribución de Linux elegida con PHP, Ap
 5. Crear un usuario de base de datos con nick `tfguser` y password `tfgpass`. Esto se puede hacer en la propia línea de comandos de mysql con:  
 `mysql> grant usage on *.* to tfguser@localhost identified by 'tfgpass';`  
 `mysql> grant all privileges on tfgdb.* to tfguser@localhost;`
-6. Ejecutar el script `tfgscript.sql` contenido en la raíz del directorio `tfg` de la aplicación. Para hacerlo, estando dentro de la línea de comandos de mysql, ejecutar el comando `mysql> source /ruta/al/archivo/tfgscript.sql;`
+6. Ejecutar el script `tfgscript.sql` contenido en la raíz del directorio `tfg` de la aplicación. Para hacerlo, estando dentro de la línea de comandos de mysql, ejecutar el comando `mysql> source /ruta/al/archivo/tfgscript.sql;`. Salir de MySQL con `mysql> quit`.
 7. Instalar Twig en el directorio `tfg` donde están todos los ficheros. Para ello hay dos opciones:  
   - Primera opción: Situándose en el directorio `tfg` ejecutar el comando `git clone git://github.com/fabpot/Twig.git`. Para ello es necesario tener instalado Git en tu máquina.  
   - Segunda opción:  
@@ -33,3 +33,4 @@ b. Crear un archivo llamado `composer.json` que contenga:
 	```  
 c. Ejecutar el comando `php composer.phar install`  
 d. Mover el contenido de la carpeta `vendor/twig/twig` a `Twig`
+8. Comprobar la dirección IP de tu máquina (se puede hacer con el comando `ifconfig`) y en un navegador web ir a la dirección `http://mi-ip/tfg`. Si por ejemplo la dirección IP de tu equipo es la `192.168.1.10`, escribir en la barra de direcciones del navegador la dirección `http://192.168.1.19/tfg`. En este momento se debería abrir la página principal de la aplicación web.
