@@ -108,7 +108,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 		// Si no está en ningún documento, se le pedirá confirmación al usuario
 		// antes de proceder a eliminarlo.
 		if (problema.id_docs_cerrados_publicados.length == 0 && problema.id_docs_abiertos.length == 0)
-			msg = "¿Está seguro de que quiere eliminar este problema?";
+			msg = "<strong>¿Está seguro de que quiere eliminar este problema?</strong><br>Una vez eliminado no podrá volver a recuperarlo.";
 		// Si está en algún documento cerrado o publicado no se permite eliminarlo
 		// y se informa al usuario en qué documentos aparece el problema.
 		else if (problema.id_docs_cerrados_publicados.length > 0) {
