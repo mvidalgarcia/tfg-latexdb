@@ -34,13 +34,13 @@
 			<div class="navbar-header">
 				<div class="navbar-collapse collapse" ng-controller="HeaderController">
    		       		<ul class="nav navbar-nav">
+						<li ng-class="{ active: isActive('/list-doc')}" ><a href="#/list-doc">Listado de documentos</a></li>
+						<li><a>|</a></li>
+						<li ng-class="{ active: isActive('/new-doc')}" ><a href="#/new-doc">Documento nuevo</a></li>
+						<li><a>|</a></li>
 						<li ng-class="{ active: isActive('/list')}" ><a href="#/list">Listado de problemas</a></li>
 						<li><a>|</a></li>
-						<li ng-class="{ active: isActive('/new')}" ><a href="#/new">Nuevo problema</a></li>
-						<li><a>|</a></li>
-						<li ng-class="{ active: isActive('/list-doc')}" ><a href="#/list-doc">Listado de documentos finales</a></li>
-						<li><a>|</a></li>
-						<li ng-class="{ active: isActive('/new-doc')}" ><a href="#/new-doc">Nuevo documento final</a></li>
+						<li ng-class="{ active: isActive('/new')}" ><a href="#/new">Problema nuevo</a></li>
 					</ul>
 				</div>
 			</div>
