@@ -12,7 +12,8 @@ class Problema {
 	public $id_docs_cerrados_publicados = array();	// Array que guarda los ids de documentos cerrados/publicados a los que pertenece el problema, si existen
 	public $preguntas = array();					// Composición clase Pregunta
 	public $tags = array();							// Composición clase Tag
-	public $imagenes = array();						// Composición clase Imagen
+    public $imagenes = array();						// Composición clase Imagen
+    public $id_padre;                               // Si el problema ha sido clonado de otro, aquí el id del original. Si no, null
 } 
 
 ?>

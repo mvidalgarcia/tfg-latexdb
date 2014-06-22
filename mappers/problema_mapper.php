@@ -121,7 +121,7 @@ class ProblemaMapper
 	public function FindProblemList()
     {
 		// Obtener todos los ids de problemas y resúmenes
-        $STH = self::$dbh->prepare('SELECT id_problema, resumen FROM problema');
+        $STH = self::$dbh->prepare('SELECT id_problema, resumen, id_padre FROM problema');
 		$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Problema');       
 		$STH->execute();
         $problemas = $STH->fetchAll();
