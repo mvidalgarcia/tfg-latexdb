@@ -29,23 +29,32 @@
 </head>
 <body>
 	<!-- Menú de navegación -->
-	<div class="navbar navbar-inverse navbar-fixed-top menu" role="navigation">
+	<div class="navbar navbar-fixed-top navbar-inverse menu" role="navigation" ng-controller="HeaderController">
 		<div class="container">
-			<div class="navbar-header">
-				<div class="navbar-collapse collapse" ng-controller="HeaderController">
-   		       		<ul class="nav navbar-nav">
-						<li ng-class="{ active: isActive('/list')}" ><a href="#/list">Listado de problemas</a></li>
-						<li><a>|</a></li>
-						<li ng-class="{ active: isActive('/new')}" ><a href="#/new">Nuevo problema</a></li>
-						<li><a>|</a></li>
-						<li ng-class="{ active: isActive('/list-doc')}" ><a href="#/list-doc">Listado de documentos finales</a></li>
-						<li><a>|</a></li>
-						<li ng-class="{ active: isActive('/new-doc')}" ><a href="#/new-doc">Nuevo documento final</a></li>
-					</ul>
-				</div>
-			</div>
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" ng-click="isCollapsed = !isCollapsed">
+                    <span class="sr-only">Mostrar menú</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="#" class="navbar-brand">AppName</a>
+            </div>
+            <div class="navbar-collapse collapse" collapse="isCollapsed">
+                <ul class="nav navbar-nav">
+                    <li ng-class="{ active: isActive('/list-doc')}" ><a href="#/list-doc">Listado de documentos</a></li>
+                    <li class="hidden-sm hidden-xs"><a>|</a></li>
+                    <li ng-class="{ active: isActive('/new-doc')}" ><a href="#/new-doc">Documento nuevo</a></li>
+                    <li class="hidden-sm hidden-xs"><a>|</a></li>
+                    <li ng-class="{ active: isActive('/list')}" ><a href="#/list">Listado de problemas</a></li>
+                    <li class="hidden-sm hidden-xs"><a>|</a></li>
+                    <li ng-class="{ active: isActive('/new')}" ><a href="#/new">Problema nuevo</a></li>
+                </ul>
+            </div>
 		</div>
 	</div>
+
 	<div class="container" ng-view></div>   
+
 </body>
 </html>

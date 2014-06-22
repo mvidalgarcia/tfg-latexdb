@@ -523,6 +523,9 @@ function HeaderController($scope, $location)
     $scope.isActive = function (viewLocation) { 
         return viewLocation === $location.path();
     };
+
+    $scope.isCollapsed =true;
+
 }
 
 // Directiva para crear diálogos. Permite ejecutar una función cuando se da a OK.

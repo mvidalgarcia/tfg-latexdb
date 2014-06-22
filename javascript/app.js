@@ -55,6 +55,6 @@ problemsCollection.config(['$routeProvider',
                templateUrl: 'partials/doc-delete.html',
            }).
 	   otherwise({
-             redirectTo: '/list'
+             redirectTo: '/list-doc'
           });
     }]);
