@@ -303,24 +303,25 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location)
         $location = $location.path("/new-doc/");
     }
 	
-	// Función que retorna un mensaje mostrado en un "bocadillo"
-	// cuando se pasa el ratón por encima del botón Borrar 
-	// en el caso de que el documento no esté cerrado/publicado.
-	$scope.showPopBorrar = function (estado) {
-    	if (estado != "abierto")
-			return "Solo se pueden borrar abiertos!";
-		else
-			return "";
-	}
+// Función que envía la información necesaria al servidor para que este genere y
+// permita al usuario descargar los ficheros LaTeX correspondientes al documento seleccionado.
+	$scope.downloadDoc = function (id) {
+			
+		var info = {"id_doc":id, 
+					"con_soluciones": $("#con-soluciones"+id).is(':checked'), 
+					"con_explicaciones":$("#con-explicaciones"+id).is(':checked')};
 
-	// Función que retorna un mensaje mostrado en un "bocadillo"
-	// cuando se pasa el ratón por encima del botón Editar 
-	// en el caso de que el documento no esté cerrado/publicado.
-	$scope.showPopEditar = function (estado) {
-    	if (estado != "abierto")
-			return "Solo se pueden editar abiertos!";
-		else
-			return "";
+		$http.post("generar_examen.php", info).success(function(data){
+        	console.log("Descargando el documento " + id + ".");
+			console.log("Con soluciones: " + $("#con-soluciones"+id).is(':checked'))	
+			console.log("Con explicaciones: " + $("#con-explicaciones"+id).is(':checked'))
+        	// Volcar a consola la respuesta del servidor
+			console.log(data);
+    	})
+		.error(function(data){
+			console.log("Error al descargar el documento " + id + ".");
+		});
+
 	}
 	
 	// Función que gestiona los eventos de cambio de estado de los documentos
