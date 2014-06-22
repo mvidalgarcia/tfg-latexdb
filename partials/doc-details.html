@@ -52,7 +52,7 @@
                             <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas">
                                {{problema.resumen}}
                                &nbsp;<span class="label label-success pull-right">{{problema.puntos}}</span>
-								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul>
+								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag cursor-pointer" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul>
 							</li>
 						
          				 </ol>
@@ -71,7 +71,7 @@
                                  ng-repeat="problema in problemas_bd" 
                                  ng-show="elegido(problema)">{{problema.resumen}}
                                  &nbsp;<span class="label label-warning pull-right">{{problema.puntos}}</span>
-								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)"> {{tag.nombre}}</li></ul>
+								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag cursor-pointer" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)"> {{tag.nombre}}</li></ul>
 							</div>
 
           				</div>

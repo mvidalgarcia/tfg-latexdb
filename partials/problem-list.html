@@ -14,7 +14,7 @@
             <tbody>
               <tr ng-repeat="problema in problemas | filter:query">
                   <td>{{problema.resumen}}</td>
-                  <td><ul class="list-inline"><li class="tag" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul></td>
+                  <td><ul class="list-inline"><li class="tag cursor-pointer" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul></td>
                   <td><a ng-click="viewProblem(problema.id_problema)" class="btn btn-small btn-info"><i class="fa fa-eye"></i> Ver</a></td>
                   <td><a problema={{problema.id_problema}} custom-dialog-buttons={{editDialogButtons(problema)}} ng-really-message={{getDialogMsgEdit(problema)}}
 						 ng-really-click="editProblem(problema.id_problema)" ng-click="mightEditProblem(problema)" class="btn btn-small btn-primary">

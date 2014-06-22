@@ -27,7 +27,17 @@
 						</span>
 						<span ng-really-message="<strong>¿Está seguro de que quiere cambiar el documento al estado 'publicado'?</strong><br><br><small>Una vez realizada esta acción no se podrá volver a cambiar el estado de este documento.</small>" ng-really-click="changeStatus(doc, 'publicado')">
 							<a popover="Pasar al estado publicado" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='cerrado'}"><i class="fa fa-globe"></i> Publicar</a>
-						</div>
+						</span><p></p>
+						<span ng-really-message="<strong>¿Quiere descargar los ficheros LaTeX de este documento?</strong>" ng-really-click="downloadDoc(doc.id_doc)">
+							<a class="btn btn-default"><i class="fa fa-download"></i> Descargar LaTeX</a>
+						</span>
+						<label class="checkbox-inline">
+						  <input type="checkbox" id="con-soluciones{{doc.id_doc}}"> Con soluciones
+						</label>
+						<label class="checkbox-inline">
+						  <input type="checkbox" id="con-explicaciones{{doc.id_doc}}"> Con explicaciones
+						</label>
+
 				  </td>
                   <td><ul class="list-inline"><li class="estado {{doc.estado}} cursor-pointer" ng-click="filterState(doc.estado)">{{doc.estado}}</li></ul></td>
                   <td><a ng-click="viewDoc(doc.id_doc)" class="btn btn-small btn-info" ><i class="fa fa-eye"></i> Ver</a></td>
