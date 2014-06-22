@@ -124,10 +124,26 @@ class DocFinalMapper
 
 	/* Función que obtiene toda la información necesaria para
 	 * generar un documento */
-	/*public GetGenerationInfoDoc($IdDoc)
+	public function GetTeXInfoDoc($IdDoc)
 	{
+		// Obtener los datos comunes del documento necesarios para la generacion del TeX.
+		$STH = self::$dbh->prepare('SELECT asignatura, convocatoria, instrucciones, fecha 
+									FROM doc_final 
+									WHERE id_doc = :id');
+        $STH->bindParam(':id', $IdDoc);
+        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'DocFinal');  
+        $STH->execute(); 
+        $doc = $STH->fetch();
 		
-	}*/
+		// Obtener datos comunes de los problemas asociados.
+		$doc->problemas = $this->FindProblemsByIdDoc($IdDoc);
+
+		// Para cada uno de los problemas, obtener los campos de sus preguntas.
+		foreach ($doc->problemas as $problema)
+			$problema->preguntas = ProblemaMapper::FindQuestionsByIdProblem($problema->id_problema);
+
+		return $doc;
+	}
 
 
 	/******** Funciones auxiliares ********/
@@ -137,7 +153,7 @@ class DocFinalMapper
 	private function FindProblemsByIdDoc($id)
 	{
 		// Obtener datos de problemas asociados al documento.
-		$STH = self::$dbh->prepare('SELECT pdoc.id_problema, pdoc.posicion, prob.resumen 
+		$STH = self::$dbh->prepare('SELECT pdoc.id_problema, pdoc.posicion, prob.resumen, prob.enunciado_general 
 									FROM problema_doc_final AS pdoc 
 									JOIN problema AS prob ON pdoc.id_problema=prob.id_problema 
 									WHERE id_doc=:id 
@@ -150,8 +166,9 @@ class DocFinalMapper
         // Iterar sobre los ids de problema y almacenar los tags asociados a cada uno.
 		foreach($problemas as $problema){
 			$problema->tags = ProblemaMapper::FindTagsByIdProblem($problema->id_problema); 
-			$problema->num_preguntas= ProblemaMapper::GetNumberOfQuestions($problema->id_problema);
+			$problema->num_preguntas = ProblemaMapper::GetNumberOfQuestions($problema->id_problema);
             $problema->puntos = ProblemaMapper::GetScore($problema->id_problema);
+			//TODO: Habría que recoger las imágenes también.
 		}
 
 		return $problemas;

@@ -82,30 +82,13 @@ class ProblemaMapper
         $problema = $STH->fetch();
 		
 		// Obtener datos preguntas
-		$STH = self::$dbh->prepare('SELECT preg.id_pregunta, preg.enunciado, preg.solucion, 
-											preg.explicacion, preg.puntuacion, preg.posicion 
-											FROM pregunta as preg WHERE id_problema = :id
-											ORDER BY preg.posicion');
-        $STH->bindParam(':id', $id);
-        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
-        $STH->execute(); 
-        $preguntas = $STH->fetchAll();
-
+		$problema->preguntas = $this->FindQuestionsByIdProblem($id);
+		
 		//Obtener nombres de tags
-		$STH = self::$dbh->prepare('SELECT tag.nombre 
-									FROM problema_tag as ptag 
-										JOIN tag ON ptag.id_tag = tag.id_tag 
-									WHERE id_problema = :id');
-        $STH->bindParam(':id', $id);
-        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');  
-        $STH->execute(); 
-        $tags = $STH->fetchAll();
+		$problema->tags = $this->FindTagsByIdProblem($id);
 
 		//TODO: Seguramente haya que obtener las imágenes.
 	
-		$problema->preguntas = $preguntas;
-		$problema->tags = $tags;
-
 		// Obtener los ids de documentos a los que pertence el problema.
 		$problema->id_docs_cerrados_publicados = $this->GetIdDocs($problema, "published");
 		$problema->id_docs_abiertos = $this->GetIdDocs($problema, "open");
@@ -214,6 +197,23 @@ class ProblemaMapper
 
 	/******** Funciones auxiliares ********/
 
+	// Función que obtiene todos los datos de las preguntas asociadas
+	// a un problema.
+	public function FindQuestionsByIdProblem($IdProblema)
+	{
+		// Obtener datos preguntas
+		$STH = static::$dbh->prepare('SELECT preg.id_pregunta, preg.enunciado, preg.solucion, 
+											preg.explicacion, preg.puntuacion, preg.posicion 
+											FROM pregunta as preg WHERE id_problema = :id
+											ORDER BY preg.posicion');
+        $STH->bindParam(':id', $IdProblema);
+        $STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Pregunta');  
+        $STH->execute(); 
+        $preguntas = $STH->fetchAll();
+		return $preguntas;
+	}
+
+
 	// Función que guarda una pregunta en base de datos con su id de problema asociado.
 	private function InsertPregunta($Pregunta, $IdProblema)
     {
@@ -248,10 +248,10 @@ class ProblemaMapper
 	// Función que busca todos los tags de un problema por el id problema.
 	public function FindTagsByIdProblem($IdProblema)
     {
-		$STH = static::$dbh->prepare('SELECT t.nombre FROM problema as prob 
-									JOIN problema_tag as pt ON prob.id_problema=pt.id_problema 
-									JOIN tag as t ON pt.id_tag=t.id_tag
-									WHERE pt.id_problema=:id_problema');
+		$STH = static::$dbh->prepare('SELECT tag.nombre 
+									FROM problema_tag as ptag 
+										JOIN tag ON ptag.id_tag = tag.id_tag 
+									WHERE id_problema = :id_problema');
         $STH->bindParam(':id_problema', $IdProblema);
 		$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');       
 		$STH->execute();

@@ -1,0 +1,30 @@
+% Este archivo usa sintaxis latex. El tanto por ciento es el inicio de comentario
+%
+% Lo que va entre doble-llave ya no es latex, sino nombres de variables que deben 
+% sustituirsei por sus valores concretos para un examen concreto
+\documentclass[9pt, twoside]{extarticle}
+% Un mismo esquema puede generar examen resuelto o no, según
+% las opciones que pasen al cargar el paquete "examen"
+
+  \usepackage[solucion]{examen}
+
+% La carga del paquete examen (más arriba), define un montón de nuevos
+% comandos latex que simplifican el escribir examenes. Aquí usamos
+% algunos de ellos, otros se usan en los ficheros de problemas
+\Asignatura{ Sistemas Distribuidos }
+\Convocatoria{ Extraordinaria de Enero: 17/01/2014 }
+\Tipo{A} % Es la letra que sale en una esquina
+
+\TextoIntroductorio{ Todas las preguntas valen igual, bla bla... }
+
+\begin{document}
+% El documento principal no es más que una serie de comandos \input
+% para incluir los problemas de los que se compone el examen, cada
+% uno de los cuales estaría en un fichero aparte. 
+
+\input{ foo-bar-4-1237 }
+\input{ foo-bar-3-6381 }
+\input{ bar-foo-3-3284 }
+\input{ fro-bra-4-0128 }
+\input{ faa-bor-1-3634 }
+\end{document}
