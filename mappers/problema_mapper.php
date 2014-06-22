@@ -7,7 +7,7 @@ require_once("./singleton_db.php");
 
 class ProblemaMapper
 {
-    protected static $dbh;
+    public static $dbh;
         
 	function __construct() 
     {  
@@ -179,8 +179,6 @@ class ProblemaMapper
         $STH->bindParam(':id_problema', $IdProblema);
         $STH->execute(); 
 		
-		// TODO: Cuando se implemente la parte de doc_final-problema hay que tener en cuenta
-		// cuando se borren problemas que pertenezcan a un doc_final
     }
 
 
@@ -248,9 +246,9 @@ class ProblemaMapper
     }
 
 	// Función que busca todos los tags de un problema por el id problema.
-	private function FindTagsByIdProblem($IdProblema)
+	public function FindTagsByIdProblem($IdProblema)
     {
-		$STH = self::$dbh->prepare('SELECT t.nombre FROM problema as prob 
+		$STH = static::$dbh->prepare('SELECT t.nombre FROM problema as prob 
 									JOIN problema_tag as pt ON prob.id_problema=pt.id_problema 
 									JOIN tag as t ON pt.id_tag=t.id_tag
 									WHERE pt.id_problema=:id_problema');
@@ -322,9 +320,9 @@ class ProblemaMapper
 
 
 	// Función que obtiene el número de preguntas de un problema.
-	private function GetNumberOfQuestions($IdProblema)
+	public function GetNumberOfQuestions($IdProblema)
 	{
-		$STH = self::$dbh->prepare('SELECT count(*) as npreg FROM pregunta WHERE id_problema = :id_problema');
+		$STH = static::$dbh->prepare('SELECT count(*) as npreg FROM pregunta WHERE id_problema = :id_problema');
         $STH->bindParam(':id_problema', $IdProblema);
 		$STH->execute();
         $info = $STH->fetch();
@@ -332,9 +330,9 @@ class ProblemaMapper
 	}
 
 	// Función que obtiene la puntuación total de un problema
-	private function GetScore($IdProblema)
+	public function GetScore($IdProblema)
 	{
-		$STH = self::$dbh->prepare('SELECT sum(puntuacion) as score FROM pregunta WHERE id_problema = :id_problema');
+		$STH = static::$dbh->prepare('SELECT sum(puntuacion) as score FROM pregunta WHERE id_problema = :id_problema');
         $STH->bindParam(':id_problema', $IdProblema);
 		$STH->execute();
         $info = $STH->fetch();
@@ -342,62 +340,6 @@ class ProblemaMapper
 	}
 
 
-	//TODO: BORRAR AL FINALIZAR.
-	// Función que comprueba si un problema pertenece a un documento 'abierto' o 'cerrado/publicado'
-	// para rellenar los booleanos $estaEnDocAbierto o $estaEnDocCerradoPublicado. Estas variables 
-	// son excluyentes. Si está en un documento 'cerrado/publicado' ya no nos interesa si está en un
-	// documento abierto, ya que no se va a poder editar/eliminar de todas maneras.
-	/*private function CheckDocBelonging($Problema)
-	{
-		// 1º) Comprobar si el problema pertenece a algún documento 'cerrado' o 'publicado'.
-		// Si se da el caso, asignar el valor true al booleano $estaEnDocCerradoPublicado y
-		// el valor false al booleano $estaEnDocAbierto y retornar.
-		$STH = self::$dbh->prepare("SELECT df.estado='publicado' OR df.estado='cerrado' AS result, df.id_doc AS id_doc
-									FROM problema_doc_final AS pdf 
-									JOIN doc_final AS df ON pdf.id_doc = df.id_doc 
-									WHERE pdf.id_problema = :id_problema");
-        $STH->bindParam(':id_problema', $Problema->id_problema);
-		$STH->setFetchMode(PDO::FETCH_ASSOC);       
-		$STH->execute();
-        $resultados = $STH->fetchAll();
-		var_dump($resultados);
-		
-		// Si no obtengo ningún resultado quiere decir que el problema no pertenece
-		// a ningún documento. Por lo tanto pongo ambos booleanos a false.
-		if (empty($resultados)) {
-			$Problema->estaEnDocCerradoPublicado = false;
-			$Problema->estaEnDocAbierto = false;
-			//echo "No tengo docs asociados.\n";
-			return;
-		}
-
-		foreach ($resultados as $item) {
-			// Si encuentro un documento cerrado/publicado al que pertenece el problema
-			// asigno los booleanos y retorno.
-			if ($item["result"] == 1) { // Doc cerrado/publicado
-				$Problema->estaEnDocCerradoPublicado = true;
-				$Problema->estaEnDocAbierto = false; // Puede que esté pero no me interesa.
-				//echo "Estoy en algún doc publico/cerrado.\n";
-				// Rellenar los ids de los documentos
-				
-				return;
-			}
-			elseif (($item["result"] == 0)
-		}
-		
-		// Si no encuentro ningún documento cerrado/publicado al que pertenece el
-		// problema (pero en cambio, si obtengo resultados de pertenecer a problemas)
-		// entonces es que pertenece a algún documento abierto.
-		$Problema->estaEnDocCerradoPublicado = false;
-		$Problema->estaEnDocAbierto = true;
-		//echo "Estoy solo en docs abiertos.\n";
-		
-	}*/
-
-	// Función que obtiene todos los ids de documentos abiertos o cerrados/publicados en los que esté
-	// el problema pasado como primer parámetro. El segundo parámetro indica el tipo de busqueda que 
-	// debe hacer; "publish": Busca sobre documentos cerrados/publicados, "open": Busca sobre documentos
-	// abiertos. Guarda esos ids en la propia variable del problema.
 	private function GetIdDocs($Problema, $tipo)
 	{
 		if ($tipo == "published") {

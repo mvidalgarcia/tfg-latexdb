@@ -2,11 +2,12 @@
 
 require_once("./model/problema.php");
 require_once("./model/doc_final.php");
+require_once("./mappers/problema_mapper.php");
 require_once("./singleton_db.php");
 
 class DocFinalMapper
 {
-    protected static $dbh;
+    public static $dbh;
         
 	function __construct() 
     {  
@@ -14,8 +15,8 @@ class DocFinalMapper
     }
 	
 
-	/* Función que obtiene toda la información nececesaria de un problema 
-	 * incluyendo sus preguntas y sus tags asociados */
+	/* Función que obtiene toda la información nececesaria de un documento 
+	 * final, incluyendo sus problemas asociados */
 	public function FindDocById($id)
     {
         // Obtener datos comunes del documento.
@@ -25,6 +26,7 @@ class DocFinalMapper
         $STH->execute(); 
         $doc = $STH->fetch();
 		
+		// Obtener problemas asociados
 		$problemas = $this->FindProblemsByIdDoc($id);
 
 		$doc->problemas = $problemas;
@@ -118,6 +120,14 @@ class DocFinalMapper
         $STH->bindParam(':id_doc', $IdDoc);
 		$STH->execute();
 	}
+	
+
+	/* Función que obtiene toda la información necesaria para
+	 * generar un documento */
+	/*public GetGenerationInfoDoc($IdDoc)
+	{
+		
+	}*/
 
 
 	/******** Funciones auxiliares ********/
@@ -138,29 +148,10 @@ class DocFinalMapper
         $problemas = $STH->fetchAll();
 
         // Iterar sobre los ids de problema y almacenar los tags asociados a cada uno.
-        // TODO: Refactorizar. Esta función tiene mucho código duplicado de problema_mapper
-        // entiendo que en lugar de replicar, debe instanciar un ProblemaMapper y usar
-        // sus funciones
 		foreach($problemas as $problema){
-            // Tags (replicado de ProblemMapper::FindTagsByIdProblem)
-            $STH = self::$dbh->prepare('SELECT t.nombre FROM problema as prob 
-										JOIN problema_tag as pt ON prob.id_problema=pt.id_problema 
-										JOIN tag as t ON pt.id_tag=t.id_tag
-										WHERE pt.id_problema=:id_problema');
-        	$STH->bindParam(':id_problema', $problema->id_problema);
-			$STH->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Tag');       
-			$STH->execute();
-        	$tags = $STH->fetchAll();
-            $problema->tags = $tags;
-
-            // Numero de preguntas (replicado de ProblemMapper::GetNumberOfQuestions)
-            // (y de ProblemMapper:GetScore)
-            $STH = self::$dbh->prepare('SELECT count(*) as npreg, sum(puntuacion) as score FROM pregunta WHERE id_problema = :id_problema');
-            $STH->bindParam(':id_problema', $problema->id_problema);
-            $STH->execute();
-            $info = $STH->fetch();
-            $problema->num_preguntas= $info['npreg'];
-            $problema->puntos = $info['score'];
+			$problema->tags = ProblemaMapper::FindTagsByIdProblem($problema->id_problema); 
+			$problema->num_preguntas= ProblemaMapper::GetNumberOfQuestions($problema->id_problema);
+            $problema->puntos = ProblemaMapper::GetScore($problema->id_problema);
 		}
 
 		return $problemas;
