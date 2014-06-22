@@ -238,7 +238,7 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 		$http.post("save_problem.php", p).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
-        	$location = $location.path("/list/");
+			window.history.back();
     	})
 		.error(function(data){
 			console.log("Error al guardar problema.");
