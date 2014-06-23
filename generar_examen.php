@@ -18,7 +18,7 @@ try
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$postdata = file_get_contents("php://input");
 		$info = json_decode($postdata);
-		$id_doc = $info->id_doc;
+        $id_doc = $info->id_doc;
     	
 		// Crear el mapper para obtener todos los datos necesarios del documento.
 		$DocFinalMapper = new DocFinalMapper;
@@ -58,9 +58,18 @@ try
 		// Nombre del fichero del estilo Asignatura-Fecha
 		$nombre_examen = $fulldoc->asignatura . "-" . $fulldoc->fecha;
 		$nombre_examen_tex = $nombre_examen . ".tex";
-		
+
+
+        // Crear nombre para carpeta temporal
+        $tmp_folder = tempnam(sys_get_temp_dir(), "TEX");
+        // Lo anterior crea un fichero temporal de nombre único, tenemos que borrarlo
+        // para crear una carpeta usando ese mismo nombre, que será del tipo /tmp/TEXaAuiq/
+        unlink($tmp_folder);
+        mkdir($tmp_folder);
+        // Cambiar a esa carpeta para trabajar localmente, sin tener que poner rutas absolutas
+        chdir($tmp_folder);
 		// Escribir fichero 'maestro' en disco.
-		$f = fopen("/tmp/" . $nombre_examen_tex, "w"); //Documento 'maestro'
+		$f = fopen($nombre_examen_tex, "w"); //Documento 'maestro'
 		fwrite($f, $examen);
 		fclose($f);
 		
@@ -68,21 +77,42 @@ try
 		$zip = new ZipArchive();
 		// Nombre del zip del estilo Asignatura-Fecha_Timestamp.zip
 		$nombre_examen_zip = $nombre_examen . '_' . date('Ymd') . '.zip';
-		if ($zip->open("/tmp/" . $nombre_examen_zip, ZIPARCHIVE::CREATE) == TRUE) {
-   			// Añadir fichero "maestro"
-			$zip->addFile("/tmp/" . $nombre_examen_tex);
-	    	$zip->close();
-    		echo 'Zip creado correctamente.';
+		if ($zip->open($nombre_examen_zip, ZIPARCHIVE::CREATE) == TRUE) {
+            // Añadir fichero "maestro"
+            // El segundo parámetro es el nombre que tendrá el fichero dentro del zip. 
+            // Es necesario ponerlo para resolver problemas de encoding, ya que el formato
+            // zip no admite nombres de fichero en utf8, sino en CP850 (MS-DOS)
+			$zip->addFile($nombre_examen_tex, iconv("utf-8", "cp850", $nombre_examen_tex));
+            $zip->close();
+
+            // Subir el zip a la carpeta superior de la temporal
+            copy ($nombre_examen_zip, "../" . $nombre_examen_zip);
+            // Y borrar la carpeta temporal
+            $ficheros = scandir(".");
+            foreach ($ficheros as $fichero) unlink($fichero);
+            chdir("..");
+            rmdir($tmp_folder);
+
+            // Enviar al navegador una respuesta en JSON que incluya
+            // una URL de la cual descargar el resultado
+            $respuesta = array(
+                "status" => "OK",
+                "url" => "get_zip.php?name=" . sys_get_temp_dir() . "/" . $nombre_examen_zip
+            );
 		} else {
-   			echo 'Fallo en la creación del zip.';
+            $respuesta = array(
+                "status" => "Error en la creación del zip",
+                "url" => NULL
+            );
 		}
 
-		// Provocar la descarga en el navegador.
-		sendFileToBrowser("/tmp/" . $nombre_examen_zip);
+        // Enviar la respuesta
+        header('Content-type: application/json');
+        echo(json_encode($respuesta, JSON_NUMERIC_CHECK));
+
 
 		// Borrar ficheros
-		//unlink("/tmp/" . $nombre_examen_tex);	
-		//unlink("/tmp/" . $nombre_examen_zip);	
+		// unlink("/tmp/" . $nombre_examen_tex);	
 	}
 }
 catch(PDOException $e)
@@ -90,14 +120,4 @@ catch(PDOException $e)
     echo $e->getMessage();
 }
 
-
-// Función para enviar el fichero al navegador para que se inicie la descarga del zip.
-function sendFileToBrowser($filepath) {
-	header('Content-Type: application/zip');
-	header('Content-Disposition: attachment; filename="'.basename($filepath).'"');
-	header('Content-Length: ' . filesize($filepath));
-	ob_flush();
-	ob_clean(); 
-	readfile($filepath);
-}
 ?>
