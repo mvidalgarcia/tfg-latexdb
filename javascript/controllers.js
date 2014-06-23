@@ -451,8 +451,26 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 
     // Esta función es llamada cuando cambia el valor de la query (via ng-change)
     // para actualizar la lista de los que encajan en el filtro
+    //
+    // Esta función implementa la siguiente sintaxis de queries
+    // La query se compone de varias palabras separadas por espacios. Para cada una de ellas:
+    // - Si comienza por + o #, se omite este primer carácter y resto se considera un tag
+    // - En otro caso no se considera tag
+    // Los términos considerados tags deben aparecer en la lista de tags del problema
+    // Los no considerados tags deben aparecer en cualquier otra cadena del problema (ej:su resumen)
+    // El problema es elegido si supera **todas** las palabras de la query
+    //
+    // Así por ejemplo, la query "+C +fi prog" encajará con todos los problemas que tengan tags
+    // que contengan "C" y "fi" y además tengan "prog" en su resumen (o tags)
     $scope.filtrar = function () {
-        $scope.vars.elegidos = $filter("filter")($scope.problemas_bd, $scope.vars.query);
+        var queries = $scope.vars.query.split(" ");
+        $scope.vars.elegidos = $scope.problemas_bd;
+        for (var i=0; i<queries.length; i++) {
+            if (queries[i].indexOf("#")==0 || queries[i].indexOf("+")==0) 
+                $scope.vars.elegidos = $filter("filter")($scope.vars.elegidos, {'tags': queries[i].slice(1)});
+            else
+                $scope.vars.elegidos = $filter("filter")($scope.vars.elegidos, queries[i]);
+        }
     }
 
     // Esta función retorna true si el problema debe mostrarse en la lista
