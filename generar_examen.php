@@ -38,13 +38,16 @@ try
 	    // Esto debería salir de la base de datos, dado el id_documento
     	// y otros parámetros que puedan recibirse por POST
 	    $examenEjemplo = array(
-        	"con_respuestas" => $info->con_soluciones,
-       		"con_explicaciones" => $info->con_explicaciones,
         	"asignatura" => $fulldoc->asignatura,
         	"convocatoria" => $fulldoc->convocatoria,
         	"fecha" => $fulldoc->fecha,
         	"instrucciones" => $fulldoc->instrucciones
-    	);
+        );
+        $opciones = "examen";
+        if ($info->con_soluciones) $opciones .= ",solucion";
+        if ($info->con_explicaciones) $opciones .= ",explicacion";
+
+        $examenEjemplo["opciones"] = $opciones;
     	$examenEjemplo["problemas"] = array();
    		$examenEjemplo["problemas"][0] = array("filename" => "foo-bar-4-1237");
     	$examenEjemplo["problemas"][1] = array("filename" => "foo-bar-3-6381");

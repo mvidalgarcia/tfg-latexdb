@@ -6,13 +6,7 @@
 % Un mismo esquema puede generar examen resuelto o no, según
 % las opciones que pasen al cargar el paquete "examen"
 
-{% if con_respuestas %}
-  \usepackage[solucion]{examen}
-{% elseif con_explicacion %}
-  \usepackage[solucion,explicacion]{examen}
-{% else %}
-  \usepackage[examen]{examen}
-{% endif %}
+\usepackage[{{opciones}}]{examen}
 
 % La carga del paquete examen (más arriba), define un montón de nuevos
 % comandos latex que simplifican el escribir examenes. Aquí usamos
