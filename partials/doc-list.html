@@ -5,8 +5,9 @@
             <!--Sidebar content-->
             <form class="navbar-search">
                 <i class="fa fa-search search-icon"></i>
-                <input type="text" class="search-query" ng-model="query" placeholder="Filtrar">
-                <span class="btn tag" ng-click="clearQuery()">&times;</span>
+                <input type="text" class="search-query" ng-change="filtrar()" ng-model="vars.query" 
+                placeholder="Filtrar" tabindex="1" accesskey="f">
+                <span class="btn tag" ng-click="clearQuery()" accesskey="c">&times;</span>
             </form>
         </div>
         <table class="table table-stripped table-condensed">
@@ -20,7 +21,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="doc in docs | filter:query">
+                <tr ng-repeat="doc in docs" 
+                    ng-show="elegido(doc)">
                   <td>	<div class="doc-label">
 							<span class="label label-default cursor-pointer" ng-click="filterState(doc.titulacion)">{{doc.titulacion}}</span>
 							<span class="label label-default cursor-pointer" ng-click="filterState(doc.asignatura)">{{doc.asignatura}}</span>

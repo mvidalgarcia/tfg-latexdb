@@ -8,18 +8,49 @@ var problemsControllers = angular.module("problemsControllers", ['ui.bootstrap',
 // Controlador para la vista de lista de problemas
 // Carga la lista inicial (por GET al servidor) y define funciones
 // de respuesta a los diferentes botones
-problemsControllers.controller('ProblemListCtrl', function($scope, $http, $location) {
+problemsControllers.controller('ProblemListCtrl', function($scope, $http, $location, $filter) {
     // Rellenar la lista
     $http.get("get_problems_list.php").success(function(data){
         $scope.problemas = data;
     });
 
+    $scope.vars = {'query': "" }; 
+
+    // Retorna la lista de los problemas elegidos por lo que hay en el query
+    // El query se interpreta como una serie de términos separados por espacios
+    // Si un término comienza por # o + se busca sólo en la lista de tags
+    // Esta función debe ser llamada cada vez que cambie la query
+    $scope.filtrar = function () {
+        var queries = $scope.vars.query.split(" ");
+        $scope.vars.elegidos = $scope.problemas;
+        for (var i=0; i<queries.length; i++) {
+            if (queries[i]==" ") continue;
+            if (queries[i].indexOf("#")==0 || queries[i].indexOf("+")==0) 
+                $scope.vars.elegidos = $filter("filter")($scope.vars.elegidos, {'tags': queries[i].slice(1)});
+            else
+                $scope.vars.elegidos = $filter("filter")($scope.vars.elegidos, queries[i]);
+        }
+    }
+
+    // Esta función retorna un booleano que indica si el problema dado está o no 
+    // en la lista de elegidos, y se usa para controlar el ng-show de cada problema
+    $scope.elegido = function (problema) {
+        if ($scope.vars.elegidos) // Si la lista existe
+            return ($scope.vars.elegidos.indexOf(problema)!=-1);
+        else 
+            return true;
+    }
+
     // Cuando el usuario pincha en un tag
     $scope.filterTag = function (tag) {
-        $scope.query=tag;  // Lo usamos como valor de la query
+        $scope.vars.query += " #" + tag;  // Lo usamos como valor de la query
+        $scope.filtrar();
     };
     // En la X a la derecha del query, borramos la query
-    $scope.clearQuery = function () {$scope.query=""; };
+    $scope.clearQuery = function () {
+        $scope.vars.query=""; 
+        $scope.filtrar();
+    };
 
     // Al pinchar en el resumen de un problema, enviar a la vista "view"
     // donde se muestra el problema (solo para lectura)
@@ -254,18 +285,67 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 // Controlador para la vista de lista de documentos finales
 // Carga la lista inicial (por GET al servidor) y define funciones
 // de respuesta a los diferentes botones
-problemsControllers.controller('DocListCtrl', function($scope, $http, $location) {
+problemsControllers.controller('DocListCtrl', function($scope, $http, $location, $filter) {
     // Rellenar la lista
     $http.get("get_docs_list.php").success(function(data){
         $scope.docs = data;
     });
 
+    $scope.vars = {'query': "" }; 
+
+    // Retorna la lista de los documentos elegidos por lo que hay en el query
+    // El query se interpreta como una serie de términos separados por espacios
+    // Cada término puede llevar un prefijo, que indica el campo donde se busca
+    //   "t:" Titulación
+    //   "a:" Asignatura
+    //   "c:" Convocatoria
+    //   "f:" Fecha
+    // Si no hay tal prefijo, se busca en cualquiera de los campos
+    // Esta función debe ser llamada cada vez que cambie la query
+    $scope.filtrar = function () {
+        var queries = $scope.vars.query.split(" ");
+        var obj_query, txt_query;
+        $scope.vars.elegidos = $scope.docs;
+        for (var i=0; i<queries.length; i++) {
+            if (queries[i]==" ") continue;
+            if (queries[i].indexOf(":")==1) { //tenemos prefijo 
+                txt_query = queries[i].slice(2);
+                switch(queries[i].charAt(0)){
+                    case "t": obj_query = {'titulacion': txt_query };
+                              break;
+                    case "a": obj_query = {'asignatura': txt_query };
+                              break;
+                    case "c": obj_query = {'convocatoria': txt_query };
+                              break;
+                    case "f": obj_query = {'fecha': txt_query };
+                              break;
+                }
+            } else {
+                obj_query = queries[i];
+            }
+            $scope.vars.elegidos = $filter("filter")($scope.vars.elegidos, obj_query);
+        }
+    }
+
+    // Esta función retorna un booleano que indica si el problema dado está o no 
+    // en la lista de elegidos, y se usa para controlar el ng-show de cada problema
+    $scope.elegido = function (problema) {
+        if ($scope.vars.elegidos) // Si la lista existe
+            return ($scope.vars.elegidos.indexOf(problema)!=-1);
+        else 
+            return true;
+    }
     // Cuando el usuario pincha en un estado
     $scope.filterState = function (state) {
-        $scope.query=state;  // Lo usamos como valor de la query
+        $scope.vars.query += " " + state;  // Lo usamos como valor de la query
+        $scope.filtrar();
     };
     // En la X a la derecha del query, borramos la query
-    $scope.clearQuery = function () {$scope.query=""; };
+    $scope.clearQuery = function () {
+        $scope.vars.query=""; 
+        $scope.filtrar();
+    };
+
 
     // Al pinchar en el resumen de un doc, enviar a la vista "view-doc"
     // donde se muestra el documento (solo para lectura)
@@ -531,7 +611,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 	
 	// Cuando el usuario pincha en un tag
     $scope.filterTag = function (tag) {
-        $scope.vars.query=tag;  // Lo usamos como valor de la query
+        $scope.vars.query += " #" + tag;  // Lo añadimos como busqueda por tag a la query
 		$scope.filtrar();
     };
 

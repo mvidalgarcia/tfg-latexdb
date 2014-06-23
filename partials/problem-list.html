@@ -6,8 +6,9 @@
             <!--Sidebar content-->
             <form class="navbar-search">
                 <i class="fa fa-search search-icon"></i>
-                <input type="text" class="search-query" ng-model="query" placeholder="Filtrar">
-                <span class="btn tag" ng-click="clearQuery()">&times;</span>
+                <input type="text" class="search-query" ng-model="vars.query" ng-change="filtrar()" 
+                placeholder="#Tag Filtro ..." tabindex="1" accesskey="f">
+                <span class="btn tag" ng-click="clearQuery()" accesskey="c">&times;</span>
             </form>
         </div>
             <table class="table table-stripped table-condensed">
@@ -21,7 +22,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="problema in problemas | filter: {'tags': query}">
+                    <tr ng-repeat="problema in problemas"
+                        ng-show="elegido(problema)">
                       <td>{{problema.resumen}}</td>
                       <td><ul class="list-inline"><li class="tag cursor-pointer" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul></td>
                       <td><a ng-click="viewProblem(problema.id_problema)" class="btn btn-small btn-info"><i class="fa fa-eye"></i>

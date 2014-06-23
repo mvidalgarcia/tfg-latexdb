@@ -59,11 +59,14 @@
         			</div>
        				 <div class="col-md-5">
 						<div class="row">
-							<div class="col-md-7">
-								<h5><strong>Todos los problemas guardados</strong></h5>
-							</div>
-							<div class="col-md-5">
-								<i class="fa fa-search"></i> Filtro: <input size="10" ng-model="vars.query" ng-change="filtrar()"><span class="btn tag" ng-click="clearQuery()">&times;</span>
+                            <div class="col-md-7">
+                            <h5><strong>Todos los problemas guardados</strong></h5>
+                            </div>
+                            <div class="col-md-5">
+                                <i class="fa fa-search"></i>
+                                <input size="15" class="search-query" ng-model="vars.query" ng-change="filtrar()" 
+                                placeholder="#tag filtro" tabindex="1" accesskey="f">
+                                <span class="btn tag" ng-click="clearQuery()" accesskey="c">&times;</span>
 							</div>
 						</div>
           				<div ui-sortable="sortableOptions" id="sourceList" ng-model="problemas_bd" ng-class="{'minimalList':sourceEmpty()}" class="connector">
