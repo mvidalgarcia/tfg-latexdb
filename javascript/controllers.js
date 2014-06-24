@@ -458,6 +458,26 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
          }
     }
 
+    $scope.quitarProblema = function (index) {
+        // Meterlo en la lista general de problemas
+        $scope.problemas_bd.push($scope.doc.problemas[index]);
+        // Sacarlo de la lista del documento
+        $scope.doc.problemas.splice(index,1);
+    }
+
+    $scope.anadirProblema = function (index) {
+        // Meterlo en la lista del documento
+        $scope.doc.problemas.push($scope.problemas_bd[index]);
+        // Sacarlo de la lista general de problemas
+        $scope.problemas_bd.splice(index,1);
+    }
+
+    $scope.vaciarDocumento = function () {
+        // Meterlos todos en la lista general
+        Array.prototype.push.apply($scope.problemas_bd, $scope.doc.problemas);
+        // Y quitarlos del documento
+        $scope.doc.problemas = [];
+    }
 
 	// Si recibimos un id_doc, es la vista /edit/:id_doc o la vista /view/:id_doc
     if ($routeParams.id_doc) {
