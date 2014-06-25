@@ -33,9 +33,8 @@ try
 		//var_dump($fulldoc);
 		//echo "</pre>";
 
-
-		// Relleno los datos de un examen de ejemplo
-	    // Esto debería salir de la base de datos, dado el id_documento
+		// Relleno los datos comunes del documento(examen)
+	    // Se obtiene de la base de datos, dado el id_documento
     	// y otros parámetros que puedan recibirse por POST
 	    $examenEjemplo = array(
         	"asignatura" => $fulldoc->asignatura,
@@ -49,78 +48,163 @@ try
 
         $examenEjemplo["opciones"] = $opciones;
     	$examenEjemplo["problemas"] = array();
-   		$examenEjemplo["problemas"][0] = array("filename" => "foo-bar-4-1237");
-    	$examenEjemplo["problemas"][1] = array("filename" => "foo-bar-3-6381");
-    	$examenEjemplo["problemas"][2] = array("filename" => "bar-foo-3-3284");
-   		$examenEjemplo["problemas"][3] = array("filename" => "fro-bra-4-0128");
-    	$examenEjemplo["problemas"][4] = array("filename" => "faa-bor-1-3634");
+		
+		// Crear una nueva carpeta temporal y moverse a su ruta, donde se copiarán los ficheros .tex.
+		$tmp_folder = NewTempFolder();
 
-    	// Pasar los datos al template.
+		// Recorrer todos los problemas del documento para ir metiendo su contenido en variables.
+		foreach ($fulldoc->problemas as $problema) {
+			// Nombre del tex del problema del tipo tag1-tag2-numpreguntas-id_problema.tex
+			// Unir los tags del problema en una sola cadena unidos por guiones.
+			$joined_tags = "";
+			foreach ($problema->tags as $tag)
+				$joined_tags .= $tag->nombre."-";  
+			
+			// Formar el nombre .tex
+			$nombre_problema = $joined_tags . $problema->num_preguntas . "-" . $problema->id_problema;
+			$nombre_problema_tex = $nombre_problema . ".tex";
+			
+			// Insertar el nombre del problema en el array del examen (No es necesaria la extensión).
+			array_push($examenEjemplo["problemas"], array("filename" => $nombre_problema));
+						
+			// Meter los valores del problema en el template correspondiente.
+			$problemaTex = InsertProblemInTemplate($problema, $joined_tags, $template_pregunta_sola, $template_problema);
+			
+			// Escribir fichero templete pregunta-sola/problema en disco.
+			$f = fopen($nombre_problema_tex, "w");
+			fwrite($f, $problemaTex);
+			fclose($f);
+		}
+
+    	// Pasar los datos del examen completo al template.
 		$examen = $template_examen->render($examenEjemplo);
 
 		// Nombre del fichero del estilo Asignatura-Fecha
 		$nombre_examen = $fulldoc->asignatura . "-" . $fulldoc->fecha;
 		$nombre_examen_tex = $nombre_examen . ".tex";
-
-
-        // Crear nombre para carpeta temporal
-        $tmp_folder = tempnam(sys_get_temp_dir(), "TEX");
-        // Lo anterior crea un fichero temporal de nombre único, tenemos que borrarlo
-        // para crear una carpeta usando ese mismo nombre, que será del tipo /tmp/TEXaAuiq/
-        unlink($tmp_folder);
-        mkdir($tmp_folder);
-        // Cambiar a esa carpeta para trabajar localmente, sin tener que poner rutas absolutas
-        chdir($tmp_folder);
+    	
 		// Escribir fichero 'maestro' en disco.
 		$f = fopen($nombre_examen_tex, "w"); //Documento 'maestro'
 		fwrite($f, $examen);
 		fclose($f);
 		
-		// Crear fichero ZIP
-		$zip = new ZipArchive();
 		// Nombre del zip del estilo Asignatura-Fecha_Timestamp.zip
 		$nombre_examen_zip = $nombre_examen . '_' . date('Ymd') . '.zip';
-		if ($zip->open($nombre_examen_zip, ZIPARCHIVE::CREATE) == TRUE) {
-            // Añadir fichero "maestro"
-            // El segundo parámetro es el nombre que tendrá el fichero dentro del zip. 
-            // Es necesario ponerlo para resolver problemas de encoding, ya que el formato
-            // zip no admite nombres de fichero en utf8, sino en CP850 (MS-DOS)
-			$zip->addFile($nombre_examen_tex, iconv("utf-8", "cp850", $nombre_examen_tex));
-            $zip->close();
 
-            // Subir el zip a la carpeta superior de la temporal
-            copy ($nombre_examen_zip, "../" . $nombre_examen_zip);
-            // Y borrar la carpeta temporal
-            $ficheros = scandir(".");
-            foreach ($ficheros as $fichero) unlink($fichero);
-            chdir("..");
-            rmdir($tmp_folder);
+		// Crear fichero ZIP y meter todos los ficheros en él. Obtener URL del zip.
+		$respuesta = InsertInZipFile($nombre_examen, $tmp_folder, $nombre_examen_zip, $examenEjemplo["problemas"]);
 
-            // Enviar al navegador una respuesta en JSON que incluya
-            // una URL de la cual descargar el resultado
-            $respuesta = array(
-                "status" => "OK",
-                "url" => "get_zip.php?name=" . sys_get_temp_dir() . "/" . $nombre_examen_zip
-            );
-		} else {
-            $respuesta = array(
-                "status" => "Error en la creación del zip",
-                "url" => NULL
-            );
-		}
-
+		// Limpiar el buffer de salida antes de enviar.
+		ob_clean(); 
         // Enviar la respuesta
         header('Content-type: application/json');
         echo(json_encode($respuesta, JSON_NUMERIC_CHECK));
-
-
-		// Borrar ficheros
-		// unlink("/tmp/" . $nombre_examen_tex);	
 	}
 }
 catch(PDOException $e)
 {
     echo $e->getMessage();
+}
+
+
+
+/************* Funciones auxiliares *************/
+
+
+// Función que crea un fichero zip con el nombre del examen e introduce en
+// él todos los ficheros necesarios para comilar el examen.
+// Si todo va bien devuelve un array con la respuesta que se le debe 
+// pasar al cliente, donde se encuentra la URL del zip a descargar.
+function InsertInZipFile ($nombre_examen, $tmp_folder, $nombre_examen_zip, $name_problemas) {
+	$nombre_examen_tex = $nombre_examen . ".tex";
+	// Crear fichero ZIP
+	$zip = new ZipArchive();
+		if ($zip->open($nombre_examen_zip, ZIPARCHIVE::CREATE) == TRUE) {
+        // Añadir fichero "maestro"
+        // El segundo parámetro es el nombre que tendrá el fichero dentro del zip. 
+        // Es necesario ponerlo para resolver problemas de encoding, ya que el formato
+        // zip no admite nombres de fichero en utf8, sino en CP850 (MS-DOS)
+		$zip->addFile($nombre_examen_tex, iconv("utf-8", "cp850", $nombre_examen_tex));
+		// Meter en el zip todos los problemas.
+		foreach($name_problemas as $name_prob)
+			$zip->addFile($name_prob["filename"].'.tex', iconv("utf-8", "cp850", $name_prob["filename"].'.tex'));
+		// Meter en el zip el fichero .sty de estilos.
+		$zip->addFile('examen.sty', iconv("utf-8", "cp850", 'examen.sty'));
+        $zip->close();
+
+        // Subir el zip a la carpeta superior de la temporal
+        copy ($nombre_examen_zip, "../" . $nombre_examen_zip) ;
+        // Y borrar la carpeta temporal
+        $ficheros = scandir(".");
+        foreach ($ficheros as $fichero) unlink($fichero);
+        chdir("..");
+        rmdir($tmp_folder);
+
+        // Enviar al navegador una respuesta en JSON que incluya
+        // una URL de la cual descargar el resultado
+        $respuesta = array(
+            "status" => "OK",
+            "url" => "get_zip.php?name=" . sys_get_temp_dir() . "/" . $nombre_examen_zip
+        );
+	} else {
+        $respuesta = array(
+            "status" => "Error en la creación del zip",
+            "url" => NULL
+        );
+	}
+	return $respuesta;
+}
+
+
+// Función para crear nombre para carpeta temporal y moverse a ella.
+// Retorna la ruta de la carpeta temporal.
+function NewTempFolder() {
+    $tmp_folder = tempnam(sys_get_temp_dir(), "TEX");
+    // Lo anterior crea un fichero temporal de nombre único, tenemos que borrarlo
+    // para crear una carpeta usando ese mismo nombre, que será del tipo /tmp/TEXaAuiq/
+    unlink($tmp_folder);
+    mkdir($tmp_folder);
+	// Copiar fichero de estilos a la nueva ruta
+	copy ('generar_tex/examen.sty', $tmp_folder.'/examen.sty');
+    // Cambiar a esa carpeta para trabajar localmente, sin tener que poner rutas absolutas
+	chdir($tmp_folder);
+
+	return $tmp_folder;
+}
+
+
+// Función que a partir de un problema, obtiene sus datos y los mete en el template de latex
+// que le corresponde en funcion de si es una pregunta sola o un problema con varias preguntas.
+// Retorna el valor del template rellenado con los campos.
+function InsertProblemInTemplate($problema, $joined_tags, $template_pregunta_sola, $template_problema) {
+	// Comprobar si se trata de una pregunta-sola o un problema con varias para
+	// usar un template u otro.
+	// Si no tiene enunciado general y tiene una sola pregunta -> pregunta-sola
+	if (empty($problema->enunciado_general) and $problema->num_preguntas == 1) {
+		 $preguntaSola = array(
+    		"puntos" => $problema->puntos,
+	       	"tags" => str_replace('-',' ', $joined_tags),
+    		"resumen" => $problema->resumen,
+    		"pregunta" => $problema->preguntas[0] // Solo va a haber una, la del primer índice.
+        );
+		// Pasar los datos al template pregunta-sola y guardar el contenido.
+		$problemaTex = $template_pregunta_sola->render($preguntaSola);
+	}
+
+	// Si tiene enunciado general o varias preguntas -> problema
+	else {
+		$problemaNormal = array(
+			"tiene_enunciado_general" => ($problema->enunciado_general != ""),
+    		"total_puntos" => $problema->puntos,
+	       	"tags" => str_replace('-',' ', $joined_tags),
+    		"resumen" => $problema->resumen,
+    		"enunciado_general" => $problema->enunciado_general,
+    		"preguntas" => $problema->preguntas
+    	);
+		// Pasar los datos al template pregunta-sola y guardar el contenido.
+		$problemaTex = $template_problema->render($problemaNormal);
+	}
+	return $problemaTex;
 }
 
 ?>

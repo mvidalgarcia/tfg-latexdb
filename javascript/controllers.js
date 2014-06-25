@@ -397,7 +397,7 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location,
 			console.log("Con explicaciones: " + $("#con-explicaciones"+id).is(':checked'))
         	// Volcar a consola la respuesta del servidor
 			console.log(data);
-            // Acceder por GET a la url recibida
+			// Acceder por GET a la url recibida
             window.location.href= data.url;
     	})
 		.error(function(data){
