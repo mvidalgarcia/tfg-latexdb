@@ -62,6 +62,7 @@ try
 			
 			// Formar el nombre .tex
 			$nombre_problema = $joined_tags . $problema->num_preguntas . "-" . $problema->id_problema;
+            $nombre_problema = str_replace(" ", "-", iconv("utf-8", "ASCII//TRANSLIT", $nombre_problema));
 			$nombre_problema_tex = $nombre_problema . ".tex";
 			
 			// Insertar el nombre del problema en el array del examen (No es necesaria la extensión).
@@ -81,6 +82,7 @@ try
 
 		// Nombre del fichero del estilo Asignatura-Fecha
 		$nombre_examen = $fulldoc->asignatura . "-" . $fulldoc->fecha;
+        $nombre_examen = str_replace(" ", "-", iconv("utf-8", "ASCII//TRANSLIT", $nombre_examen));
 		$nombre_examen_tex = $nombre_examen . ".tex";
     	
 		// Escribir fichero 'maestro' en disco.
@@ -124,7 +126,7 @@ function InsertInZipFile ($nombre_examen, $tmp_folder, $nombre_examen_zip, $name
         // El segundo parámetro es el nombre que tendrá el fichero dentro del zip. 
         // Es necesario ponerlo para resolver problemas de encoding, ya que el formato
         // zip no admite nombres de fichero en utf8, sino en CP850 (MS-DOS)
-		$zip->addFile($nombre_examen_tex, iconv("utf-8", "cp850", $nombre_examen_tex));
+		$zip->addFile($nombre_examen_tex, iconv("utf-8", "ASCII//TRANSLIT", $nombre_examen_tex));
 		// Meter en el zip todos los problemas.
 		foreach($name_problemas as $name_prob)
 			$zip->addFile($name_prob["filename"].'.tex', iconv("utf-8", "cp850", $name_prob["filename"].'.tex'));
