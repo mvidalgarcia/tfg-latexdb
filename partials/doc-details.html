@@ -44,12 +44,18 @@
 				</h4>
         	</accordion-heading>
  			<!-- Contenido del panel -->
-			<div class="container" id="main">
+			<div class="container-fluid" id="main">
 				<div class="row">
 					<div class="col-md-5">
-						<h5><strong>Problemas añadidos al documento</strong></h5>
+                            <button class="btn btn-small btn-danger pull-right"
+                                ng-show="!targetEmpty()"
+                                ng-click="vaciarDocumento()">
+                              <i class="fa fa-trash-o"></i> 
+                              <span class="hidden-xs">Vaciar</span>
+                          </button>
+                        <h5><strong>Problemas en el documento</strong></h5>
           				<ol ui-sortable="sortableOptions" ng-model="doc.problemas" id="targetList" ng-class="{'minimalList':targetEmpty(), 'droppableList': !targetEmpty()}" class="connector">
-                            <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas">
+                            <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas" ng-dblclick="quitarProblema($index)">
                                {{problema.resumen}}
                                &nbsp;<span class="label label-success pull-right">{{problema.puntos}}</span>
 								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag cursor-pointer" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul>
@@ -57,18 +63,22 @@
 						
          				 </ol>
         			</div>
-       				 <div class="col-md-5">
+       				 <div class="col-md-7">
 						<div class="row">
-							<div class="col-md-7">
-								<h5><strong>Todos los problemas guardados</strong></h5>
-							</div>
-							<div class="col-md-5">
-								<i class="fa fa-search"></i> Filtro: <input size="10" ng-model="vars.query" ng-change="filtrar()"><span class="btn tag" ng-click="clearQuery()">&times;</span>
+                            <div class="col-md-7">
+                            <h5><strong>Todos los problemas guardados</strong></h5>
+                            </div>
+                            <div class="col-md-5">
+                                <i class="fa fa-search"></i>
+                                <input size="15" class="search-query" ng-model="vars.query" ng-change="filtrar()" 
+                                placeholder="#tag filtro" tabindex="1" accesskey="f">
+                                <span class="btn tag" ng-click="clearQuery()" accesskey="c">&times;</span>
 							</div>
 						</div>
           				<div ui-sortable="sortableOptions" id="sourceList" ng-model="problemas_bd" ng-class="{'minimalList':sourceEmpty()}" class="connector">
                             <div class="alert alert-warning nomargin" 
                                  ng-repeat="problema in problemas_bd" 
+                                 ng-dblclick="anadirProblema($index)"
                                  ng-show="elegido(problema)">{{problema.resumen}}
                                  &nbsp;<span class="label label-warning pull-right">{{problema.puntos}}</span>
 								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag cursor-pointer" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)"> {{tag.nombre}}</li></ul>
