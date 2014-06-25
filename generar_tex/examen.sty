@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}%
-\ProvidesPackage{resuelto}[24/01/2008 v1.1 (c) JL Diaz]
+\ProvidesPackage{examen}[24/06/2014 v1.2 (c) JL Diaz]
 \RequirePackage{soul}%
 \RequirePackage{xcolor}%
 \newif\ifEX@resuelto
@@ -14,6 +14,7 @@
 \EX@explicadotrue
 \EX@espejofalse
 \EX@rotadofalse
+\DeclareOption{examen}{\EX@resueltofalse\EX@ficherofalse\EX@explicadofalse}
 \DeclareOption{resuelto}{\EX@resueltotrue}
 \DeclareOption{solucion}{\EX@resueltotrue}
 \DeclareOption{soluciones}{\EX@resueltotrue}
@@ -35,7 +36,6 @@
 \DeclareOption{rotada}{\EX@rotadotrue}
 \DeclareOption{girado}{\EX@rotadotrue}
 \DeclareOption{girada}{\EX@rotadotrue}
-\DeclareOption{examen}{\EX@resueltofalse\EX@ficherofalse\EX@explicadofalse}
 \DeclareOption{plantilla}{\EX@resueltotrue\EX@ficherofalse\EX@explicadofalse}
 \DeclareOption{desarrollo}{\EX@resueltotrue\EX@ficherotrue\EX@explicadofalse}
 \DeclareOption{debug}{\EX@resueltotrue\EX@ficherotrue\EX@explicadofalse}
@@ -87,7 +87,7 @@
 %\usepackage{times}
 \usepackage{fontspec}
 \defaultfontfeatures{Ligatures=TeX}
-\setmainfont{DejaVu Serif}\setsansfont{DejaVu Sans}\setmonofont{DejaVu Sans Mono}
+%\setmainfont{DejaVu Serif}\setsansfont{DejaVu Sans}\setmonofont{DejaVu Sans Mono}
 \usepackage{polyglossia}\setdefaultlanguage{spanish}
 \usepackage[a4paper]{geometry}
 %\usepackage{mathptm}
@@ -100,7 +100,7 @@
 \usepackage{listings}
 %\usepackage{shortform}         % Para abreviar comandos, como ·ese·
 
-%\usepackage{shortvrb}
+\usepackage{shortvrb}
 \usepackage{calc}        % Para especificar operaciones en ciertas expresiones
 \usepackage{ifthen}      % Para condicionales mas sencillos 
 \usepackage{pifont}      % Para simbolos chulos (marca en cada
@@ -110,7 +110,7 @@
 \usepackage{fink}        % Para obtener el nombre del fichero incluido
 \usepackage{tikz}
 \usepackage{xstring}
-\usetikzlibrary{snakes}
+\usetikzlibrary{snakes,calc,positioning}
 
 % Layout
 \geometry{landscape,left=1cm, right=1cm, top=2cm, bottom=7mm,
@@ -133,7 +133,7 @@
 \newboolean{ponerhueco}
 \setboolean{ponerhueco}{true}
 % ----- Definición de abreviaturas --------------------
-%\MakeShortVerb{\·}
+\MakeShortVerb{\·}
 %\MakeShortForm{\signal}{\§}
 \newcommand{\ES}{Entrada\slash Salida\xspace}
 \newcommand{\problemname}{Problema}
