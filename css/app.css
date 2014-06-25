@@ -146,3 +146,13 @@ border-color: #78FA89;
     text-decoration: none;
     color: #428bca;  /* bootstrap @brand-primary */
 }
+
+.problem-list {
+  overflow-y: auto; 
+  height:400px;       
+}
+
+.document-list {
+  overflow-y: auto;
+  height:400px;       
+}
