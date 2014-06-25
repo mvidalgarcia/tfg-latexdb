@@ -16,6 +16,7 @@ try
 {
 	ob_start();
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        setlocale(LC_ALL, "es_ES.UTF-8");
 		$postdata = file_get_contents("php://input");
 		$info = json_decode($postdata);
         $id_doc = $info->id_doc;
@@ -62,7 +63,7 @@ try
 			
 			// Formar el nombre .tex
 			$nombre_problema = $joined_tags . $problema->num_preguntas . "-" . $problema->id_problema;
-            $nombre_problema = str_replace(" ", "-", iconv("utf-8", "ASCII//TRANSLIT", $nombre_problema));
+            $nombre_problema = str_replace(" ", "-", iconv("UTF-8", "ASCII//TRANSLIT", $nombre_problema));
 			$nombre_problema_tex = $nombre_problema . ".tex";
 			
 			// Insertar el nombre del problema en el array del examen (No es necesaria la extensión).
@@ -131,7 +132,8 @@ function InsertInZipFile ($nombre_examen, $tmp_folder, $nombre_examen_zip, $name
 		foreach($name_problemas as $name_prob)
 			$zip->addFile($name_prob["filename"].'.tex', iconv("utf-8", "cp850", $name_prob["filename"].'.tex'));
 		// Meter en el zip el fichero .sty de estilos.
-		$zip->addFile('examen.sty', iconv("utf-8", "cp850", 'examen.sty'));
+		$zip->addFile('examen.sty');
+		$zip->addFile('fink.sty');
         $zip->close();
 
         // Subir el zip a la carpeta superior de la temporal
@@ -168,6 +170,7 @@ function NewTempFolder() {
     mkdir($tmp_folder);
 	// Copiar fichero de estilos a la nueva ruta
 	copy ('generar_tex/examen.sty', $tmp_folder.'/examen.sty');
+	copy ('generar_tex/fink.sty', $tmp_folder.'/fink.sty');
     // Cambiar a esa carpeta para trabajar localmente, sin tener que poner rutas absolutas
 	chdir($tmp_folder);
 
