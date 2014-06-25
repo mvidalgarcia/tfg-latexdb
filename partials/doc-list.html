@@ -1,89 +1,111 @@
 <div class="container-fluid">
-    <h1>Listado de documentos</h1>
-    <div class="col-md-11">      
-        <div class="pull-right">
-            <!--Sidebar content-->
-            <form class="navbar-search">
-                <i class="fa fa-search search-icon"></i>
-                <input type="text" class="search-query" ng-change="filtrar()" ng-model="vars.query" 
-                placeholder="Filtrar" tabindex="1" accesskey="f">
-                <span class="btn tag" ng-click="clearQuery()" accesskey="c">&times;</span>
-            </form>
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Listado de documentos</h1>
         </div>
-        <table class="table table-stripped table-condensed">
-            <thead>
-                <tr>
-                    <th style="min-width:140px">Detalles</th>
-                    <th style="min-width:100px">Estado</th>
-                    <th style="width:20px"></th>
-                    <th style="width:20px"></th>
-                    <th style="width:20px"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="doc in docs" 
-                    ng-show="elegido(doc)">
-                  <td>	<div class="doc-label">
-							<span class="label label-default cursor-pointer" ng-click="filterState(doc.titulacion)">{{doc.titulacion}}</span>
-							<span class="label label-default cursor-pointer" ng-click="filterState(doc.asignatura)">{{doc.asignatura}}</span>
-							<span class="label label-default cursor-pointer" ng-click="filterState(doc.convocatoria)">{{doc.convocatoria}}</span>
-							<span class="label label-default ">{{doc.fecha}}</span>
-						</div>
-						<span ng-really-message="<strong>¿Está seguro de que quiere cambiar el documento al estado 'abierto'?</strong><br><br><small>Esta operación solo debería realizarse en el caso de haber cerrado el documento por error.</small>" ng-really-click="changeStatus(doc, 'abierto')">
-                            <a  popover="Pasar al estado abierto" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='cerrado'}">
-                                <i class="fa fa-unlock"></i> 
-                                <span class="hidden-xs">Abrir</span>
-                            </a>
-						</span>
-						<span ng-really-message="<strong>¿Está seguro de que quiere cambiar el documento al estado 'cerrado'?</strong>" ng-really-click="changeStatus(doc, 'cerrado')">
-                            <a popover="Pasar al estado cerrado" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='abierto'}">
-                                <i class="fa fa-lock"></i> 
-                                <span class="hidden-xs">Cerrar</span>
-                            </a>
-						</span>
-						<span ng-really-message="<strong>¿Está seguro de que quiere cambiar el documento al estado 'publicado'?</strong><br><br><small>Una vez realizada esta acción no se podrá volver a cambiar el estado de este documento.</small>" ng-really-click="changeStatus(doc, 'publicado')">
-                            <a popover="Pasar al estado publicado" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='cerrado'}">
-                                <i class="fa fa-globe"></i> 
-                                <span class="hidden-xs">Publicar</span>
-                            </a>
-						</span><p></p>
-						<span ng-really-message="<strong>¿Quiere descargar los ficheros LaTeX de este documento?</strong>" ng-really-click="downloadDoc(doc.id_doc)">
-                            <a class="btn btn-default">
-                                <i class="fa fa-download"></i> 
-                                <span class="hidden-xs">Descargar LaTeX</span>
-                            </a>
-						</span>
-						<label class="checkbox-inline">
-                            <input type="checkbox" id="con-soluciones{{doc.id_doc}}">
-                            <span class="hidden-xs">Con soluciones</span>
-                            <span class="visible-xs">Sol</span>
-						</label>
-						<label class="checkbox-inline">
-						  <input type="checkbox" id="con-explicaciones{{doc.id_doc}}">
-                            <span class="hidden-xs">Con explicaciones</span>
-                            <span class="visible-xs">Expl</span>
-						</label>
-
-						</div>
-				  </td>
-                  <td><ul class="list-inline"><li class="estado {{doc.estado}} cursor-pointer" ng-click="filterState(doc.estado)">{{doc.estado}}</li></ul></td>
-                  <td><a ng-click="viewDoc(doc.id_doc)" class="btn btn-small btn-info" >
-                          <i class="fa fa-eye"></i>
-                          <span class="hidden-xs">Ver</span>
-                  </a></td>
-                  <td><a ng-click="editDoc(doc.id_doc, doc.estado)" class="btn btn-small btn-primary" ng-class="{disabled : doc.estado != 'abierto'}">
-                          <i class="fa fa-edit"></i>
-                          <span class="hidden-xs">Editar</span>
-                  </a></td>
-                  <td><a ng-really-message="<strong>¿Está seguro de que quiere eliminar este documento?</strong><br>Una vez eliminado no podrá volver a recuperarlo." ng-really-click="deleteDoc(doc.id_doc, doc.estado)" 
-                          class="btn btn-small btn-danger" ng-class="{disabled : doc.estado != 'abierto'}">
-                          <i class="fa fa-trash-o"></i> 
-                          <span class="hidden-xs">Borrar</span>
-                  </a></td>
-              </tr>
-          </tbody>
-      </table>
+        <div class="col-md-6">
+            <div class="pull-right">
+                <!--sidebar content-->
+                <form class="navbar-search">
+                    <i class="fa fa-search search-icon"></i>
+                    <input type="text" class="search-query" ng-change="filtrar()" ng-model="vars.query" 
+                    placeholder="filtrar" tabindex="1" accesskey="f">
+                    <span class="btn tag" ng-click="clearquery()" accesskey="c">&times;</span>
+                </form>
+            </div>
+        </div>
     </div>
-</div>
-<a ng-click="createNewDoc()" class="btn btn-success"><i class="fa fa-file-text-o"></i> Documento Nuevo</a>
-
+    <div class="row">
+        <div class="col-md-12">
+            <div class="document-list">
+                <table class="table table-stripped table-condensed">
+                    <thead>
+                        <tr>
+                            <th style="min-width:140px">Detalles</th>
+                            <th style="min-width:100px">Estado</th>
+                            <th style="width:20px"></th>
+                            <th style="width:20px"></th>
+                            <th style="width:20px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="doc in docs" 
+                            ng-show="elegido(doc)">
+                            <td>
+                                <div class="doc-label">
+                                   <span class="label label-default cursor-pointer" 
+                                       ng-click="filterState(doc.titulacion)">{{doc.titulacion}}</span>
+                                   <span class="label label-default cursor-pointer" 
+                                       ng-click="filterState(doc.asignatura)">{{doc.asignatura}}</span>
+                                   <span class="label label-default cursor-pointer" 
+                                       ng-click="filterState(doc.convocatoria)">{{doc.convocatoria}}</span>
+                                   <span class="label label-default ">{{doc.fecha}}</span>
+                                </div>
+                                <span ng-really-message="<strong>¿Está seguro de que quiere cambiar el documento al estado 'abierto'?</strong><br><br><small>Esta operación solo debería realizarse en el caso de haber cerrado el documento por error.</small>" ng-really-click="changeStatus(doc, 'abierto')">
+                                    <a  popover="Pasar al estado abierto" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='cerrado'}">
+                                        <i class="fa fa-unlock"></i> 
+                                        <span class="hidden-xs">Abrir</span>
+                                    </a>
+                                </span>
+                                <span ng-really-message="<strong>¿Está seguro de que quiere cambiar el documento al estado 'cerrado'?</strong>" ng-really-click="changeStatus(doc, 'cerrado')">
+                                    <a popover="Pasar al estado cerrado" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='abierto'}">
+                                        <i class="fa fa-lock"></i> 
+                                        <span class="hidden-xs">Cerrar</span>
+                                    </a>
+                                </span>
+                                <span ng-really-message="<strong>¿Está seguro de que quiere cambiar el documento al estado 'publicado'?</strong><br><br><small>Una vez realizada esta acción no se podrá volver a cambiar el estado de este documento.</small>" ng-really-click="changeStatus(doc, 'publicado')">
+                                    <a popover="Pasar al estado publicado" popover-trigger="mouseenter" class="btn btn-default" ng-class="{disabled: doc.estado!='cerrado'}">
+                                        <i class="fa fa-globe"></i> 
+                                        <span class="hidden-xs">Publicar</span>
+                                    </a>
+                                </span><!-- <p></p> -->
+                                <span ng-really-message="<strong>¿Quiere descargar los ficheros LaTeX de este documento?</strong>" ng-really-click="downloadDoc(doc.id_doc)">
+                                    <a class="btn btn-default">
+                                        <i class="fa fa-download"></i> 
+                                        <span class="hidden-xs">Descargar LaTeX</span>
+                                    </a>
+                                </span>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="con-soluciones{{doc.id_doc}}">
+                                    <span class="hidden-xs">Con soluciones</span>
+                                    <span class="visible-xs">Sol</span>
+                                </label>
+                                <label class="checkbox-inline">
+                                  <input type="checkbox" id="con-explicaciones{{doc.id_doc}}">
+                                    <span class="hidden-xs">Con explicaciones</span>
+                                    <span class="visible-xs">Expl</span>
+                                </label>
+                            </td>
+                            <td><ul class="list-inline">
+                                    <li class="estado {{doc.estado}} cursor-pointer" 
+                                    ng-click="filterState(doc.estado)">{{doc.estado}}</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <a ng-click="viewDoc(doc.id_doc)" class="btn btn-small btn-info" >
+                                  <i class="fa fa-eye"></i>
+                                  <span class="hidden-xs">Ver</span>
+                                </a>
+                            </td>
+                            <td>
+                                <a ng-click="editDoc(doc.id_doc, doc.estado)" class="btn btn-small btn-primary" 
+                                   ng-class="{disabled : doc.estado != 'abierto'}">
+                                  <i class="fa fa-edit"></i>
+                                  <span class="hidden-xs">Editar</span>
+                                </a>
+                            </td>
+                            <td>
+                                <a ng-really-message="<strong>¿Está seguro de que quiere eliminar este documento?</strong><br>Una vez eliminado no podrá volver a recuperarlo." ng-really-click="deleteDoc(doc.id_doc, doc.estado)" 
+                                  class="btn btn-small btn-danger" ng-class="{disabled : doc.estado != 'abierto'}">
+                                  <i class="fa fa-trash-o"></i> 
+                                  <span class="hidden-xs">Borrar</span>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><!-- document-list -->
+        </div><!-- col-md-12 -->
+    </div><!-- row -->
+    <a ng-click="createNewDoc()" class="btn btn-success"><i class="fa fa-file-text-o"></i> Documento Nuevo</a>
+</div><!-- container-fluid -->

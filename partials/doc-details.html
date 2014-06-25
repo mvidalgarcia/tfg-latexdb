@@ -46,7 +46,7 @@
  			<!-- Contenido del panel -->
 			<div class="container-fluid" id="main">
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-5" >
                             <button class="btn btn-small btn-danger pull-right"
                                 ng-show="!targetEmpty()"
                                 ng-click="vaciarDocumento()">
@@ -54,7 +54,9 @@
                               <span class="hidden-xs">Vaciar</span>
                           </button>
                         <h5><strong>Problemas en el documento</strong></h5>
-          				<ol ui-sortable="sortableOptions" ng-model="doc.problemas" id="targetList" ng-class="{'minimalList':targetEmpty(), 'droppableList': !targetEmpty()}" class="connector">
+                        <ol ui-sortable="sortableOptions" ng-model="doc.problemas" id="targetList" 
+                            ng-class="{'minimalList':targetEmpty(), 'droppableList': !targetEmpty()}"
+                            class="connector problem-list">
                             <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas" ng-dblclick="quitarProblema($index)">
                                {{problema.resumen}}
                                &nbsp;<span class="label label-success pull-right">{{problema.puntos}}</span>
@@ -75,7 +77,7 @@
                                 <span class="btn tag" ng-click="clearQuery()" accesskey="c">&times;</span>
 							</div>
 						</div>
-          				<div ui-sortable="sortableOptions" id="sourceList" ng-model="problemas_bd" ng-class="{'minimalList':sourceEmpty()}" class="connector">
+          				<div ui-sortable="sortableOptions" id="sourceList" ng-model="problemas_bd" ng-class="{'minimalList':sourceEmpty()}" class="connector problem-list">
                             <div class="alert alert-warning nomargin" 
                                  ng-repeat="problema in problemas_bd" 
                                  ng-dblclick="anadirProblema($index)"
