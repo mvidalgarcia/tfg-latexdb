@@ -7,7 +7,7 @@ require_once("./mappers/doc_final_mapper.php");
 // Cargar la vista
 Twig_Autoloader::register();
 $loader = new Twig_Loader_Filesystem('./');
-$twig = new Twig_Environment($loader);
+$twig = new Twig_Environment($loader,array('autoescape' => false) );
 $template_examen = $twig->loadTemplate('generar_tex/template-examen.tex');
 $template_problema = $twig->loadTemplate('generar_tex/template-problema.tex');
 $template_pregunta_sola = $twig->loadTemplate('generar_tex/template-pregunta-sola.tex');
