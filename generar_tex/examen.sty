@@ -1,5 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}%
 \ProvidesPackage{resuelto}[24/01/2008 v1.1 (c) JL Diaz]
+\RequirePackage{soul}%
 \RequirePackage{xcolor}%
 \newif\ifEX@resuelto
 \newif\ifEX@fichero
@@ -312,6 +313,9 @@ $\overline{\text{#1}\,}$\fi}
  \vskip .5ex\samepage\cajarespuesta
 }
 
+\let\solucion\respuesta
+\let\endsolucion\endrespuesta
+
 %----------------------------------------------------------------
 % La respuesta especial se aplica a preguntas que no tienen una caja
 % de respuesta en blanco, sino que debe figurar texto en esa caja (por
@@ -593,7 +597,7 @@ $\overline{\text{#1}\,}$\fi}
 \caption{#3}\label{fig:#2}
 \end{figure}}
 
-\def\TextoIntroductorio#1{
+\long\def\TextoIntroductorio#1{
 \mbox{}\vskip-5mm\parbox{\columnwidth}{\noindent\large\sffamily#1}
 \centerline{\rule{\columnwidth}{.2mm}}
 \vskip -4mm
@@ -601,7 +605,7 @@ $\overline{\text{#1}\,}$\fi}
 \def\Asignatura#1{\gdef\@asignatura{#1}}
 \def\Convocatoria#1{\gdef\@convocatoria{#1}}
 \def\Tipo#1{\gdef\@tipo{#1}}
-\def\TextoIntroductorio#1{\long\def\@textointroductorio{#1}}
+\long\def\TextoIntroductorio#1{\long\def\@textointroductorio{#1}}
 
 \def\TamanioHueco#1{
 \global\alturacajarespuesta#1em}
