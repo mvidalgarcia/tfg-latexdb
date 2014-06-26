@@ -67,6 +67,8 @@ try
 			// Formar el nombre .tex
 			$nombre_problema = $joined_tags . $problema->num_preguntas . "-" . $problema->id_problema;
             $nombre_problema = str_replace(" ", "-", iconv("UTF-8", "ASCII//TRANSLIT", $nombre_problema));
+			// Eliminar caracteres no deseados
+			$nombre_problema = DeleteUnwantedSymbols($nombre_problema);
 			$nombre_problema_tex = $nombre_problema . ".tex";
 			
 			// Insertar el nombre del problema en el array del examen (No es necesaria la extensión).
@@ -79,7 +81,7 @@ try
 			// Meter los valores del problema en el template correspondiente.
 			$problemaTex = InsertProblemInTemplate($problema, $joined_tags, $template_pregunta_sola, $template_problema);
 			
-			// Escribir fichero templete pregunta-sola/problema en disco.
+			// Escribir fichero template pregunta-sola/problema en disco.
 			$f = fopen($nombre_problema_tex, "w");
 			fwrite($f, $problemaTex);
 			fclose($f);
@@ -101,13 +103,22 @@ try
 		// Nombre del fichero del estilo Asignatura-Fecha
 		$nombre_examen = $fulldoc->asignatura . "-" . $fulldoc->fecha;
         $nombre_examen = str_replace(" ", "-", iconv("utf-8", "ASCII//TRANSLIT", $nombre_examen));
+		// Quitar caracteres no deseados.
+		$nombre_examen = DeleteUnwantedSymbols($nombre_examen);
 		$nombre_examen_tex = $nombre_examen . ".tex";
     	
 		// Escribir fichero 'maestro' en disco.
 		$f = fopen($nombre_examen_tex, "w"); //Documento 'maestro'
 		fwrite($f, $examen);
 		fclose($f);
-		
+				
+		// Crear un fichero .bat que sirva de generador de PDF.
+		$contenido_generador = "xelatex " . $nombre_examen .  "\nxelatex " . $nombre_examen;
+		$f = fopen("generador_pdf.bat", "w"); //Documento 'maestro'
+		fwrite($f, $contenido_generador);
+		fclose($f);
+
+	
 		// Nombre del zip del estilo Asignatura-Fecha_Timestamp.zip
 		$nombre_examen_zip = $nombre_examen . '_' . date('Ymd') . '.zip';
 
@@ -151,7 +162,8 @@ function InsertInZipFile ($nombre_examen, $tmp_folder, $nombre_examen_zip, $name
 		// Meter en el zip el fichero .sty de estilos.
 		$zip->addFile('examen.sty');
 		$zip->addFile('fink.sty');
-        $zip->close();
+        $zip->addFile('generador_pdf.bat');
+		$zip->close();
 
         // Subir el zip a la carpeta superior de la temporal
         copy ($nombre_examen_zip, "../" . $nombre_examen_zip) ;
@@ -228,5 +240,16 @@ function InsertProblemInTemplate($problema, $joined_tags, $template_pregunta_sol
 	}
 	return $problemaTex;
 }
+
+
+// Función que elimina los caracteres no deseados de los nombres de 
+// documentos y problemas.
+function DeleteUnwantedSymbols($filename) { 
+	// Quitar caracteres no deseados.
+	$unwanted_symbols = array("'", '"', "~");
+	$filename = str_replace($unwanted_symbols, "", $filename);
+	return $filename;
+}
+
 
 ?>
