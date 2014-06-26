@@ -44,7 +44,7 @@ CREATE TABLE `doc_final` (
 
 LOCK TABLES `doc_final` WRITE;
 /*!40000 ALTER TABLE `doc_final` DISABLE KEYS */;
-INSERT INTO `doc_final` VALUES (305,'Ingeniería Informática','Fundamentos de Informática','Control de los temas 4 y 5','El examen tiene dos partes, y cada una puntúa de 0 a 10. Es necesario un mínimo de 4 puntos en cada parte.\n\nLa parte de programación tiene 12 preguntas, por lo que cada una vale 0.83. La parte de bases de\ndatos tiene 8 preguntas por lo que cada una vale 1.25.\n\nLa parte de programación representa el 45\\% de la nota final de teoria, y la de bases de datos el\n25\\% (correspondiendo el 30\\% restante al primer control ya realizado).','2011-01-27','abierto',NULL,''),(306,'Ingeniería Informática','Fundamentos de Informática','Extraordinaria de Junio','El examen cubre todo el temario. Todas las preguntas, salvo indicación expresa de lo contrario, tienen la misma puntuación (0.4). Las respuestas equivocadas no restan puntos.\nDebes responder en los huecos reservados para ello, sin exceder el espacio disponible.','2011-05-24','abierto',NULL,'');
+INSERT INTO `doc_final` VALUES (305,'Ingeniería Informática','Fundamentos de Informática','Control de los temas 4 y 5','{# Esto es un comentario Twig, por lo que no aparecerá en el tex final.\n   Aprovecho para comentar que esta no era la cabecera original del examen de esta convocatoria, sino una que escribo\n   como demostración del uso de templates dentro del propio enunciado #}\n{# Puedo declarar mis propias variables aqui, por ejemplo fijar a 2 decimales la puntuación por punto #}\n{% set puntuacion = \"%.2f\"|format(10/puntos) %}\n\nA la izquierda de cada pregunta aparece un número que representa el peso de la misma en la nota final. Todos estos números suman en este examen {{puntos}} puntos, y dan una nota de 10, por lo que cada punto cuenta 10/{{puntos}} = {{puntuacion}} en la nota final.','2011-01-27','abierto',NULL,''),(306,'Ingeniería Informática','Fundamentos de Informática','Extraordinaria de Junio','El examen cubre todo el temario. Todas las preguntas, salvo indicación expresa de lo contrario, tienen la misma puntuación (0.4). Las respuestas equivocadas no restan puntos.\nDebes responder en los huecos reservados para ello, sin exceder el espacio disponible.','2011-05-24','abierto',NULL,'');
 /*!40000 ALTER TABLE `doc_final` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -250,4 +250,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-06-26  1:46:50
+-- Dump completed on 2014-06-26 11:53:48
