@@ -156,3 +156,53 @@ border-color: #78FA89;
   overflow-y: auto;
   height:400px;       
 }
+@font-face {
+    font-family: 'Overlock';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Overlock-Bold'), url(http://themes.googleusercontent.com/static/fonts/overlock/v3/EcjpF2hW5gSZ4M16YLdG84bN6UDyHWBl620a-IRfuBk.woff) format('woff');
+}
+.weXam{
+    font-family: Overlock;
+    font-size: 24pt;
+    font-weight: bold;
+    color: #5bc0de;
+}
+
+.weXam > i {
+    display:inline-block;
+}
+
+.weXam > .w::after {
+  content: "w";
+}
+.weXam > .e::after {
+  content: "e";
+}
+.weXam > .X::after {
+  content: "X";
+}
+.weXam > .X {
+    -ms-transform: translate(-0.1ex,0.2ex);
+    -moz-transform: translate(-0.1ex,0.2ex);
+    -webkit-transform: translate(-0.1ex,0.2ex);
+    transform: translate(-0.1ex,0.2ex);
+}
+.weXam > .a::before {
+  content: "e";
+}
+.weXam > .a {
+  -ms-transform: rotate(180deg) translateY(-0.5ex);
+  -moz-transform: rotate(80deg) translateY(-0.5ex);
+  -webkit-transform: rotate(180deg) translateY(-0.5ex);
+  transform: rotate(180deg) translateY(-0.5ex);
+}
+.weXam > .m::before {
+  content: "w";
+}
+.weXam > .m {
+  -ms-transform: rotate(180deg) translateY(-0.5ex);
+  -moz-transform: rotate(80deg) translateY(-0.5ex);
+  -webkit-transform: rotate(180deg) translateY(-0.5ex);
+  transform: rotate(180deg) translateY(-0.5ex);
+}
