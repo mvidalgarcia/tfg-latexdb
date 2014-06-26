@@ -189,13 +189,17 @@ $\overline{\text{#1}\,}$\fi}
 \def\mostrarnombrefichero{%
 \begin{picture}(0,0)(0,0)%
 \put(-22,6){\rotatebox{-90}{\scriptsize\color{fichero}\EsteFichero}}%
-\end{picture}\hskip0pt
+\end{picture}\hskip0pt%
 }
 
 \def\puntos#1{% Para definir cuántos puntos vale una pregunta
 \xdef\punt@s{#1}%
 }
 \puntos{1} % Puntuación por defecto, se resetea a 1 en cada pregunta
+
+% Macro para mostrar la puntuación delante de cada pregunta
+\def\mostrarPts#1{\tikz[baseline=(P.base)]\node[inner sep=2pt,draw,fill=black!20,minimum width=1mm, minimum height=1mm,font=\sffamily\small](P){#1};}
+\def\mostrarPtsProblema#1{\tikz[baseline=(P.base)]\node[circle,inner sep=2pt,draw,minimum width=1mm, minimum height=1mm,font=\sffamily\small](P){#1};}
 
 % ----------------------------------------------------------------
 % El entorno problema
@@ -209,8 +213,8 @@ $\overline{\text{#1}\,}$\fi}
 \setlength{\labelwidth}{\widthof{\simbolopreguntasola}}%
 \addtolength{\leftmargin}{-1.5em}
 }
-\item\mostrarnombrefichero%
-\textbf{\textsf{[\punt@s]}}\ %\ifnum\punt@s>1\addtocounter{pregunta}{\punt@s}%
+\item[\mostrarPtsProblema{\punt@s}]\llap{\mostrarnombrefichero}%
+%\textbf{\textsf{[\punt@s]}}\ %\ifnum\punt@s>1\addtocounter{pregunta}{\punt@s}%
 %\addtocounter{pregunta}{-1}\fi%
 %\xdef\punt@s{1}%
 }
@@ -219,8 +223,8 @@ $\overline{\text{#1}\,}$\fi}
 % ----------------------------------------------------------------
 % El entorno preguntasola
 \newcounter{pregunta}
-\newenvironment{preguntasola}{%
-\setboolean{espreguntasola}{true}
+\newenvironment{preguntasola}[2]{%
+\setboolean{espreguntasola}{true}%
 %\refstepcounter{pregunta}
 %\subsection*{\questionname~\arabic{problema}. \hrulefill}%
 %\addcontentsline{toc}{subsection}{%
@@ -230,13 +234,13 @@ $\overline{\text{#1}\,}$\fi}
 \goodbreak
 \begin{list}{\simbolopreguntasola}{%
 \setlength{\labelwidth}{\widthof{\simbolopreguntasola}}%
-\addtolength{\leftmargin}{-1.5em}
+\addtolength{\leftmargin}{-1.5em}%
 }
 %\vskip 5mm\mbox{}\llap{\simbolopreguntasola\ }%
-\item\mostrarnombrefichero%
-\textbf{\textsf{[\punt@s]}}\ \ifnum\punt@s>1\addtocounter{pregunta}{\punt@s}%
+\item[\mostrarPtsProblema{\punt@s}]\rlap{\mostrarnombrefichero}%
+\ifnum\punt@s>1\addtocounter{pregunta}{\punt@s}%
 \addtocounter{pregunta}{-1}\fi%
-\xdef\punt@s{1}%
+\puntos{1}%
 }
 {\setboolean{espreguntasola}{false}
 %\par\vskip 2mm
@@ -250,12 +254,12 @@ $\overline{\text{#1}\,}$\fi}
 
 %\newcounter{pregunta}[problema]
 %\renewcommand\thepregunta{\theproblema .\@arabic\c@pregunta}
-\newenvironment{pregunta}{%
+\newenvironment{pregunta}[1]{%
 %\refstepcounter{pregunta}%
+\puntos{#1}
 \ifnum\punt@s>1\addtocounter{pregunta}{\punt@s}%
 %\addtocounter{pregunta}{-1}%
 \fi%
-\xdef\punt@s{1}%
 \goodbreak
 \begin{list}{\simbolopregunta%~{\textbf{\sffamily\large\thepregunta}}
 }{%
@@ -263,7 +267,10 @@ $\overline{\text{#1}\,}$\fi}
 \addtolength{\leftmargin}{-1.5em}
 }
 \setboolean{espreguntadeproblema}{true}
-\item }
+\item[\mostrarPts{\punt@s}]\ifnum\punt@s>1\addtocounter{pregunta}{\punt@s}%
+\addtocounter{pregunta}{-1}\fi%
+\puntos{1}
+}
 {\end{list}\setboolean{espreguntadeproblema}{false}
 \TamanioHueco{2}}
 

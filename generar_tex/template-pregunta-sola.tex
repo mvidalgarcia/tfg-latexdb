@@ -3,9 +3,9 @@
 % Los problemas con una sola pregunta por razones históricas
 % usan un formato diferente al de los problemas con varias
 % preguntas. Quizás debería cambiar eso
-\puntos{{puntos}} % Esto son los puntos de la única pregunta
+{{ "\\puntos{#{puntos}}" }} % Esto son los puntos de la única pregunta
 % La variable tags contendrá los tags concatenados separados por comas
-\begin{preguntasola}{ {{tags}} }{ {{resumen}} }
+{{ "\\begin{preguntasola}{#{tags}}{#{resumen}}" }}
 {{pregunta.enunciado}}
 
 \begin{solucion}

@@ -11,11 +11,11 @@
 % La carga del paquete examen (más arriba), define un montón de nuevos
 % comandos latex que simplifican el escribir examenes. Aquí usamos
 % algunos de ellos, otros se usan en los ficheros de problemas
-\Asignatura{ {{asignatura}} }
-\Convocatoria{ {{convocatoria}}: {{fecha}} }
+{{ "\\Asignatura{#{asignatura}}" }}
+{{ "\\Convocatoria{#{convocatoria}: #{fecha}}" }}
 \Tipo{A} % Es la letra que sale en una esquina
 
-\TextoIntroductorio{ {{instrucciones}} }
+{{ "\\TextoIntroductorio{#{instrucciones}}" }}
 
 \begin{document}
 % El documento principal no es más que una serie de comandos \input
@@ -23,6 +23,6 @@
 % uno de los cuales estaría en un fichero aparte. 
 
 {% for problema in problemas %}
-\input{ {{problema.filename}} }
+{{ "\\input{#{problema.filename}}" }}
 {% endfor %}
 \end{document}

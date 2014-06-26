@@ -1,13 +1,13 @@
 % Este es el template usado para generar el fichero
 % de un problema que contenga varias preguntas
-\puntos{{total_puntos}} % Esto es el total de puntos de las preguntas que componen el problema
-\begin{problema}{ {{tags}} }{ {{resumen}} }
+{{ "\\puntos{#{total_puntos}}" }} % Esto es el total de puntos de las preguntas que componen el problema
+{{ "\\begin{problema}{#{tags}}{#{resumen}}" }}
 {% if tiene_enunciado_general %}
 {{enunciado_general}}
 {% endif %}
 
 {% for pregunta in preguntas %}
-\begin{pregunta}{ {{pregunta.puntuacion}} }
+{{ "\\begin{pregunta}{#{pregunta.puntuacion}}" }}
 {{pregunta.enunciado}}
 
 \begin{solucion}
