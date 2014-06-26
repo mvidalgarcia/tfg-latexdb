@@ -11,6 +11,7 @@ $twig = new Twig_Environment($loader,array('autoescape' => false) );
 $template_examen = $twig->loadTemplate('generar_tex/template-examen.tex');
 $template_problema = $twig->loadTemplate('generar_tex/template-problema.tex');
 $template_pregunta_sola = $twig->loadTemplate('generar_tex/template-pregunta-sola.tex');
+$twig_string = new Twig_Environment(new Twig_Loader_String(), array('autoescape' => false) );
 
 try 
 {
@@ -53,6 +54,8 @@ try
 		// Crear una nueva carpeta temporal y moverse a su ruta, donde se copiarán los ficheros .tex.
 		$tmp_folder = NewTempFolder();
 
+        $puntuacion_total = 0;
+        $preguntas_totales = 0;
 		// Recorrer todos los problemas del documento para ir metiendo su contenido en variables.
 		foreach ($fulldoc->problemas as $problema) {
 			// Nombre del tex del problema del tipo tag1-tag2-numpreguntas-id_problema.tex
@@ -67,7 +70,11 @@ try
 			$nombre_problema_tex = $nombre_problema . ".tex";
 			
 			// Insertar el nombre del problema en el array del examen (No es necesaria la extensión).
-			array_push($examenEjemplo["problemas"], array("filename" => $nombre_problema));
+            array_push($examenEjemplo["problemas"], array("filename" => $nombre_problema));
+
+            // Sumar la puntuación del problema a la del examen
+            $puntuacion_total += $problema->puntos;
+            $preguntas_totales += $problema->num_preguntas;
 						
 			// Meter los valores del problema en el template correspondiente.
 			$problemaTex = InsertProblemInTemplate($problema, $joined_tags, $template_pregunta_sola, $template_problema);
@@ -77,6 +84,16 @@ try
 			fwrite($f, $problemaTex);
 			fclose($f);
 		}
+
+        // Procesar las instrucciones como si fueran un template, para permitir
+        // que contengan expresiones relativas a los datos del examen. Es decir
+        // las instrucciones pueden contener expresiones como {{num_preguntas}} y {{puntos}}
+        // para referirse al número de preguntas o puntos totales del examen
+
+        $meta_info = array(
+            "num_preguntas" => $preguntas_totales,
+            "puntos" => $puntuacion_total);
+        $examenEjemplo["instrucciones"] = $twig_string->render($examenEjemplo["instrucciones"], $meta_info);
 
     	// Pasar los datos del examen completo al template.
 		$examen = $template_examen->render($examenEjemplo);
