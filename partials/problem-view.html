@@ -10,10 +10,10 @@
         <i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags.split(',')">{{tag}}</li> 
     </ul>
 </div>
-<pre class="bg-info jumbotron">{{problema.enunciado_general}}</pre>
+<pre class="bg-info jumbotron" ng-hide="!problema.enunciado_general">{{problema.enunciado_general}}</pre>
 <div class="preguntas">
     <div ng-repeat="pregunta in problema.preguntas" class="panel panel-default">
-        <div class="panel-heading">Pregunta {{pregunta.posicion}}
+        <div class="panel-heading">Pregunta <span ng-hide="problema.preguntas.length==1">{{pregunta.posicion}}</span>
             <div class="pull-right">[{{pregunta.puntuacion}} punto{{pregunta.puntuacion>1?"s":""}}]</div>
         </div>
         <div class="panel-body">
