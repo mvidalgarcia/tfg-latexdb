@@ -183,26 +183,26 @@ border-color: #78FA89;
   content: "X";
 }
 .weXam > .X {
-    -ms-transform: translate(-0.1ex,0.2ex);
-    -moz-transform: translate(-0.1ex,0.2ex);
-    -webkit-transform: translate(-0.1ex,0.2ex);
-    transform: translate(-0.1ex,0.2ex);
+    -ms-transform: translate(-15%,15%);
+    -moz-transform: translate(-15%,15%);
+    -webkit-transform: translate(-15%,15%);
+    transform: translate(-15%,15%);
 }
 .weXam > .a::before {
   content: "e";
 }
 .weXam > .a {
-  -ms-transform: rotate(180deg) translateY(-0.5ex);
-  -moz-transform: rotate(80deg) translateY(-0.5ex);
-  -webkit-transform: rotate(180deg) translateY(-0.5ex);
-  transform: rotate(180deg) translateY(-0.5ex);
+  -ms-transform: rotate(180deg) translateY(-40%);
+  -moz-transform: rotate(80deg) translateY(-40%);
+  -webkit-transform: rotate(180deg) translateY(-40%);
+  transform: rotate(180deg) translateY(-40%);
 }
 .weXam > .m::before {
   content: "w";
 }
 .weXam > .m {
-  -ms-transform: rotate(180deg) translateY(-0.5ex);
-  -moz-transform: rotate(80deg) translateY(-0.5ex);
-  -webkit-transform: rotate(180deg) translateY(-0.5ex);
-  transform: rotate(180deg) translateY(-0.5ex);
+  -ms-transform: rotate(180deg) translateY(-40%);
+  -moz-transform: rotate(80deg) translateY(-40%);
+  -webkit-transform: rotate(180deg) translateY(-40%);
+  transform: rotate(180deg) translateY(-40%);
 }
