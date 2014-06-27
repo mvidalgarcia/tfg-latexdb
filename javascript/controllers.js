@@ -518,7 +518,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 		$http.post("save_doc.php", doc).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
-        	$location = $location.path("/list-doc/");
+			window.history.back();
     	})
 		.error(function(data){
 			console.log("Error al guardar documento.");
