@@ -25,9 +25,15 @@
                         <div class="pull-right">[{{pregunta.puntuacion}} punto{{pregunta.puntuacion>1?"s":""}}]</div>
                     </div>
                     <div class="panel-body">
-                        <pre class="bg-info">{{pregunta.enunciado}}</pre>
-                        <pre class="bg-danger" ng-show="pregunta.solucion">{{pregunta.solucion}}</pre>
-                        <pre class="bg-warning" ng-show="pregunta.explicacion">{{pregunta.explicacion}}</pre>
+                        <div ng-bind-html="pregunta.enunciado"></div>
+                        <div class="panel panel-danger" ng-show="pregunta.solucion">
+                            <div class="panel-heading">Solución</div>
+                           <div class="panel-body" ng-bind-html="pregunta.solucion"></div>
+                       </div>
+                        <div class="panel panel-info" ng-show="pregunta.explicacion">
+                            <div class="panel-heading">Explicación</div>
+                            <div class="panel-body" ng-bind-html="pregunta.explicacion"></div>
+                        </div>
                     </div>
                 </div>
             </div>
