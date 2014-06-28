@@ -84,6 +84,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 	// Chequea previamente si es un problema que no está en ningún documento
 	// para proseguir con la edición.
 	$scope.mightEditProblem = function(problema) {
+        console.log(problema);
 		if (problema.id_docs_cerrados_publicados.length == 0 && problema.id_docs_abiertos.length == 0)
 			$scope.editProblem(problema.id_problema);
 	}
@@ -194,6 +195,25 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 
 
   });
+
+problemsControllers.controller('ProblemViewCtrl', function($scope, $http, $routeParams, $location) {
+    if ($routeParams.id_problema) {
+        $scope.id_problema = $routeParams.id_problema;
+        $http.get("get_problem_parsed.php?id_problema=" + $scope.id_problema).success(function(data){
+            $scope.problema = data;
+            console.log(data);
+            // Los datos tal como vienen del servidor no son directamente usables, ya que
+            // en el campo tags viene mucha información irrelevante
+            // El siguiente código extrae de la lista tags solo los nombres de los
+            // tags y los deja en un string, separados por comas
+            var tags = [];
+            angular.forEach(data.tags, function(v, k) {
+                this.push(v["nombre"]);
+            }, tags);
+            $scope.problema.tags = tags.join(", ");
+        });
+    }
+});
 
 // Este controlador maneja la vista /view /edit y la vista /new
 // Proporciona un formulario para editar el problema, añadirle preguntas,
