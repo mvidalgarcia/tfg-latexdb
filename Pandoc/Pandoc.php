@@ -205,7 +205,7 @@ class Pandoc
                 $format = 'pdf';
                 continue;
             } else if ($key == 'to' && $value == 'latex') {
-                $commandOptions[] = '-s -o '.$this->tmpFile.'.tex';
+                $commandOptions[] = '-o '.$this->tmpFile.'.tex';
                 $format = 'tex';
                 continue;
             } else if ($key == 'to' && $value == 'rst') {
