@@ -4,7 +4,8 @@ var problemsCollection = angular.module('problemsCollection', [
         'ngRoute', 
         'problemsControllers',
         'ui.sortable',
-		'ui.bootstrap'
+		'ui.bootstrap',
+        'ngSanitize'  // Esto es necesario para meter el html generado del markdown
         ]);
 
 problemsCollection.config(['$routeProvider',
@@ -17,7 +18,7 @@ problemsCollection.config(['$routeProvider',
            }).
        when('/view/:id_problema', {
              templateUrl: 'partials/problem-view.html',
-             controller:  'ProblemDetailsCtrl'
+             controller:  'ProblemViewCtrl'
            }).
        when('/edit/:id_problema', {
              templateUrl: 'partials/problem-details.html',
