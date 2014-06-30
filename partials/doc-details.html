@@ -57,12 +57,18 @@
                         <ol ui-sortable="sortableOptions" ng-model="doc.problemas" id="targetList" 
                             ng-class="{'minimalList':targetEmpty(), 'droppableList': !targetEmpty()}"
                             class="connector problem-list">
-                            <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas" ng-dblclick="quitarProblema($index)">
+                            <li class="alert alert-success nomargin" ng-repeat="problema in doc.problemas" 
+                            ng-dblclick="quitarProblema($index)">
                                {{problema.resumen}}
-                               &nbsp;<span class="label label-success pull-right">{{problema.puntos}}</span>
-								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag cursor-pointer" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li></ul>
+                               <span class="label label-danger pull-right cursor-pointer"
+                                   ng-click="quitarProblema($index)"><i class="fa fa-minus"></i>
+                               </span>
+                               &nbsp;<span class="label label-default pull-right">{{problema.puntos}}</span>
+                               <ul class="list-inline"><i class="fa fa-tags"></i>
+                                   <li class="tag cursor-pointer" ng-repeat="tag in problema.tags" 
+                                   ng-click="filterTag(tag.nombre)">{{tag.nombre}}</li>
+                               </ul>
 							</li>
-						
          				 </ol>
         			</div>
        				 <div class="col-md-7">
@@ -77,15 +83,21 @@
                                 <span class="btn tag" ng-click="clearQuery()" accesskey="c">&times;</span>
 							</div>
 						</div>
-          				<div ui-sortable="sortableOptions" id="sourceList" ng-model="problemas_bd" ng-class="{'minimalList':sourceEmpty()}" class="connector problem-list">
+                        <div ui-sortable="sortableOptions" id="sourceList" ng-model="problemas_bd" 
+                            ng-class="{'minimalList':sourceEmpty()}" class="connector problem-list">
                             <div class="alert alert-warning nomargin" 
                                  ng-repeat="problema in problemas_bd" 
                                  ng-dblclick="anadirProblema($index)"
                                  ng-show="elegido(problema)">{{problema.resumen}}
-                                 &nbsp;<span class="label label-warning pull-right">{{problema.puntos}}</span>
-								<ul class="list-inline"><i class="fa fa-tags"></i><li class="tag cursor-pointer" ng-repeat="tag in problema.tags" ng-click="filterTag(tag.nombre)"> {{tag.nombre}}</li></ul>
+                                 <span class="label label-success pull-right cursor-pointer"
+                                     ng-click="anadirProblema($index)"><i class="fa fa-plus"></i>
+                                 </span>
+                                 &nbsp;<span class="label label-default pull-right">{{problema.puntos}}</span>
+                                 <ul class="list-inline"><i class="fa fa-tags"></i>
+                                     <li class="tag cursor-pointer" ng-repeat="tag in problema.tags" 
+                                     ng-click="filterTag(tag.nombre)"> {{tag.nombre}}</li>
+                                 </ul>
 							</div>
-
           				</div>
         			</div>
 				</div>
