@@ -1,8 +1,8 @@
 <?php
 // Es un ejemplo con datos "fijos" en lugar
 // de sacarlos del modelo, vía algún mapper
-require_once("./Twig/lib/Twig/Autoloader.php");
-require_once("./mappers/doc_final_mapper.php");
+require_once("../Twig/lib/Twig/Autoloader.php");
+require_once("../mappers/doc_final_mapper.php");
 
 // Cargar la vista
 Twig_Autoloader::register();
@@ -177,7 +177,7 @@ function InsertInZipFile ($nombre_examen, $tmp_folder, $nombre_examen_zip, $name
         // una URL de la cual descargar el resultado
         $respuesta = array(
             "status" => "OK",
-            "url" => "get_zip.php?name=" . sys_get_temp_dir() . "/" . $nombre_examen_zip
+            "url" => "controller/get_zip.php?name=" . sys_get_temp_dir() . "/" . $nombre_examen_zip
         );
 	} else {
         $respuesta = array(

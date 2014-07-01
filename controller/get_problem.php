@@ -1,5 +1,5 @@
 <?php
-require_once("./mappers/problema_mapper.php");
+require_once("../mappers/problema_mapper.php");
 
 try 
 {

@@ -10,7 +10,7 @@ var problemsControllers = angular.module("problemsControllers", ['ui.bootstrap',
 // de respuesta a los diferentes botones
 problemsControllers.controller('ProblemListCtrl', function($scope, $http, $location, $filter) {
     // Rellenar la lista
-    $http.get("get_problems_list.php").success(function(data){
+    $http.get("controller/get_problems_list.php").success(function(data){
         $scope.problemas = data;
     });
 
@@ -60,7 +60,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
     // Si se pulsa el botón Borrar, se manda un método DELETE
     // al servidor PHP, el id va en la URL
     $scope.deleteProblem = function (id) {
-        $http.delete("delete_problem.php?id_problema=" + id).error(function(data, status) {
+        $http.delete("controller/delete_problem.php?id_problema=" + id).error(function(data, status) {
             console.log(status, data);
         }).success(function(data, status) {
             console.log(status, data);
@@ -209,7 +209,7 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
     if ($routeParams.id_problema) {
         // Entonces usamos el id para pedir datos del problema al servidor
         $scope.id_problema = $routeParams.id_problema;
-        $http.get("get_problem.php?id_problema=" + $scope.id_problema).success(function(data){
+        $http.get("controller/get_problem.php?id_problema=" + $scope.id_problema).success(function(data){
             $scope.problema = data;
             // Los datos tal como vienen del servidor no son directamente usables, ya que
             // en el campo tags viene mucha información irrelevante
@@ -266,7 +266,7 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 
         console.log(p);
 		
-		$http.post("save_problem.php", p).success(function(data){
+		$http.post("controller/save_problem.php", p).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
 			window.history.back();
@@ -287,7 +287,7 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 // de respuesta a los diferentes botones
 problemsControllers.controller('DocListCtrl', function($scope, $http, $location, $filter) {
     // Rellenar la lista
-    $http.get("get_docs_list.php").success(function(data){
+    $http.get("controller/get_docs_list.php").success(function(data){
         $scope.docs = data;
     });
 
@@ -357,7 +357,7 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location,
     $scope.deleteDoc = function (id, estado) {
 		// Si el documento está abierto, se puede borrar.
 		if (estado == "abierto") {
-        	$http.delete("delete_doc.php?id_doc=" + id).error(function(data, status) {
+        	$http.delete("controller/delete_doc.php?id_doc=" + id).error(function(data, status) {
             	console.log(status, data);
 	        }).success(function(data, status) {
     	        console.log(status, data);
@@ -391,7 +391,7 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location,
 					"con_soluciones": $("#con-soluciones"+id).is(':checked'), 
 					"con_explicaciones":$("#con-explicaciones"+id).is(':checked')};
 
-		$http.post("generar_examen.php", info).success(function(data){
+		$http.post("controller/generar_examen.php", info).success(function(data){
         	console.log("Descargando el documento " + id + ".");
 			console.log("Con soluciones: " + $("#con-soluciones"+id).is(':checked'))	
 			console.log("Con explicaciones: " + $("#con-explicaciones"+id).is(':checked'))
@@ -411,7 +411,7 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location,
 	// Actualiza el estado del documento correspondiente en base de datos y en la vista.
 	$scope.changeStatus = function (doc, nuevo_estado) {
 		var info = {"id_doc":doc.id_doc, "nuevo_estado":nuevo_estado };
-		$http.post("change_doc_status.php", info).success(function(data){
+		$http.post("controller/change_doc_status.php", info).success(function(data){
         	console.log("Cambiando estado de documento " + doc.id_doc + " al estado " + nuevo_estado + ".");
         	// Volcar a consola la respuesta del servidor
 			console.log(data);
@@ -433,7 +433,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 	// En cualquier caso, hay que cargar los resúmenes y tags de todos los
 	// problemas almacenados en la aplicación para mostrarlos en la lista dragable.
 	// Rellenar la lista
-    $http.get("get_problems_list.php").success(function(data){
+    $http.get("controller/get_problems_list.php").success(function(data){
         $scope.problemas_bd = data;
         $scope.actualizar_lista_problemas();
     });
@@ -483,7 +483,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     if ($routeParams.id_doc) {
         // Entonces usamos el id para pedir datos del documento al servidor
         $scope.id_doc = $routeParams.id_doc;
-        $http.get("get_doc.php?id_doc=" + $scope.id_doc).success(function(data){
+        $http.get("controller/get_doc.php?id_doc=" + $scope.id_doc).success(function(data){
             $scope.doc = data;
             $scope.actualizar_puntuacion();
             $scope.actualizar_lista_problemas();
@@ -515,7 +515,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 			
 		console.log(doc);
 		
-		$http.post("save_doc.php", doc).success(function(data){
+		$http.post("controller/save_doc.php", doc).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
 			window.history.back();

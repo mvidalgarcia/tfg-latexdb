@@ -1,5 +1,5 @@
 <?php
-require_once("./mappers/problema_mapper.php");
+require_once("../mappers/problema_mapper.php");
 
 	$method = $_SERVER['REQUEST_METHOD'];
 	if ($method!="DELETE") {

@@ -1,9 +1,9 @@
 <?php
 
-require_once("./model/problema.php");
-require_once("./model/pregunta.php");
-require_once("./model/tag.php");
-require_once("./singleton_db.php");
+require_once("../model/problema.php");
+require_once("../model/pregunta.php");
+require_once("../model/tag.php");
+require_once("../singleton_db.php");
 
 class ProblemaMapper
 {
