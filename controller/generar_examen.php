@@ -1,6 +1,4 @@
 <?php
-// Es un ejemplo con datos "fijos" en lugar
-// de sacarlos del modelo, vía algún mapper
 require_once("../Twig/lib/Twig/Autoloader.php");
 require_once("../mappers/doc_final_mapper.php");
 
