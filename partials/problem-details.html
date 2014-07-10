@@ -63,7 +63,7 @@
                     placeholder="Introduzca lista de tags separados por comas..."
                     ng-model="problema.tags" min-tags="1" min-length="1"
                     display-property="nombre">
-                    <auto-complete source="getTags()" min-length="1"></auto-complete>
+                    <auto-complete source="getFilteredTags($query)" min-length="1"></auto-complete>
               </tags-input>
            </div>
            <div ng-show="reviewForm.tags.$dirty && reviewForm.tags.$error.required" class="help-block col-sm-3">
