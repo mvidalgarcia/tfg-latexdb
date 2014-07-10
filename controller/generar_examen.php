@@ -1,6 +1,9 @@
 <?php
 require_once("../Twig/lib/Twig/Autoloader.php");
 require_once("../mappers/doc_final_mapper.php");
+require_once("../Pandoc/Pandoc.php");
+// Preparar pandoc
+use Pandoc\Pandoc;
 
 // Cargar la vista
 Twig_Autoloader::register();
@@ -209,6 +212,27 @@ function NewTempFolder() {
 // que le corresponde en funcion de si es una pregunta sola o un problema con varias preguntas.
 // Retorna el valor del template rellenado con los campos.
 function InsertProblemInTemplate($problema, $joined_tags, $template_pregunta_sola, $template_problema) {
+    // Averiguar el formato en que está el problema
+    if ($problema->formato) 
+        $formato_fuente = $problema->formato;
+    else
+        $formato_fuente = "markdown";
+
+    // Pasamos el formato a latex
+    $pandoc = new Pandoc();
+    $options= array(
+        "from" => $formato_fuente,
+        "to" => "latex", 
+        "listings" => null);
+    if (!empty($problema->enunciado_general))
+        $problema->enunciado_general = $pandoc->runWith($problema->enunciado_general, $options);
+    // Y ahora cada una de sus preguntas
+    foreach ($problema->preguntas as $pregunta) {
+        $pregunta->enunciado = $pandoc->runWith($pregunta->enunciado, $options);
+        $pregunta->solucion = $pandoc->runWith($pregunta->solucion, $options);
+        $pregunta->explicacion = $pandoc->runWith($pregunta->explicacion, $options);
+    }
+
 	// Comprobar si se trata de una pregunta-sola o un problema con varias para
 	// usar un template u otro.
 	// Si no tiene enunciado general y tiene una sola pregunta -> pregunta-sola
@@ -219,7 +243,6 @@ function InsertProblemInTemplate($problema, $joined_tags, $template_pregunta_sol
     		"resumen" => $problema->resumen,
     		"pregunta" => $problema->preguntas[0] // Solo va a haber una, la del primer índice.
         );
-		// Pasar los datos al template pregunta-sola y guardar el contenido.
 		$problemaTex = $template_pregunta_sola->render($preguntaSola);
 	}
 

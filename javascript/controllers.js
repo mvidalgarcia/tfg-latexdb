@@ -88,6 +88,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 	// Chequea previamente si es un problema que no está en ningún documento
 	// para proseguir con la edición.
 	$scope.mightEditProblem = function(problema) {
+        console.log(problema);
 		if (problema.id_docs_cerrados_publicados.length == 0 && problema.id_docs_abiertos.length == 0)
 			$scope.editProblem(problema.id_problema);
 	}
@@ -198,6 +199,16 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 
 
   });
+
+problemsControllers.controller('ProblemViewCtrl', function($scope, $http, $routeParams, $location) {
+    if ($routeParams.id_problema) {
+        $scope.id_problema = $routeParams.id_problema;
+        $http.get("controller/get_problem_parsed.php?id_problema=" + $scope.id_problema).success(function(data){
+            $scope.problema = data;
+            // console.log(data);
+        });
+    }
+});
 
 // Este controlador maneja la vista /view /edit y la vista /new
 // Proporciona un formulario para editar el problema, añadirle preguntas,
