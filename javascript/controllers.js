@@ -213,16 +213,8 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
         $scope.id_problema = $routeParams.id_problema;
         $http.get("controller/get_problem.php?id_problema=" + $scope.id_problema).success(function(data){
             $scope.problema = data;
-            // Los datos tal como vienen del servidor no son directamente usables, ya que
-            // en el campo tags viene mucha información irrelevante
-            // El siguiente código extrae de la lista tags solo los nombres de los
-            // tags y los deja en un string, separados por comas
-            var tags = [];
-            angular.forEach(data.tags, function(v, k) {
-                this.push(v["nombre"]);
-            }, tags);
-            $scope.problema.tags = tags; //.join(", ");
-
+            // Para tag-input creamos una copia aparte de la lista de tags
+            $scope.problema.tag_list = data.tags;
 			// Si ademas del id_problema, recibimos un parámetro "copy"
 			if ($routeParams.copy) {
 				$scope.id_problema = "Copia";
@@ -283,11 +275,11 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 		
         // Antes de pasarlos al servidor, la lista de tags ha de ser un string
         // separado por comas, en lugar de un array
-        p.tags = p.tags.map(function(e){return e.text}).join(", ");
+        p.tags = p.tag_list.map(function(t){return t.nombre}).join(", ");
         console.log(p);
 		$http.post("controller/save_problem.php", p).success(function(data){
         	// Volcar a consola la respuesta del servidor
-        	console.log(data);
+        	// console.log(data);
 			window.history.back();
     	})
 		.error(function(data){
