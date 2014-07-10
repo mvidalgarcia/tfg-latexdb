@@ -212,10 +212,16 @@ function NewTempFolder() {
 // que le corresponde en funcion de si es una pregunta sola o un problema con varias preguntas.
 // Retorna el valor del template rellenado con los campos.
 function InsertProblemInTemplate($problema, $joined_tags, $template_pregunta_sola, $template_problema) {
-    // Pasamos el markdown a latex
+    // Averiguar el formato en que está el problema
+    if ($problema->formato) 
+        $formato_fuente = $problema->formato;
+    else
+        $formato_fuente = "markdown";
+
+    // Pasamos el formato a latex
     $pandoc = new Pandoc();
     $options= array(
-        "from" => "markdown", 
+        "from" => $formato_fuente,
         "to" => "latex", 
         "listings" => null);
     if (!empty($problema->enunciado_general))

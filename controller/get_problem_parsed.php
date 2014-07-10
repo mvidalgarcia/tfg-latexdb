@@ -17,13 +17,17 @@ try
 
     // Parsear el enunciado general como markdown
     $pandoc = new Pandoc();
-    $respuesta->enunciado_general = $pandoc->convert($respuesta->enunciado_general, "markdown", "html");
+    if ($respuesta->formato )
+        $formato_fuente = $respuesta->formato;
+    else 
+        $formato_fuente = "markdown";
+    $respuesta->enunciado_general = $pandoc->convert($respuesta->enunciado_general, $formato_fuente, "html");
   
     // Para cada problema, parsear también:
     foreach ($respuesta->preguntas as $pregunta) {
-        $pregunta->enunciado = $pandoc->convert($pregunta->enunciado, "markdown", "html");
-        $pregunta->solucion = $pandoc->convert($pregunta->solucion, "markdown", "html");
-        $pregunta->explicacion = $pandoc->convert($pregunta->explicacion, "markdown", "html");
+        $pregunta->enunciado = $pandoc->convert($pregunta->enunciado, $formato_fuente, "html");
+        $pregunta->solucion = $pandoc->convert($pregunta->solucion, $formato_fuente, "html");
+        $pregunta->explicacion = $pandoc->convert($pregunta->explicacion, $formato_fuente, "html");
     }
 	//RETURN
 	header('Content-type: application/json');
