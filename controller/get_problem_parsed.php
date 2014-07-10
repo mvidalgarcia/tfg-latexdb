@@ -1,6 +1,6 @@
 <?php
-require_once("./mappers/problema_mapper.php");
-require_once("./Pandoc/Pandoc.php");
+require_once("../mappers/problema_mapper.php");
+require_once("../Pandoc/Pandoc.php");
 
 use Pandoc\Pandoc;
 

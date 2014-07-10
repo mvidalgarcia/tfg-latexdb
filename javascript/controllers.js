@@ -203,7 +203,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 problemsControllers.controller('ProblemViewCtrl', function($scope, $http, $routeParams, $location) {
     if ($routeParams.id_problema) {
         $scope.id_problema = $routeParams.id_problema;
-        $http.get("get_problem_parsed.php?id_problema=" + $scope.id_problema).success(function(data){
+        $http.get("controller/get_problem_parsed.php?id_problema=" + $scope.id_problema).success(function(data){
             $scope.problema = data;
             console.log(data);
             // Los datos tal como vienen del servidor no son directamente usables, ya que
