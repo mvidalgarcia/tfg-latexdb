@@ -1,14 +1,13 @@
-<div class="containeri-fluid">
+<div class="container-fluid">
     <h2>Problema: {{problema.resumen}} <!-- TODO: truncate filter -->
         <div class="botonera">
           <button ng-controller="ProblemListCtrl" problema={{problema.id_problema}} hide-dialog-buttons={{hideDialogButtons(problema)}} ng-really-message={{getDialogMsgEdit(problema)}} ng-really-click="editProblem(problema.id_problema)" ng-click="mightEditProblem(problema)" class="btn btn-primary"><i class="fa fa-edit"></i> Editar</button>
           <button class="btn btn-default" onClick="window.history.back()"><i class="fa fa-mail-reply"></i> Volver</button>
         </div>
     </h2>
-
     <div class="tags">
         <ul class="list-inline">
-            <i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags.split(',')">{{tag}}</li> 
+            <i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags">{{tag.nombre}}</li> 
         </ul>
     </div>
     <hr/>

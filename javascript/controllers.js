@@ -205,16 +205,7 @@ problemsControllers.controller('ProblemViewCtrl', function($scope, $http, $route
         $scope.id_problema = $routeParams.id_problema;
         $http.get("controller/get_problem_parsed.php?id_problema=" + $scope.id_problema).success(function(data){
             $scope.problema = data;
-            console.log(data);
-            // Los datos tal como vienen del servidor no son directamente usables, ya que
-            // en el campo tags viene mucha información irrelevante
-            // El siguiente código extrae de la lista tags solo los nombres de los
-            // tags y los deja en un string, separados por comas
-            var tags = [];
-            angular.forEach(data.tags, function(v, k) {
-                this.push(v["nombre"]);
-            }, tags);
-            $scope.problema.tags = tags.join(", ");
+            // console.log(data);
         });
     }
 });
@@ -225,7 +216,7 @@ problemsControllers.controller('ProblemViewCtrl', function($scope, $http, $route
 // botones. Una de las funciones más importantes será sendProblem() que
 // recibe el problema ya editado y deberá enviarlo por POST si es nuevo 
 // o por PUT si ya existía, al correspondiente servidor PHP.
-problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams, $location) {
+problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams, $location, $q, $filter) {
     
 	// Si recibimos un id_problema, es la vista /edit/:id_problema o la vista /view/:id_problema
     if ($routeParams.id_problema) {
@@ -233,16 +224,8 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
         $scope.id_problema = $routeParams.id_problema;
         $http.get("controller/get_problem.php?id_problema=" + $scope.id_problema).success(function(data){
             $scope.problema = data;
-            // Los datos tal como vienen del servidor no son directamente usables, ya que
-            // en el campo tags viene mucha información irrelevante
-            // El siguiente código extrae de la lista tags solo los nombres de los
-            // tags y los deja en un string, separados por comas
-            var tags = [];
-            angular.forEach(data.tags, function(v, k) {
-                this.push(v["nombre"]);
-            }, tags);
-            $scope.problema.tags = tags.join(", ");
-
+            // Para tag-input creamos una copia aparte de la lista de tags
+            $scope.problema.tag_list = data.tags;
 			// Si ademas del id_problema, recibimos un parámetro "copy"
 			if ($routeParams.copy) {
 				$scope.id_problema = "Copia";
@@ -262,7 +245,22 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 			"imagenes": []
         };
     }
+
+    // Obtenemos también la lista de todos los tags existentes en la bbdd
+    $http.get('controller/get_tags_list.php').success(function (data) {
+        $scope.all_tags=data;
+    });
     
+    // Función llamada desde tag-input para obtener autocompletado
+    // usamos la lista antes cargada para devolver cuáles de los items
+    // que hay en ella encajan con la query (el tag que el usuario está 
+    // escribiendo en ese momento)
+    $scope.getFilteredTags = function(query) {
+        var deferred = $q.defer();
+        deferred.resolve ( $filter('filter')($scope.all_tags, query) );
+        return deferred.promise;
+    }
+
 	// Funciones de respuesta a clicks
     
     // Si se pulsa en "Pregunta nueva"
@@ -285,11 +283,14 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 		for (var i = 0; i < p.preguntas.length; i++)
 			p.preguntas[i].posicion = i + 1;
 
-        console.log(p);
 		
+        // Antes de pasarlos al servidor, la lista de tags ha de ser un string
+        // separado por comas, en lugar de un array
+        p.tags = p.tag_list.map(function(t){return t.nombre}).join(", ");
+        console.log(p);
 		$http.post("controller/save_problem.php", p).success(function(data){
         	// Volcar a consola la respuesta del servidor
-        	console.log(data);
+        	// console.log(data);
 			window.history.back();
     	})
 		.error(function(data){

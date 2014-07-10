@@ -59,9 +59,12 @@
         <div class="form-group" ng-class="{'has-error': reviewForm.tags.$dirty && reviewForm.tags.$invalid}">
            <label for="tags" class="control-label col-sm-2">Tags</label>
            <div class="col-sm-7">
-              <input class="form-control" name="tags"
+              <tags-input name="tags"
                     placeholder="Introduzca lista de tags separados por comas..."
-                    ng-model="problema.tags" required/>
+                    ng-model="problema.tag_list" min-tags="1" min-length="1"
+                    display-property="nombre">
+                    <auto-complete source="getFilteredTags($query)" min-length="1"></auto-complete>
+              </tags-input>
            </div>
            <div ng-show="reviewForm.tags.$dirty && reviewForm.tags.$error.required" class="help-block col-sm-3">
                 Debe contener al menos un tag

@@ -5,7 +5,8 @@ var problemsCollection = angular.module('problemsCollection', [
         'problemsControllers',
         'ui.sortable',
 		'ui.bootstrap',
-        'ngSanitize'  // Esto es necesario para meter el html generado del markdown
+        'ngSanitize',  // Esto es necesario para meter el html generado del markdown
+        'ngTagsInput'
         ]);
 
 problemsCollection.config(['$routeProvider',
