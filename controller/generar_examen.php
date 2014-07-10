@@ -1,8 +1,7 @@
 <?php
-<<<<<<< HEAD:generar_examen.php
-require_once("./Twig/lib/Twig/Autoloader.php");
-require_once("./mappers/doc_final_mapper.php");
-require_once("./Pandoc/Pandoc.php");
+require_once("../Twig/lib/Twig/Autoloader.php");
+require_once("../mappers/doc_final_mapper.php");
+require_once("../Pandoc/Pandoc.php");
 // Preparar pandoc
 use Pandoc\Pandoc;
 
