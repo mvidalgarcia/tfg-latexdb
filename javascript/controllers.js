@@ -221,7 +221,7 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
             angular.forEach(data.tags, function(v, k) {
                 this.push(v["nombre"]);
             }, tags);
-            $scope.problema.tags = tags.join(", ");
+            $scope.problema.tags = tags; //.join(", ");
 
 			// Si ademas del id_problema, recibimos un parámetro "copy"
 			if ($routeParams.copy) {
@@ -242,6 +242,11 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 			"imagenes": []
         };
     }
+
+    // Función para obtener la lista de tags y así el autocompletado
+    $scope.getTags = function () {
+        return $http.get('controller/get_tags_list.php');
+    };
     
 	// Funciones de respuesta a clicks
     
@@ -265,8 +270,11 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 		for (var i = 0; i < p.preguntas.length; i++)
 			p.preguntas[i].posicion = i + 1;
 
-        console.log(p);
 		
+        // Antes de pasarlos al servidor, la lista de tags ha de ser un string
+        // separado por comas, en lugar de un array
+        p.tags = p.tags.map(function(e){return e.text}).join(", ");
+        console.log(p);
 		$http.post("controller/save_problem.php", p).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);

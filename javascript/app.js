@@ -4,7 +4,8 @@ var problemsCollection = angular.module('problemsCollection', [
         'ngRoute', 
         'problemsControllers',
         'ui.sortable',
-		'ui.bootstrap'
+		'ui.bootstrap',
+        'ngTagsInput'
         ]);
 
 problemsCollection.config(['$routeProvider',
