@@ -7,7 +7,7 @@
 
 <div class="tags">
     <ul class="list-inline">
-        <i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags.split(',')">{{tag}}</li> 
+        <i class="fa fa-tags"></i><li class="tag" ng-repeat="tag in problema.tags">{{tag}}</li> 
     </ul>
 </div>
 <pre class="bg-info jumbotron" ng-hide="!problema.enunciado_general">{{problema.enunciado_general}}</pre>
