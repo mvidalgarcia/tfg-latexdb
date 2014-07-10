@@ -61,7 +61,10 @@
            <div class="col-sm-7">
               <tags-input name="tags"
                     placeholder="Introduzca lista de tags separados por comas..."
-                    ng-model="problema.tags" min-tags="1" />
+                    ng-model="problema.tags" min-tags="1" min-length="1"
+                    display-property="nombre">
+                    <auto-complete source="getTags()" min-length="1"></auto-complete>
+              </tags-input>
            </div>
            <div ng-show="reviewForm.tags.$dirty && reviewForm.tags.$error.required" class="help-block col-sm-3">
                 Debe contener al menos un tag

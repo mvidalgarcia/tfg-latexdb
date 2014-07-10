@@ -242,6 +242,11 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 			"imagenes": []
         };
     }
+
+    // Función para obtener la lista de tags y así el autocompletado
+    $scope.getTags = function () {
+        return $http.get('controller/get_tags_list.php');
+    };
     
 	// Funciones de respuesta a clicks
     
