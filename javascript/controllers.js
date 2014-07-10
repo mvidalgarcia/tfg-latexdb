@@ -205,7 +205,7 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
 // botones. Una de las funciones más importantes será sendProblem() que
 // recibe el problema ya editado y deberá enviarlo por POST si es nuevo 
 // o por PUT si ya existía, al correspondiente servidor PHP.
-problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams, $location) {
+problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams, $location, $q, $filter) {
     
 	// Si recibimos un id_problema, es la vista /edit/:id_problema o la vista /view/:id_problema
     if ($routeParams.id_problema) {
@@ -243,11 +243,21 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
         };
     }
 
-    // Función para obtener la lista de tags y así el autocompletado
-    $scope.getTags = function () {
-        return $http.get('controller/get_tags_list.php');
-    };
+    // Obtenemos también la lista de todos los tags existentes en la bbdd
+    $http.get('controller/get_tags_list.php').success(function (data) {
+        $scope.all_tags=data;
+    });
     
+    // Función llamada desde tag-input para obtener autocompletado
+    // usamos la lista antes cargada para devolver cuáles de los items
+    // que hay en ella encajan con la query (el tag que el usuario está 
+    // escribiendo en ese momento)
+    $scope.getFilteredTags = function(query) {
+        var deferred = $q.defer();
+        deferred.resolve ( $filter('filter')($scope.all_tags, query) );
+        return deferred.promise;
+    }
+
 	// Funciones de respuesta a clicks
     
     // Si se pulsa en "Pregunta nueva"
