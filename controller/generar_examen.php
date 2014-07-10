@@ -1,17 +1,14 @@
 <?php
-// Es un ejemplo con datos "fijos" en lugar
-// de sacarlos del modelo, vía algún mapper
+<<<<<<< HEAD:generar_examen.php
 require_once("./Twig/lib/Twig/Autoloader.php");
 require_once("./mappers/doc_final_mapper.php");
 require_once("./Pandoc/Pandoc.php");
-
-
 // Preparar pandoc
 use Pandoc\Pandoc;
 
 // Cargar la vista
 Twig_Autoloader::register();
-$loader = new Twig_Loader_Filesystem('./');
+$loader = new Twig_Loader_Filesystem('../');
 $twig = new Twig_Environment($loader,array('autoescape' => false) );
 $template_examen = $twig->loadTemplate('generar_tex/template-examen.tex');
 $template_problema = $twig->loadTemplate('generar_tex/template-problema.tex');
@@ -182,7 +179,7 @@ function InsertInZipFile ($nombre_examen, $tmp_folder, $nombre_examen_zip, $name
         // una URL de la cual descargar el resultado
         $respuesta = array(
             "status" => "OK",
-            "url" => "get_zip.php?name=" . sys_get_temp_dir() . "/" . $nombre_examen_zip
+            "url" => "controller/get_zip.php?name=" . sys_get_temp_dir() . "/" . $nombre_examen_zip
         );
 	} else {
         $respuesta = array(
@@ -203,8 +200,8 @@ function NewTempFolder() {
     unlink($tmp_folder);
     mkdir($tmp_folder);
 	// Copiar fichero de estilos a la nueva ruta
-	copy ('generar_tex/examen.sty', $tmp_folder.'/examen.sty');
-	copy ('generar_tex/fink.sty', $tmp_folder.'/fink.sty');
+	copy ('../generar_tex/examen.sty', $tmp_folder.'/examen.sty');
+	copy ('../generar_tex/fink.sty', $tmp_folder.'/fink.sty');
     // Cambiar a esa carpeta para trabajar localmente, sin tener que poner rutas absolutas
 	chdir($tmp_folder);
 

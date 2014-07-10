@@ -10,7 +10,7 @@ var problemsControllers = angular.module("problemsControllers", ['ui.bootstrap',
 // de respuesta a los diferentes botones
 problemsControllers.controller('ProblemListCtrl', function($scope, $http, $location, $filter) {
     // Rellenar la lista
-    $http.get("get_problems_list.php").success(function(data){
+    $http.get("controller/get_problems_list.php").success(function(data){
         $scope.problemas = data;
     });
 
@@ -46,7 +46,8 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
         $scope.vars.query += " #" + tag;  // Lo usamos como valor de la query
         $scope.filtrar();
     };
-    // En la X a la derecha del query, borramos la query
+    
+	// En la X a la derecha del query, borramos la query
     $scope.clearQuery = function () {
         $scope.vars.query=""; 
         $scope.filtrar();
@@ -57,23 +58,26 @@ problemsControllers.controller('ProblemListCtrl', function($scope, $http, $locat
     $scope.viewProblem = function (id) {
         $location = $location.path("/view/" + id);
     }
-    // Si se pulsa el botón Borrar, se manda un método DELETE
+    
+	// Si se pulsa el botón Borrar, se manda un método DELETE
     // al servidor PHP, el id va en la URL
     $scope.deleteProblem = function (id) {
-        $http.delete("delete_problem.php?id_problema=" + id).error(function(data, status) {
+        $http.delete("controller/delete_problem.php?id_problema=" + id).error(function(data, status) {
             console.log(status, data);
         }).success(function(data, status) {
             console.log(status, data);
 			$location.path("/delete/" + id);
         });
     }
-    // Si se pulsa el botón Editar, se va a la vista "edit"
+    
+	// Si se pulsa el botón Editar, se va a la vista "edit"
     // donde se pueden cambiar los datos del problema. Su correspondiente
-    // controlador registrará acciones para cuando se dé a Guardar,
+    // controlador registrará acciones para cuando se dé a Guardar
     $scope.editProblem = function (id) {
         $location = $location.path("/edit/" + id);
     }
-    // Si se pulsa el botón "Problema nuevo" se va a la vista "new"
+    
+	// Si se pulsa el botón "Problema nuevo" se va a la vista "new"
     // que en realidad carga el mismo parcial html, pero con un
     // id_problema especial para indicar que es nuevo, y todos los
     // datos del problema vacíos
@@ -221,15 +225,13 @@ problemsControllers.controller('ProblemViewCtrl', function($scope, $http, $route
 // botones. Una de las funciones más importantes será sendProblem() que
 // recibe el problema ya editado y deberá enviarlo por POST si es nuevo 
 // o por PUT si ya existía, al correspondiente servidor PHP.
-// De momento esta función se limita a volcar en consola lo que recibe
-// de la vista, para depuración.
 problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $routeParams, $location) {
     
 	// Si recibimos un id_problema, es la vista /edit/:id_problema o la vista /view/:id_problema
     if ($routeParams.id_problema) {
         // Entonces usamos el id para pedir datos del problema al servidor
         $scope.id_problema = $routeParams.id_problema;
-        $http.get("get_problem.php?id_problema=" + $scope.id_problema).success(function(data){
+        $http.get("controller/get_problem.php?id_problema=" + $scope.id_problema).success(function(data){
             $scope.problema = data;
             // Los datos tal como vienen del servidor no son directamente usables, ya que
             // en el campo tags viene mucha información irrelevante
@@ -260,7 +262,8 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 			"imagenes": []
         };
     }
-    // Funciones de respuesta a clicks
+    
+	// Funciones de respuesta a clicks
     
     // Si se pulsa en "Pregunta nueva"
     $scope.addQuestion = function () {
@@ -276,17 +279,15 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 
     // Si se pulsa el botón "Guardar"
     $scope.sendProblem = function (p) {
-        // Habría que preparar una petición POST o PUT al servidor con un JSON apropiado
-        // Entre otras cosas habría que recorrer el array de preguntas para asignar a cada una
+        // Habría que preparar una petición POST al servidor con un JSON apropiado
+        // Recorrer el array de preguntas para asignar a cada una
         // una posición que sea igual a su índice dentro de ese array (más uno)
-        //
-        // De momento me limito a volcar por consola lo que he recibido
 		for (var i = 0; i < p.preguntas.length; i++)
 			p.preguntas[i].posicion = i + 1;
 
         console.log(p);
 		
-		$http.post("save_problem.php", p).success(function(data){
+		$http.post("controller/save_problem.php", p).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
 			window.history.back();
@@ -307,7 +308,7 @@ problemsControllers.controller('ProblemDetailsCtrl', function($scope, $http, $ro
 // de respuesta a los diferentes botones
 problemsControllers.controller('DocListCtrl', function($scope, $http, $location, $filter) {
     // Rellenar la lista
-    $http.get("get_docs_list.php").success(function(data){
+    $http.get("controller/get_docs_list.php").success(function(data){
         $scope.docs = data;
     });
 
@@ -355,29 +356,31 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location,
         else 
             return true;
     }
-    // Cuando el usuario pincha en un estado
+    
+	// Cuando el usuario pincha en un estado
     $scope.filterState = function (state) {
         $scope.vars.query += " " + state;  // Lo usamos como valor de la query
         $scope.filtrar();
     };
-    // En la X a la derecha del query, borramos la query
+    
+	// En la X a la derecha del query, borramos la query
     $scope.clearQuery = function () {
         $scope.vars.query=""; 
         $scope.filtrar();
     };
 
-
-    // Al pinchar en el resumen de un doc, enviar a la vista "view-doc"
+    // Al pinchar en el botón Ver de un doc, enviar a la vista "view-doc"
     // donde se muestra el documento (solo para lectura)
     $scope.viewDoc = function (id) {
         $location = $location.path("/view-doc/" + id);
     }
+
     // Si se pulsa el botón Borrar, se manda un método DELETE
     // al servidor PHP, el id va en la URL
     $scope.deleteDoc = function (id, estado) {
 		// Si el documento está abierto, se puede borrar.
 		if (estado == "abierto") {
-        	$http.delete("delete_doc.php?id_doc=" + id).error(function(data, status) {
+        	$http.delete("controller/delete_doc.php?id_doc=" + id).error(function(data, status) {
             	console.log(status, data);
 	        }).success(function(data, status) {
     	        console.log(status, data);
@@ -395,7 +398,8 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location,
         	$location = $location.path("/edit-doc/" + id);
 		}
     }
-    // Si se pulsa el botón "Nuevo Documento" se va a la vista "new-doc"
+  
+	// Si se pulsa el botón "Nuevo Documento" se va a la vista "new-doc"
     // que en realidad carga el mismo parcial html, pero con un
     // id_doc especial para indicar que es nuevo, y todos los
     // datos del documento vacíos
@@ -403,15 +407,15 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location,
         $location = $location.path("/new-doc/");
     }
 	
-// Función que envía la información necesaria al servidor para que este genere y
-// permita al usuario descargar los ficheros LaTeX correspondientes al documento seleccionado.
+	// Función que envía la información necesaria al servidor para que este genere y
+	// permita al usuario descargar los ficheros LaTeX correspondientes al documento seleccionado.
 	$scope.downloadDoc = function (id) {
 			
 		var info = {"id_doc":id, 
 					"con_soluciones": $("#con-soluciones"+id).is(':checked'), 
 					"con_explicaciones":$("#con-explicaciones"+id).is(':checked')};
 
-		$http.post("generar_examen.php", info).success(function(data){
+		$http.post("controller/generar_examen.php", info).success(function(data){
         	console.log("Descargando el documento " + id + ".");
 			console.log("Con soluciones: " + $("#con-soluciones"+id).is(':checked'))	
 			console.log("Con explicaciones: " + $("#con-explicaciones"+id).is(':checked'))
@@ -431,7 +435,7 @@ problemsControllers.controller('DocListCtrl', function($scope, $http, $location,
 	// Actualiza el estado del documento correspondiente en base de datos y en la vista.
 	$scope.changeStatus = function (doc, nuevo_estado) {
 		var info = {"id_doc":doc.id_doc, "nuevo_estado":nuevo_estado };
-		$http.post("change_doc_status.php", info).success(function(data){
+		$http.post("controller/change_doc_status.php", info).success(function(data){
         	console.log("Cambiando estado de documento " + doc.id_doc + " al estado " + nuevo_estado + ".");
         	// Volcar a consola la respuesta del servidor
 			console.log(data);
@@ -453,11 +457,13 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 	// En cualquier caso, hay que cargar los resúmenes y tags de todos los
 	// problemas almacenados en la aplicación para mostrarlos en la lista dragable.
 	// Rellenar la lista
-    $http.get("get_problems_list.php").success(function(data){
+    $http.get("controller/get_problems_list.php").success(function(data){
         $scope.problemas_bd = data;
         $scope.actualizar_lista_problemas();
     });
 
+	// Actualiza la puntación total del documento basándose en 
+	// los problemas que contiene hasta el momento.
     $scope.actualizar_puntuacion = function () {
         if ($scope.doc) {
             var total_puntos = 0;
@@ -467,6 +473,8 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
         }
     }
 
+	// Muestra en la lista de problemas almacenados en la aplicación aquellos que 
+	// no están en la lista de problemas del documento. Evitar repeticiones de problemas.
     $scope.actualizar_lista_problemas = function () {
         if ($scope.problemas_bd && $scope.doc) {
             for (var i=0; i<$scope.doc.problemas.length; i++) {
@@ -503,7 +511,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     if ($routeParams.id_doc) {
         // Entonces usamos el id para pedir datos del documento al servidor
         $scope.id_doc = $routeParams.id_doc;
-        $http.get("get_doc.php?id_doc=" + $scope.id_doc).success(function(data){
+        $http.get("controller/get_doc.php?id_doc=" + $scope.id_doc).success(function(data){
             $scope.doc = data;
             $scope.actualizar_puntuacion();
             $scope.actualizar_lista_problemas();
@@ -522,9 +530,9 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
     // Funciones de respuesta a clicks
     
     $scope.vars = {'query': "" }; 
-    // Si se pulsa el botón "Guardar".
+  
+	// Si se pulsa el botón "Guardar".
     $scope.sendDoc = function (doc) {
-
 		// Habría que preparar una petición POST o PUT al servidor con un JSON apropiado
 		// Entre otras cosas habría que recorrer el array de problemas para asignar a cada una
 		// una posición que sea igual a su índice dentro de ese array (más uno)
@@ -535,7 +543,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 			
 		console.log(doc);
 		
-		$http.post("save_doc.php", doc).success(function(data){
+		$http.post("controller/save_doc.php", doc).success(function(data){
         	// Volcar a consola la respuesta del servidor
         	console.log(data);
 			window.history.back();
@@ -657,6 +665,7 @@ problemsControllers.controller('DocDetailsCtrl', function($scope, $http, $routeP
 
 });
 
+//---------------------------------------------------------------------------------------
 
 // Función (controller) que controla qué sección del menú de navegación está activa.
 function HeaderController($scope, $location) 
@@ -730,7 +739,7 @@ angular.module('ngReallyClickModule', ['ui.bootstrap'])
 				}, function() {
            		//Modal dismissed
             	});
-            	//*/
+            	
             }
 			
           });

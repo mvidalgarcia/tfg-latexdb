@@ -1,6 +1,6 @@
 <?php
 
-require_once("./mappers/doc_final_mapper.php");
+require_once("../mappers/doc_final_mapper.php");
 
 try 
 {

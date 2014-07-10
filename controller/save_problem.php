@@ -1,5 +1,5 @@
 <?php
-require_once("./mappers/problema_mapper.php");
+require_once("../mappers/problema_mapper.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$postdata = file_get_contents("php://input");

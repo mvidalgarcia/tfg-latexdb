@@ -1,9 +1,9 @@
 <?php
 
-require_once("./model/problema.php");
-require_once("./model/doc_final.php");
-require_once("./mappers/problema_mapper.php");
-require_once("./singleton_db.php");
+require_once("../model/problema.php");
+require_once("../model/doc_final.php");
+require_once("../mappers/problema_mapper.php");
+require_once("../singleton_db.php");
 
 class DocFinalMapper
 {
