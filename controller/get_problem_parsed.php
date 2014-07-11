@@ -29,6 +29,8 @@ try
         $pregunta->solucion = $pandoc->convert($pregunta->solucion, $formato_fuente, "html");
         $pregunta->explicacion = $pandoc->convert($pregunta->explicacion, $formato_fuente, "html");
     }
+	// Limpiar el buffer de salida antes de enviar.
+	ob_clean(); 
 	//RETURN
 	header('Content-type: application/json');
 	echo(json_encode($respuesta, JSON_NUMERIC_CHECK));
