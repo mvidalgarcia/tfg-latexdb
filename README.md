@@ -21,16 +21,16 @@ Una vez tenemos nuestro equipo con la distribución de Linux elegida con PHP, Ap
 a. Instalar composer:  
 	```
 	curl -s http://getcomposer.org/installer | php
-	```  
-(inicialmente no deja, hay que añadir una línea a `/etc/php5/cli/php.ini`) Esto crea un archivo llamado `composer.phar`, en la misma carpeta en la que estoy.  
-b. Crear un archivo llamado `composer.json` que contenga:  
+	```
+	(inicialmente no deja, hay que añadir una línea a `/etc/php5/cli/php.ini`) Esto crea un archivo llamado `composer.phar`, en la misma carpeta en la que estoy.  
+	b. Crear un archivo llamado `composer.json` que contenga:  
 ```
 	{
 	    "require": {
 		"twig/twig": "1.*"
 	    }
 	}
-	```  
-c. Ejecutar el comando `php composer.phar install`  
-d. Mover el contenido de la carpeta `vendor/twig/twig` a `Twig`
+```
+  c. Ejecutar el comando `php composer.phar install`  
+d. Mover el contenido de la carpeta `vendor/twig/twig` a `Twig`  
 8. Comprobar la dirección IP de tu máquina (se puede hacer con el comando `ifconfig`) y en un navegador web ir a la dirección `http://mi-ip/tfg`. Si por ejemplo la dirección IP de tu equipo es la `192.168.1.10`, escribir en la barra de direcciones del navegador la dirección `http://192.168.1.19/tfg`. En este momento se debería abrir la página principal de la aplicación web.
